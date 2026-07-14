@@ -20,12 +20,15 @@ export const codeNodeSchema = z.object({
   tokens: z.array(z.string()),
 });
 
+export const codeEdgeKindSchema = z.enum(['calls', 'dispatches-to', 'registers', 'reads', 'writes', 'contains', 'documents', 'guarded-by']);
+export const confidenceSchema = z.enum(['confirmed', 'inferred', 'possible']);
+
 export const codeEdgeSchema = z.object({
   id: z.string(),
   sourceId: z.string(),
   targetId: z.string(),
-  kind: z.enum(['calls', 'dispatches-to', 'registers', 'reads', 'writes', 'contains', 'documents', 'guarded-by']),
-  confidence: z.enum(['confirmed', 'inferred', 'possible']),
+  kind: codeEdgeKindSchema,
+  confidence: confidenceSchema,
   reason: z.string(),
   path: z.string(),
   range: sourceRangeSchema,
@@ -59,4 +62,25 @@ export const trailSchema = z.object({
   ),
   warnings: z.array(z.string()),
   disclaimer: z.literal('Static reading order; not a runtime trace.'),
+});
+
+export const codeDiscoverySchema = z.object({
+  trail: trailSchema,
+  fileLinks: z.array(
+    z.object({
+      sourcePath: z.string(),
+      targetPath: z.string(),
+      kinds: z.array(codeEdgeKindSchema),
+      confidence: confidenceSchema,
+      reason: z.string(),
+      evidenceCount: z.number().int().positive(),
+    }),
+  ),
+  fileSections: z.array(
+    z.object({
+      path: z.string(),
+      steps: trailSchema.shape.steps,
+      relatedEdgeIds: z.array(z.string()),
+    }),
+  ),
 });

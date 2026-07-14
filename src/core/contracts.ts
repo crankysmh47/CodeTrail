@@ -110,6 +110,27 @@ export type Trail = Readonly<{
   disclaimer: 'Static reading order; not a runtime trace.';
 }>;
 
+export type FileLink = Readonly<{
+  sourcePath: string;
+  targetPath: string;
+  kinds: readonly CodeEdgeKind[];
+  confidence: Confidence;
+  reason: string;
+  evidenceCount: number;
+}>;
+
+export type FileSection = Readonly<{
+  path: string;
+  steps: readonly TrailStep[];
+  relatedEdgeIds: readonly string[];
+}>;
+
+export type CodeDiscovery = Readonly<{
+  trail: Trail;
+  fileLinks: readonly FileLink[];
+  fileSections: readonly FileSection[];
+}>;
+
 export function normalizeWorkspacePath(path: string): string {
   return path.replaceAll('\\', '/');
 }
