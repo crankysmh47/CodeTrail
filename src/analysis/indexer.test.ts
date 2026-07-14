@@ -79,4 +79,21 @@ describe('workspace indexer', () => {
     expect(index.isPartial).toBe(true);
     expect(index.warnings).toContainEqual(expect.objectContaining({ code: 'INDEX_CANCELLED' }));
   });
+
+  it('should keep each stable node ID once', async () => {
+    const rootPath = await fixtureRoot();
+    await writeFile(
+      join(rootPath, 'conditional.c'),
+      '#ifdef FIRST\nint repeated(void) { return 1; }\n#else\nint repeated(void) { return 2; }\n#endif',
+    );
+
+    const index = await indexWorkspace({
+      rootPath,
+      parser,
+      limits: { filesMax: 20, fileBytesMax: 10_000, totalBytesMax: 20_000 },
+      signal: new AbortController().signal,
+    });
+
+    expect(new Set(index.nodes.map((node) => node.id)).size).toBe(index.nodes.length);
+  });
 });

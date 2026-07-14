@@ -1,13 +1,39 @@
-import type { CodeNode, SearchCandidate, SearchResult, WorkspaceIndex } from './contracts.js';
+import type { CodeEdge, CodeEdgeKind, CodeNode, SearchCandidate, SearchResult, WorkspaceIndex } from './contracts.js';
 
-const stopWords = new Set(['a', 'an', 'and', 'does', 'how', 'is', 'of', 'the', 'to', 'what']);
+const stopWords = new Set(['a', 'an', 'and', 'does', 'for', 'how', 'is', 'of', 'the', 'to', 'what', 'whether']);
 const synonyms: Readonly<Record<string, string>> = {
+  called: 'call',
+  caller: 'call',
+  callers: 'call',
+  calls: 'call',
   choose: 'pick',
   chooses: 'pick',
   choosing: 'pick',
+  dispatched: 'dispatch',
+  dispatches: 'dispatch',
+  dispatching: 'dispatch',
+  eligibility: 'eligible',
+  guarded: 'guard',
+  guards: 'guard',
+  reads: 'read',
+  reading: 'read',
+  registered: 'register',
+  registers: 'register',
+  registering: 'register',
+  registration: 'register',
   select: 'pick',
   selects: 'pick',
   selection: 'pick',
+  writes: 'write',
+  writing: 'write',
+};
+const relationshipIntent: Readonly<Record<string, CodeEdgeKind>> = {
+  call: 'calls',
+  dispatch: 'dispatches-to',
+  guard: 'guarded-by',
+  read: 'reads',
+  register: 'registers',
+  write: 'writes',
 };
 
 function tokenize(value: string): readonly string[] {
@@ -22,7 +48,85 @@ function intersection(left: readonly string[], right: ReadonlySet<string>): read
   return [...new Set(left.filter((token) => right.has(token)))];
 }
 
-function scoreNode(node: CodeNode, queryTokens: readonly string[]): SearchCandidate | undefined {
+function editDistanceOne(left: string, right: string): boolean {
+  if (left === right || Math.abs(left.length - right.length) > 1) {
+    return false;
+  }
+  if (left.length === right.length) {
+    const differences: number[] = [];
+    for (let index = 0; index < left.length; index += 1) {
+      if (left[index] !== right[index]) {
+        differences.push(index);
+      }
+    }
+    if (
+      differences.length === 2 &&
+      differences[1] === differences[0]! + 1 &&
+      left[differences[0]!] === right[differences[1]!] &&
+      left[differences[1]!] === right[differences[0]!]
+    ) {
+      return true;
+    }
+  }
+  const rows = left.length + 1;
+  const columns = right.length + 1;
+  const previous = Array.from({ length: columns }, (_, index) => index);
+  for (let row = 1; row < rows; row += 1) {
+    const current = [row];
+    let rowMin = row;
+    for (let column = 1; column < columns; column += 1) {
+      const cost = left[row - 1] === right[column - 1] ? 0 : 1;
+      const value = Math.min(current[column - 1]! + 1, previous[column]! + 1, previous[column - 1]! + cost);
+      current.push(value);
+      rowMin = Math.min(rowMin, value);
+    }
+    if (rowMin > 1) {
+      return false;
+    }
+    previous.splice(0, previous.length, ...current);
+  }
+  return previous[right.length] === 1;
+}
+
+function typoMatches(nodeTokens: readonly string[], queryTokens: readonly string[]): readonly [string, string][] {
+  const matches: Array<[string, string]> = [];
+  for (const queryToken of queryTokens) {
+    if (queryToken.length < 4 || nodeTokens.includes(queryToken)) {
+      continue;
+    }
+    const nodeToken = nodeTokens.find((candidate) => candidate.length >= 4 && editDistanceOne(queryToken, candidate));
+    if (nodeToken) {
+      matches.push([queryToken, nodeToken]);
+    }
+  }
+  return matches;
+}
+
+function scoreRelationships(node: CodeNode, edges: readonly CodeEdge[], queryTokens: readonly string[]): SearchCandidate {
+  const reasons: string[] = [];
+  let score = 0;
+  for (const token of queryTokens) {
+    const kind = relationshipIntent[token];
+    if (!kind) {
+      continue;
+    }
+    const outgoing = edges.some((edge) => edge.kind === kind && edge.sourceId === node.id);
+    const incoming = edges.some((edge) => edge.kind === kind && edge.targetId === node.id);
+    if (outgoing) {
+      score += 80;
+      reasons.push(`relationship source: ${kind}`);
+    } else if (incoming) {
+      score += 10;
+      reasons.push(`relationship target: ${kind}`);
+    }
+  }
+  if (score > 0 && node.kind === 'function') {
+    score += 5;
+  }
+  return { nodeId: node.id, score, reasons };
+}
+
+function scoreNode(node: CodeNode, edges: readonly CodeEdge[], queryTokens: readonly string[]): SearchCandidate | undefined {
   const querySet = new Set(queryTokens);
   const symbolMatches = intersection(node.tokens, querySet);
   const signatureMatches = intersection(tokenize(node.signature), querySet);
@@ -48,6 +152,16 @@ function scoreNode(node: CodeNode, queryTokens: readonly string[]): SearchCandid
     reasons.push(`summary: ${summaryMatches.join(', ')}`);
   }
 
+  const fuzzyMatches = typoMatches(node.tokens, queryTokens);
+  for (const [queryToken, nodeToken] of fuzzyMatches) {
+    score += 14;
+    reasons.push(`identifier typo: ${queryToken} → ${nodeToken}`);
+  }
+
+  const relationship = scoreRelationships(node, edges, queryTokens);
+  score += relationship.score;
+  reasons.push(...relationship.reasons);
+
   const normalizedName = tokenize(node.name).join(' ');
   const normalizedQuery = queryTokens.join(' ');
   if (normalizedName === normalizedQuery) {
@@ -70,9 +184,14 @@ export function searchIndex(index: WorkspaceIndex, query: string, limit: number)
     return { normalizedQuery: '', candidates: [] };
   }
 
-  const nodesById = new Map(index.nodes.map((node) => [node.id, node]));
-  const candidates = index.nodes
-    .map((node) => scoreNode(node, queryTokens))
+  const nodesById = new Map<string, CodeNode>();
+  for (const node of index.nodes) {
+    if (!nodesById.has(node.id)) {
+      nodesById.set(node.id, node);
+    }
+  }
+  const candidates = [...nodesById.values()]
+    .map((node) => scoreNode(node, index.edges, queryTokens))
     .filter((candidate): candidate is SearchCandidate => candidate !== undefined)
     .sort((left, right) => {
       if (left.score !== right.score) {

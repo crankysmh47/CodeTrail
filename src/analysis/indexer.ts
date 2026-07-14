@@ -116,7 +116,15 @@ export async function indexWorkspace(input: IndexWorkspaceInput): Promise<Worksp
     analyses.push(await analyzeCFile({ parser: input.parser, path, source, nodeCountMax: 100_000 }));
   }
 
-  const nodes = analyses.flatMap((analysis) => analysis.nodes);
+  const nodesById = new Map<string, WorkspaceIndex['nodes'][number]>();
+  for (const analysis of analyses) {
+    for (const node of analysis.nodes) {
+      if (!nodesById.has(node.id)) {
+        nodesById.set(node.id, node);
+      }
+    }
+  }
+  const nodes = [...nodesById.values()];
   const edges = enrichKernelRelationships(analyses);
   return {
     version: 1,

@@ -57,4 +57,19 @@ describe('C structural adapter', () => {
       expect.objectContaining({ code: 'C_PARSE_PARTIAL', path: 'broken.c' }),
     );
   });
+
+  it('should not treat struct references as declarations', async () => {
+    const parser = await createCParser({ parserWasmPath, languageWasmPath });
+    const result = await analyzeCFile({
+      parser,
+      path: 'references.c',
+      source: [
+        'static struct task_struct *first(struct task_struct *task);',
+        'static struct task_struct *second(struct task_struct *task);',
+      ].join('\n'),
+      nodeCountMax: 100,
+    });
+
+    expect(result.nodes.filter((node) => node.kind === 'struct' && node.name === 'task_struct')).toStrictEqual([]);
+  });
 });

@@ -40,4 +40,26 @@ describe('Linux scheduler gold path', () => {
     );
     expect(trail.disclaimer).toBe('Static reading order; not a runtime trace.');
   });
+
+  it.each([
+    ['How does the Linux fair scheduler choose the next task?', 'pick_next_task_fair'],
+    ['How does EEVDF decide whether an entity is eligible?', 'entity_eligible'],
+    ['How is the fair scheduler registered for dispatch?', 'pick_task'],
+  ])('should rank the expected seed for %s', async (query, expectedName) => {
+    const parser = await createCParser({
+      parserWasmPath: fileURLToPath(import.meta.resolve('web-tree-sitter/tree-sitter.wasm')),
+      languageWasmPath: fileURLToPath(import.meta.resolve('tree-sitter-wasms/out/tree-sitter-c.wasm')),
+    });
+    const index = await indexWorkspace({
+      rootPath: fileURLToPath(new URL('../test-fixtures/kernel-mini', import.meta.url)),
+      parser,
+      limits: { filesMax: 20, fileBytesMax: 2_097_152, totalBytesMax: 10_485_760 },
+      signal: new AbortController().signal,
+    });
+
+    const result = searchIndex(index, query, 8);
+    const seed = index.nodes.find((node) => node.id === result.candidates[0]?.nodeId);
+
+    expect(seed?.name).toBe(expectedName);
+  });
 });

@@ -55,4 +55,22 @@ describe('deterministic search', () => {
       expect.objectContaining({ nodeId: createNodeId('c', 'a.c', 'function', 'alpha') }),
     ]);
   });
+
+  it('should return each stable node ID once before applying the limit', () => {
+    const duplicateIndex = { ...index, nodes: [pickNextTaskFair, pickNextTaskFair, pickEevdf] };
+
+    const result = searchIndex(duplicateIndex, 'pick next task', 10);
+
+    expect(result.candidates.map((candidate) => candidate.nodeId)).toStrictEqual([
+      pickNextTaskFair.id,
+      pickEevdf.id,
+    ]);
+  });
+
+  it('should recover a one-edit typo within an otherwise specific identifier query', () => {
+    const result = searchIndex(index, 'taks fair', 5);
+
+    expect(result.candidates[0]?.nodeId).toBe(pickNextTaskFair.id);
+    expect(result.candidates[0]?.reasons).toContain('identifier typo: taks → task');
+  });
 });

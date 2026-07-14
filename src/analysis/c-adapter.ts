@@ -154,7 +154,7 @@ export async function analyzeCFile(input: AnalyzeCFileInput): Promise<FileAnalys
         nodes.push(createNode(normalizedPath, 'function', name, node));
         childContext = { ...childContext, functionName: name };
       }
-    } else if (node.type === 'struct_specifier') {
+    } else if (node.type === 'struct_specifier' && node.childForFieldName('body')) {
       const name = node.childForFieldName('name')?.text ?? '';
       if (name.length > 0) {
         nodes.push(createNode(normalizedPath, 'struct', name, node));
