@@ -10,16 +10,19 @@ flowchart LR
     D --> E["Typed workspace index"]
     E --> F["Deterministic search"]
     F --> G["Bounded subgraph"]
-    G --> H["Ordered trail"]
-    H --> I["VS Code webview"]
-    I --> J["Validated source navigation"]
+    G --> H["Discovery projection"]
+    H --> I["Cross-file route"]
+    H --> J["Within-file symbol paths"]
+    I --> K["VS Code webview"]
+    J --> K
+    K --> L["Validated source navigation"]
 ```
 
 The extension host owns commands, VS Code navigation, workspace storage, and the webview panel. Parsing and graph work run in `analysis-worker.cjs`. Every message crossing that boundary is schema-validated.
 
 ## Stable core contracts
 
-`src/core/contracts.ts` defines language-neutral nodes, edges, search candidates, and trails. A language adapter must produce those contracts without leaking parser-specific objects into search or UI code.
+`src/core/contracts.ts` defines language-neutral nodes, edges, search candidates, trails, file links, and file sections. A language adapter must produce those contracts without leaking parser-specific objects into search or UI code.
 
 Each edge carries:
 
@@ -48,9 +51,15 @@ It never upgrades pointer or macro evidence to `confirmed` without compiler proo
 
 ## Search and trail selection
 
-Search normalizes snake case, camel case, punctuation, stop words, and a small documented synonym set. Scores come from symbol tokens, signatures, paths, and summaries. Stable path/line/ID tie-breaking keeps results reproducible.
+Search normalizes snake case, camel case, punctuation, stop words, and a small documented synonym set. It supports adjacent transpositions and one edit for identifier-like terms of at least four characters. Scores come from symbol tokens, signatures, paths, summaries, and typed incident edges when a query asks about calls, registration, dispatch, reads, writes, or guards. Candidate IDs are unique before the result limit is applied. Stable path, line, and ID tie-breaking keeps results reproducible.
 
-Subgraph construction uses explicit node, edge, depth, and wall-clock budgets. Trail selection follows typed outgoing evidence and stops at a 12-step readability limit. The result is a recommended reading sequence, not an execution trace.
+Subgraph construction uses explicit node, edge, depth, and wall-clock budgets. Trail selection follows typed outgoing evidence and stops at a 12-step readability limit. The discovery projection collapses cross-file edges by source and target path, retains typed evidence and least-certain confidence, then groups trail steps by file. The result is a recommended reading sequence, not an execution trace.
+
+## VS Code interaction
+
+The panel keeps one question field across ready, candidate, discovery, and empty states. Results use a progressive outline: **File route** comes before **Within files**. The webview uses VS Code theme variables and source-derived content is assigned through `textContent`.
+
+The extension also registers CodeLens on indexed C function definitions, an editor context action, and `Alt+Shift+T`. These entry points resolve an exact symbol from the immutable workspace index and reuse the same bounded discovery request; they do not parse on the editor thread.
 
 ## Persistence and trust boundaries
 

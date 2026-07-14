@@ -1,8 +1,8 @@
 # CodeTrail
 
-Turn a code question into the smallest evidence-backed reading trail.
+Find the files and functions behind unfamiliar C behavior without leaving VS Code.
 
-CodeTrail is a local-first VS Code extension for unfamiliar C codebases. It ranks likely starting symbols, follows a bounded set of typed relationships, and shows the source evidence behind every step. The Build Week release is C-first and uses the Linux fair scheduler as its reference case.
+CodeTrail is a local-first VS Code extension for unfamiliar C codebases. Ask a code question or invoke it on a function definition. CodeTrail shows the cross-file route first, then the ordered symbol path inside each file. Every link includes its relationship, confidence, and source-backed reason.
 
 CodeTrail does not call an AI service at runtime. The index, ranking, graph traversal, and trail ordering are deterministic and run on your machine.
 
@@ -56,10 +56,21 @@ Press `F5` in VS Code to open an Extension Development Host.
 2. Run `CodeTrail: Index Workspace` from the Command Palette.
 3. Run `CodeTrail: Ask a Code Question`.
 4. Ask a concrete question, for example: `How does the fair scheduler choose the next task?`
-5. Confirm the best starting symbol.
-6. Follow the ordered trail. Use **Open source** to inspect any step in the editor.
+5. Confirm the best starting symbol. CodeTrail focuses the highest-ranked result so you can press `Enter` immediately.
+6. Read **File route** to see how the relevant files connect.
+7. Continue through **Within files**. Use `Open` to jump to any function in the editor.
 
 The status under the question box tells you how many C files were indexed and whether Clang is available. Structural mode works without Clang.
+
+### Start from a function definition
+
+After indexing, open a C file and use any of these entry points:
+
+- Click `CodeTrail: discover links` above an indexed function definition.
+- Put the cursor on a symbol and press `Alt+Shift+T`.
+- Right-click a symbol and choose `CodeTrail: Discover Symbol Links`.
+
+Exact indexed symbols open their hierarchy directly. If the symbol is ambiguous, CodeTrail shows the same ranked candidate list used by question search.
 
 ## Try the Linux scheduler demo
 
@@ -90,7 +101,7 @@ How does EEVDF decide whether an entity is eligible?
 How is the fair scheduler registered for dispatch?
 ```
 
-The exact gold questions and expected symbols live in `demo/questions.json`.
+The expected starting points are `pick_next_task_fair`, `entity_eligible`, and `pick_task`, respectively. The exact gold questions also live in `demo/questions.json`.
 
 ## How it works
 
@@ -109,10 +120,14 @@ Deterministic lexical ranking
     ↓
 Bounded evidence graph
     ↓
-Ordered reading trail in VS Code
+Cross-file route
+    ↓
+Within-file symbol paths in VS Code
 ```
 
-The C adapter extracts functions, structs, fields, macros, calls, designated initializers, and preprocessor guards. The scheduler enricher recovers relationships that plain call graphs tend to miss, including scheduler-class registration and function-pointer dispatch.
+The C adapter extracts definitions for functions, structs, fields, and macros, plus direct calls, designated initializers, and preprocessor guards. The scheduler enricher recovers relationships that a plain call graph misses, including scheduler-class registration and function-pointer dispatch.
+
+Search splits identifier forms, handles a bounded one-edit typo, removes duplicate node IDs, and scores typed relationship intent. A question about registration or dispatch therefore ranks the field that provides that relationship instead of whichever symbol shares the most words. Result rows show the reasons used in ranking.
 
 Analysis runs in a Node worker so indexing does not block the extension host. CodeTrail stores validated, gzip-compressed snapshots in VS Code workspace storage and rejects stale or malformed snapshots.
 
@@ -121,9 +136,11 @@ Analysis runs in a Node worker so indexing does not block the extension host. Co
 | Command | What it does |
 |---|---|
 | `CodeTrail: Index Workspace` | Parses the current C workspace and creates a fresh local index. |
-| `CodeTrail: Ask a Code Question` | Opens the question and trail panel. |
-| `CodeTrail: Explain Symbol` | Uses the symbol under the editor cursor as the search query. |
-| `CodeTrail: Open Evidence Source` | Opens a validated source location from a trail step. |
+| `CodeTrail: Ask a Code Question` | Opens the persistent question and discovery panel. |
+| `CodeTrail: Discover Symbol Links` | Discovers the hierarchy for the symbol under the cursor. Also available from the editor context menu and `Alt+Shift+T`. |
+| `CodeTrail: Explain Symbol` | Compatibility alias for `Discover Symbol Links`. |
+| `CodeTrail: Discover Indexed Function` | Opens an exact indexed function. CodeTrail invokes this from CodeLens. |
+| `CodeTrail: Open Evidence Source` | Opens a validated source location from the discovery result. |
 
 The `codetrail.filesMax` setting controls the maximum number of C and header files indexed. Its default is 2,000; its hard maximum is 10,000.
 
@@ -137,7 +154,7 @@ Every relationship has one of three labels:
 | `inferred` | The relationship is backed by source syntax but depends on a pattern such as a designated initializer or function pointer. |
 | `possible` | The evidence names a plausible target but cannot select one target safely. |
 
-Each trail card shows the symbol, signature, source path, relationship reason, and confidence. Budget warnings stay visible. The trail is always labeled `Static reading order; not a runtime trace.`
+Cross-file rows show direction, relationship type, confidence, evidence count, and reason. Within-file steps show the symbol, signature, source path, relationship reason, and confidence. Budget warnings stay visible. Every result is labeled `Static reading order; not a runtime trace.`
 
 ## Privacy and security
 
@@ -160,9 +177,11 @@ This release is deliberately narrow.
 - It does not preprocess every kernel configuration.
 - Macro and function-pointer relationships can remain inferred.
 - It does not claim runtime order, frequency, or branch behavior.
-- Search is lexical and explainable; it does not use embeddings.
+- Search is lexical, typo-bounded, and explainable; it does not understand arbitrary natural language or use embeddings.
 - Clang availability is reported, but compiler AST enrichment is not part of the Build Week package.
 - Whole-kernel indexing is intentionally bounded. Open a subsystem folder for the clearest result.
+- Indexing is explicit rather than incremental. Reindex after changing source files.
+- The extension currently follows outgoing structural evidence from one selected symbol; it is not a whole-program impact analyzer.
 
 These limits appear in the product instead of being hidden behind a generic confidence score.
 
@@ -194,7 +213,7 @@ Useful scripts:
 | `npm run build` | Bundles the extension host, worker, and webview; copies WASM assets. |
 | `npm run package` | Produces `codetrail.vsix`. |
 
-The current gold suite covers direct calls, macro/designated-initializer registration, scheduler dispatch, configuration guards, stable search, graph budgets, snapshot validation, worker generation safety, CSP, source path confinement, and the primary Linux scheduler question.
+The current gold suite covers direct calls, macro/designated-initializer registration, scheduler dispatch, configuration guards, unique and typo-tolerant search, all three Linux questions, the `sched.h` to `fair.c` route, the within-file function path, graph budgets, snapshot validation, worker generation safety, CSP, source path confinement, UI states, and latency.
 
 ## Project documents
 
@@ -203,6 +222,7 @@ The current gold suite covers direct calls, macro/designated-initializer registr
 - `demo/runbook.md`: the three-minute judge demo
 - `docs/superpowers/specs/2026-07-14-codetrail-product-design.md`: approved product direction
 - `docs/superpowers/plans/2026-07-14-codetrail-build-week-mvp.md`: sequential implementation plan
+- `docs/superpowers/specs/2026-07-15-codetrail-relationship-discovery-polish-design.md`: file-first discovery and minimal UI design
 
 ## License
 

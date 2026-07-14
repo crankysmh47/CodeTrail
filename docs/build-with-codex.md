@@ -34,6 +34,11 @@ The repository history preserves those units:
 | `963b1f3` | Worker protocol and isolation |
 | `e0592a5` | Complete VS Code/webview experience |
 | `6e2dc9b` | Linux scheduler gold and performance tests |
+| `2635219` | Unique, typo-tolerant, relationship-aware search |
+| `19a41a4` | Cross-file links and within-file hierarchy projection |
+| `3e6c22e` | Validated discovery requests through the worker |
+| `5ee056b` | CodeLens, context action, and symbol shortcut |
+| `801da34` | Minimal progressive discovery panel |
 
 ## Debugging evidence
 
@@ -48,8 +53,9 @@ Codex diagnosed several integration failures instead of patching around them:
 ## What Codex verified
 
 - strict TypeScript checks include test files;
-- unit and integration tests cover parsing, malformed C recovery, enrichment, ranking, budgets, snapshots, protocol validation, generation races, CSP, path confinement, UI states, the Linux gold question, and latency;
+- unit and integration tests cover parsing, malformed C recovery, enrichment, unique candidate ranking, bounded typo matching, relationship intent, budgets, snapshots, protocol validation, generation races, CSP, path confinement, UI states, all three Linux questions, the cross-file route, and latency;
 - the bundled worker can load both WASM assets and index the scheduler fixture;
+- CodeLens and editor symbol resolution use stable index IDs without parsing on the extension host;
 - runtime dependencies have no known npm vulnerabilities;
 - runtime source contains no OpenAI/Codex SDK, `eval`, or HTML injection;
 - the VSIX contents exclude tests, source maps, planning documents, and the original product document.

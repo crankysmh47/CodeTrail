@@ -2,9 +2,9 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { indexWorkspace } from './analysis/indexer.js';
 import { createCParser } from './analysis/parser-runtime.js';
+import { buildDiscovery } from './core/discovery.js';
 import { buildBoundedSubgraph } from './core/graph.js';
 import { searchIndex } from './core/search.js';
-import { buildTrail } from './core/trail.js';
 
 describe('Linux scheduler gold path', () => {
   it('should turn the primary question into an evidence-backed fair scheduler trail', async () => {
@@ -28,17 +28,34 @@ describe('Linux scheduler gold path', () => {
       depthMax: 4,
       timeMsMax: 100,
     });
-    const trail = buildTrail(index, subgraph, seed!.id);
-    const trailNames = trail.steps.map((step) => index.nodes.find((node) => node.id === step.nodeId)?.name);
+    const discovery = buildDiscovery(index, subgraph, seed!.id);
+    const trailNames = discovery.trail.steps.map(
+      (step) => index.nodes.find((node) => node.id === step.nodeId)?.name,
+    );
 
-    expect(trailNames).toEqual(expect.arrayContaining(['pick_eevdf', 'entity_eligible']));
+    expect(trailNames.slice(0, 3)).toStrictEqual([
+      'pick_next_task_fair',
+      'pick_eevdf',
+      'entity_eligible',
+    ]);
+    expect(discovery.fileLinks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          sourcePath: 'sched.h',
+          targetPath: 'fair.c',
+          kinds: expect.arrayContaining(['registers']),
+          confidence: 'inferred',
+        }),
+      ]),
+    );
+    expect(discovery.fileSections.map((section) => section.path)).toStrictEqual(['sched.h', 'fair.c']);
     expect(index.edges).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ kind: 'registers', confidence: 'inferred' }),
         expect.objectContaining({ kind: 'dispatches-to', confidence: 'inferred' }),
       ]),
     );
-    expect(trail.disclaimer).toBe('Static reading order; not a runtime trace.');
+    expect(discovery.trail.disclaimer).toBe('Static reading order; not a runtime trace.');
   });
 
   it.each([
