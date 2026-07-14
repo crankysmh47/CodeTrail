@@ -17,8 +17,24 @@ export type TrailStepView = Readonly<{
 export type TrailView = Readonly<{
   title: string;
   steps: readonly TrailStepView[];
+  fileLinks: readonly FileLinkView[];
+  fileSections: readonly FileSectionView[];
   warnings: readonly string[];
   disclaimer: 'Static reading order; not a runtime trace.';
+}>;
+
+export type FileLinkView = Readonly<{
+  sourcePath: string;
+  targetPath: string;
+  relationship: string;
+  confidence: 'confirmed' | 'inferred' | 'possible';
+  reason: string;
+  evidenceCount: number;
+}>;
+
+export type FileSectionView = Readonly<{
+  path: string;
+  steps: readonly TrailStepView[];
 }>;
 
 export type CandidateView = Readonly<{

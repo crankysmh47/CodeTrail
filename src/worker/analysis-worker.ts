@@ -1,8 +1,8 @@
 import { parentPort } from 'node:worker_threads';
 import type { WorkspaceIndex } from '../core/contracts.js';
+import { buildDiscovery } from '../core/discovery.js';
 import { buildBoundedSubgraph } from '../core/graph.js';
 import { searchIndex } from '../core/search.js';
-import { buildTrail } from '../core/trail.js';
 import { indexWorkspace } from '../analysis/indexer.js';
 import { createCParser } from '../analysis/parser-runtime.js';
 import { IndexGenerationGuard } from './index-generation.js';
@@ -59,7 +59,11 @@ async function handle(value: unknown): Promise<void> {
       return;
     }
     const subgraph = buildBoundedSubgraph(currentIndex, [request.seedId], request.budget);
-    post({ kind: 'trail-result', requestId: request.requestId, trail: buildTrail(currentIndex, subgraph, request.seedId) });
+    post({
+      kind: 'discovery-result',
+      requestId: request.requestId,
+      discovery: buildDiscovery(currentIndex, subgraph, request.seedId),
+    });
   } catch (error) {
     post({ kind: 'error', requestId: request.requestId, message: messageFrom(error) });
   }

@@ -1,4 +1,4 @@
-import type { SearchResult, Trail, WorkspaceIndex } from '../core/contracts.js';
+import type { CodeDiscovery, SearchResult, WorkspaceIndex } from '../core/contracts.js';
 import type { GraphBudget } from '../core/graph.js';
 import {
   workerResponseSchema,
@@ -23,12 +23,12 @@ type PendingIndex = Readonly<{
 }>;
 
 type PendingSearch = Readonly<{ resolve: (result: SearchResult) => void; reject: (error: Error) => void }>;
-type PendingTrail = Readonly<{ resolve: (trail: Trail) => void; reject: (error: Error) => void }>;
+type PendingDiscovery = Readonly<{ resolve: (discovery: CodeDiscovery) => void; reject: (error: Error) => void }>;
 
 export class IndexCoordinator {
   private readonly pending = new Map<string, PendingIndex>();
   private readonly pendingSearch = new Map<string, PendingSearch>();
-  private readonly pendingTrail = new Map<string, PendingTrail>();
+  private readonly pendingDiscovery = new Map<string, PendingDiscovery>();
   private generation = 0;
   private requestSequence = 0;
   private currentIndex: WorkspaceIndex | undefined;
@@ -75,13 +75,13 @@ export class IndexCoordinator {
     return promise;
   }
 
-  buildTrail(seedId: string, budget: GraphBudget): Promise<Trail> {
+  discover(seedId: string, budget: GraphBudget): Promise<CodeDiscovery> {
     this.assertInteractiveCapacity();
-    const requestId = this.nextRequestId('trail');
-    const promise = new Promise<Trail>((resolvePromise, rejectPromise) => {
-      this.pendingTrail.set(requestId, { resolve: resolvePromise, reject: rejectPromise });
+    const requestId = this.nextRequestId('discover');
+    const promise = new Promise<CodeDiscovery>((resolvePromise, rejectPromise) => {
+      this.pendingDiscovery.set(requestId, { resolve: resolvePromise, reject: rejectPromise });
     });
-    this.worker.postMessage({ kind: 'trail', requestId, seedId, budget });
+    this.worker.postMessage({ kind: 'discover', requestId, seedId, budget });
     return promise;
   }
 
@@ -108,11 +108,11 @@ export class IndexCoordinator {
       }
       return;
     }
-    if (response.kind === 'trail-result') {
-      const pending = this.pendingTrail.get(response.requestId);
+    if (response.kind === 'discovery-result') {
+      const pending = this.pendingDiscovery.get(response.requestId);
       if (pending) {
-        this.pendingTrail.delete(response.requestId);
-        pending.resolve(response.trail);
+        this.pendingDiscovery.delete(response.requestId);
+        pending.resolve(response.discovery);
       }
       return;
     }
@@ -120,13 +120,13 @@ export class IndexCoordinator {
       const error = new Error(response.message);
       const indexPending = this.pending.get(response.requestId);
       const searchPending = this.pendingSearch.get(response.requestId);
-      const trailPending = this.pendingTrail.get(response.requestId);
+      const discoveryPending = this.pendingDiscovery.get(response.requestId);
       indexPending?.reject(error);
       searchPending?.reject(error);
-      trailPending?.reject(error);
+      discoveryPending?.reject(error);
       this.pending.delete(response.requestId);
       this.pendingSearch.delete(response.requestId);
-      this.pendingTrail.delete(response.requestId);
+      this.pendingDiscovery.delete(response.requestId);
       return;
     }
     if (response.kind !== 'indexed') {
@@ -151,20 +151,20 @@ export class IndexCoordinator {
     for (const pending of this.pendingSearch.values()) {
       pending.reject(error);
     }
-    for (const pending of this.pendingTrail.values()) {
+    for (const pending of this.pendingDiscovery.values()) {
       pending.reject(error);
     }
     this.pendingSearch.clear();
-    this.pendingTrail.clear();
+    this.pendingDiscovery.clear();
   }
 
-  private nextRequestId(kind: 'search' | 'trail'): string {
+  private nextRequestId(kind: 'search' | 'discover'): string {
     this.requestSequence += 1;
     return `${kind}-${this.requestSequence}`;
   }
 
   private assertInteractiveCapacity(): void {
-    if (this.pendingSearch.size + this.pendingTrail.size >= 5) {
+    if (this.pendingSearch.size + this.pendingDiscovery.size >= 5) {
       throw new Error('CodeTrail already has five pending interactive requests.');
     }
   }

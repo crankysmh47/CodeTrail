@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { workerRequestSchema } from './protocol.js';
+import { workerRequestSchema, workerResponseSchema } from './protocol.js';
 
 describe('analysis worker protocol', () => {
   it('should accept a bounded index request', () => {
@@ -17,8 +17,37 @@ describe('analysis worker protocol', () => {
   });
 
   it('should reject malformed and unbounded requests', () => {
-    const parsed = workerRequestSchema.safeParse({ kind: 'trail', requestId: 'r', seedId: 'x', budget: {} });
+    const parsed = workerRequestSchema.safeParse({ kind: 'discover', requestId: 'r', seedId: 'x', budget: {} });
 
     expect(parsed.success).toBe(false);
+  });
+
+  it('should validate a structured discovery response', () => {
+    const parsed = workerResponseSchema.parse({
+      kind: 'discovery-result',
+      requestId: 'discover-1',
+      discovery: {
+        trail: {
+          seedId: 'node-1',
+          title: 'Trail from node-1',
+          steps: [{ order: 1, nodeId: 'node-1', incomingEdgeId: '', reason: 'Selected entry point.' }],
+          warnings: [],
+          disclaimer: 'Static reading order; not a runtime trace.',
+        },
+        fileLinks: [
+          {
+            sourcePath: 'sched.h',
+            targetPath: 'fair.c',
+            kinds: ['registers'],
+            confidence: 'inferred',
+            reason: 'registration evidence',
+            evidenceCount: 1,
+          },
+        ],
+        fileSections: [{ path: 'fair.c', steps: [], relatedEdgeIds: [] }],
+      },
+    });
+
+    expect(parsed.kind).toBe('discovery-result');
   });
 });

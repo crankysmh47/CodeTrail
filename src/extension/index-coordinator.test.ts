@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { WorkspaceIndex } from '../core/contracts.js';
+import type { CodeDiscovery, WorkspaceIndex } from '../core/contracts.js';
 import { IndexCoordinator, type WorkerLike } from './index-coordinator.js';
 import type { WorkerRequest, WorkerResponse } from '../worker/protocol.js';
 
@@ -53,6 +53,17 @@ const input = {
   languageWasmPath: '/tree-sitter-c.wasm',
   limits: { filesMax: 2000, fileBytesMax: 2_097_152, totalBytesMax: 262_144_000 },
 };
+const discovery: CodeDiscovery = {
+  trail: {
+    seedId: 'node-1',
+    title: 'Trail from node-1',
+    steps: [{ order: 1, nodeId: 'node-1', incomingEdgeId: '', reason: 'Selected entry point.' }],
+    warnings: [],
+    disclaimer: 'Static reading order; not a runtime trace.',
+  },
+  fileLinks: [],
+  fileSections: [{ path: 'fair.c', steps: [], relatedEdgeIds: [] }],
+};
 
 describe('index coordinator', () => {
   it('should restore a validated cached index without starting a worker request', () => {
@@ -90,7 +101,7 @@ describe('index coordinator', () => {
     expect(coordinator.getCurrentIndex().rootPath).toBe('/second');
   });
 
-  it('should correlate search and trail responses to their requests', async () => {
+  it('should correlate search and discovery responses to their requests', async () => {
     const worker = new FakeWorker();
     const coordinator = new IndexCoordinator(worker);
     const indexing = coordinator.startIndex(input);
@@ -105,21 +116,15 @@ describe('index coordinator', () => {
       requestId: searchRequest.requestId,
       result: { normalizedQuery: 'fair scheduler', candidates: [{ nodeId: 'node-1', score: 42, reasons: ['symbol'] }] },
     });
-    const trailing = coordinator.buildTrail('node-1', { nodesMax: 40, edgesMax: 80, depthMax: 4, timeMsMax: 100 });
-    const trailRequest = worker.sent[2]!;
+    const discovering = coordinator.discover('node-1', { nodesMax: 40, edgesMax: 80, depthMax: 4, timeMsMax: 100 });
+    const discoveryRequest = worker.sent[2]!;
     worker.emit({
-      kind: 'trail-result',
-      requestId: trailRequest.requestId,
-      trail: {
-        seedId: 'node-1',
-        title: 'Trail from node-1',
-        steps: [{ order: 1, nodeId: 'node-1', incomingEdgeId: '', reason: 'Selected entry point.' }],
-        warnings: [],
-        disclaimer: 'Static reading order; not a runtime trace.',
-      },
+      kind: 'discovery-result',
+      requestId: discoveryRequest.requestId,
+      discovery,
     });
 
     await expect(searching).resolves.toEqual(expect.objectContaining({ normalizedQuery: 'fair scheduler' }));
-    await expect(trailing).resolves.toEqual(expect.objectContaining({ seedId: 'node-1' }));
+    await expect(discovering).resolves.toStrictEqual(discovery);
   });
 });

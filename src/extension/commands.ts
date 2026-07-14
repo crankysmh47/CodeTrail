@@ -2,8 +2,8 @@ import { randomBytes } from 'node:crypto';
 import { join } from 'node:path';
 import * as vscode from 'vscode';
 import { probeClang } from '../analysis/clang-provider.js';
-import type { CodeEdge, CodeNode, Trail } from '../core/contracts.js';
-import type { CandidateView, HostMessage, TrailStepView, TrailView, WebviewState } from '../shared/messages.js';
+import type { CandidateView, HostMessage, WebviewState } from '../shared/messages.js';
+import { toTrailView } from './discovery-view.js';
 import { IndexCoordinator } from './index-coordinator.js';
 import { loadSnapshot, saveSnapshot } from './snapshot-store.js';
 import { resolveWorkspaceSource } from './source-navigation.js';
@@ -13,31 +13,6 @@ const graphBudget = { nodesMax: 40, edgesMax: 80, depthMax: 4, timeMsMax: 100 } 
 
 function messageFrom(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
-}
-
-function trailStepView(
-  step: Trail['steps'][number],
-  nodesById: ReadonlyMap<string, CodeNode>,
-  edgesById: ReadonlyMap<string, CodeEdge>,
-): TrailStepView | undefined {
-  const node = nodesById.get(step.nodeId);
-  if (!node) {
-    return undefined;
-  }
-  const edge = edgesById.get(step.incomingEdgeId);
-  return {
-    order: step.order,
-    nodeId: node.id,
-    name: node.name,
-    nodeKind: node.kind,
-    path: node.path,
-    lineStart: node.range.lineStart,
-    lineEnd: node.range.lineEnd,
-    confidence: edge?.confidence ?? 'confirmed',
-    edgeKind: edge?.kind ?? 'entry-point',
-    reason: step.reason,
-    signature: node.signature,
-  };
 }
 
 export class CodeTrailCommands implements vscode.Disposable {
@@ -224,14 +199,8 @@ export class CodeTrailCommands implements vscode.Disposable {
   private async selectCandidate(nodeId: string): Promise<void> {
     try {
       const index = this.coordinator.getCurrentIndex();
-      const trail = await this.coordinator.buildTrail(nodeId, graphBudget);
-      const nodesById = new Map(index.nodes.map((node) => [node.id, node]));
-      const edgesById = new Map(index.edges.map((edge) => [edge.id, edge]));
-      const steps = trail.steps
-        .map((step) => trailStepView(step, nodesById, edgesById))
-        .filter((step): step is TrailStepView => step !== undefined);
-      const view: TrailView = { title: trail.title, steps, warnings: trail.warnings, disclaimer: trail.disclaimer };
-      await this.setState({ kind: 'trail', trail: view });
+      const discovery = await this.coordinator.discover(nodeId, graphBudget);
+      await this.setState({ kind: 'trail', trail: toTrailView(discovery, index) });
     } catch (error) {
       await this.showError(messageFrom(error));
     }

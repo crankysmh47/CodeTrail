@@ -35,6 +35,8 @@ describe('CodeTrail webview', () => {
         title: 'How fair scheduling chooses a task',
         disclaimer: 'Static reading order; not a runtime trace.',
         warnings: ['Traversal reached the 40-node budget.'],
+        fileLinks: [],
+        fileSections: [],
         steps: [
           {
             order: 1,
