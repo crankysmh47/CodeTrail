@@ -1,3 +1,81 @@
 :root {
   color-scheme: light dark;
+  font-family: var(--vscode-font-family);
+  color: var(--vscode-foreground);
+  background: var(--vscode-editor-background);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input { font: inherit; }
+
+.app {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--vscode-descriptionForeground);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+h1 { margin: 0; font-size: clamp(28px, 6vw, 48px); line-height: 1.05; }
+h2 { margin: 6px 0 10px; font-size: 18px; }
+.lede, .disclaimer { color: var(--vscode-descriptionForeground); line-height: 1.6; }
+
+.question-form { display: grid; gap: 10px; margin-top: 32px; }
+.question-form label { font-weight: 650; }
+input {
+  width: 100%;
+  padding: 13px 14px;
+  color: var(--vscode-input-foreground);
+  background: var(--vscode-input-background);
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 6px;
+}
+
+button {
+  width: fit-content;
+  padding: 9px 13px;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.primary, .source-button { color: var(--vscode-button-foreground); background: var(--vscode-button-background); }
+button:hover { background: var(--vscode-button-hoverBackground); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-offset: 2px; }
+
+.status, .path { color: var(--vscode-descriptionForeground); font-size: 12px; }
+.trail, .candidate-list { display: grid; gap: 14px; padding: 0; list-style: none; }
+.trail { margin-top: 30px; }
+.trail-step {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--vscode-widget-border);
+  border-radius: 8px;
+  background: var(--vscode-sideBar-background);
+}
+.step-number { color: var(--vscode-textLink-foreground); font: 700 15px var(--vscode-editor-font-family); }
+.meta { display: flex; gap: 8px; }
+.node-kind, .confidence { padding: 3px 7px; border-radius: 999px; font-size: 11px; background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); }
+.confidence-inferred, .confidence-possible { border: 1px solid var(--vscode-editorWarning-foreground); background: transparent; color: var(--vscode-editorWarning-foreground); }
+.signature { display: block; overflow-wrap: anywhere; color: var(--vscode-symbolIcon-functionForeground); }
+.reason { line-height: 1.55; }
+.warning, .error { padding: 10px 12px; border-left: 3px solid var(--vscode-editorWarning-foreground); background: var(--vscode-inputValidation-warningBackground); }
+.candidate { padding: 16px; border-bottom: 1px solid var(--vscode-widget-border); }
+
+@media (max-width: 480px) {
+  .app { padding: 24px 14px 50px; }
+  .trail-step { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
 }

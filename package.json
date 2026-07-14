@@ -18,7 +18,8 @@
   "activationEvents": [
     "onCommand:codetrail.indexWorkspace",
     "onCommand:codetrail.askQuestion",
-    "onCommand:codetrail.explainSymbol"
+    "onCommand:codetrail.explainSymbol",
+    "onCommand:codetrail.openSource"
   ],
   "contributes": {
     "commands": [
@@ -33,6 +34,10 @@
       {
         "command": "codetrail.explainSymbol",
         "title": "CodeTrail: Explain Symbol"
+      },
+      {
+        "command": "codetrail.openSource",
+        "title": "CodeTrail: Open Evidence Source"
       }
     ],
     "configuration": {

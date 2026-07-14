@@ -55,6 +55,16 @@ const input = {
 };
 
 describe('index coordinator', () => {
+  it('should restore a validated cached index without starting a worker request', () => {
+    const worker = new FakeWorker();
+    const coordinator = new IndexCoordinator(worker);
+
+    coordinator.restoreIndex(index('/cached'));
+
+    expect(coordinator.getCurrentIndex().rootPath).toBe('/cached');
+    expect(worker.sent).toStrictEqual([]);
+  });
+
   it('should prevent an older generation from replacing the latest index', async () => {
     const worker = new FakeWorker();
     const coordinator = new IndexCoordinator(worker);
@@ -78,5 +88,38 @@ describe('index coordinator', () => {
     await Promise.all([first, second]);
 
     expect(coordinator.getCurrentIndex().rootPath).toBe('/second');
+  });
+
+  it('should correlate search and trail responses to their requests', async () => {
+    const worker = new FakeWorker();
+    const coordinator = new IndexCoordinator(worker);
+    const indexing = coordinator.startIndex(input);
+    const indexRequest = worker.sent[0]!;
+    worker.emit({ kind: 'indexed', requestId: indexRequest.requestId, generation: 1, index: index('/workspace') });
+    await indexing;
+
+    const searching = coordinator.search('fair scheduler', 5);
+    const searchRequest = worker.sent[1]!;
+    worker.emit({
+      kind: 'search-result',
+      requestId: searchRequest.requestId,
+      result: { normalizedQuery: 'fair scheduler', candidates: [{ nodeId: 'node-1', score: 42, reasons: ['symbol'] }] },
+    });
+    const trailing = coordinator.buildTrail('node-1', { nodesMax: 40, edgesMax: 80, depthMax: 4, timeMsMax: 100 });
+    const trailRequest = worker.sent[2]!;
+    worker.emit({
+      kind: 'trail-result',
+      requestId: trailRequest.requestId,
+      trail: {
+        seedId: 'node-1',
+        title: 'Trail from node-1',
+        steps: [{ order: 1, nodeId: 'node-1', incomingEdgeId: '', reason: 'Selected entry point.' }],
+        warnings: [],
+        disclaimer: 'Static reading order; not a runtime trace.',
+      },
+    });
+
+    await expect(searching).resolves.toEqual(expect.objectContaining({ normalizedQuery: 'fair scheduler' }));
+    await expect(trailing).resolves.toEqual(expect.objectContaining({ seedId: 'node-1' }));
   });
 });
