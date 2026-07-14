@@ -1,4 +1,10 @@
-import type { ExtensionMessage, HostMessage, TrailStepView, WebviewState } from '../shared/messages.js';
+import type {
+  ExtensionMessage,
+  FileLinkView,
+  HostMessage,
+  TrailStepView,
+  WebviewState,
+} from '../shared/messages.js';
 
 type PostMessage = (message: HostMessage) => void;
 
@@ -13,26 +19,36 @@ function element<K extends keyof HTMLElementTagNameMap>(
   return value;
 }
 
-function renderQuestion(root: HTMLElement, state: Extract<WebviewState, { kind: 'welcome' | 'ready' }>, post: PostMessage): void {
-  const header = element('header', 'hero');
-  header.append(element('p', 'eyebrow', 'CodeTrail · local static analysis'));
-  header.append(element('h1', '', 'Follow the code that matters'));
-  header.append(
-    element('p', 'lede', 'Ask one concrete question. Get a bounded reading trail with source evidence and visible uncertainty.'),
-  );
+function renderHeader(root: HTMLElement): void {
+  const header = element('header', 'product-header');
+  header.append(element('h1', '', 'CodeTrail'));
+  header.append(element('p', 'product-context', 'Local C relationship explorer'));
+  root.append(header);
+}
+
+function renderReindexButton(post: PostMessage, text = 'Reindex'): HTMLButtonElement {
+  const button = element('button', 'secondary-button', text);
+  button.type = 'button';
+  button.dataset.action = 'reindex';
+  button.addEventListener('click', () => post({ kind: 'reindex' }));
+  return button;
+}
+
+function renderQuestionForm(root: HTMLElement, post: PostMessage, initialQuery = ''): HTMLInputElement {
   const form = element('form', 'question-form');
-  const label = element('label', '', 'Question');
+  const label = element('label', 'visually-hidden', 'Question');
   label.htmlFor = 'question';
   const input = element('input');
   input.id = 'question';
   input.name = 'question';
   input.type = 'text';
   input.maxLength = 500;
-  input.placeholder = 'How does the fair scheduler choose the next task?';
+  input.placeholder = 'Ask about a symbol or relationship';
   input.autocomplete = 'off';
-  const button = element('button', 'primary', 'Build trail');
-  button.type = 'submit';
-  form.append(label, input, button);
+  input.value = initialQuery;
+  const submit = element('button', 'primary-button', 'Discover');
+  submit.type = 'submit';
+  form.append(label, input, submit, renderReindexButton(post));
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     const query = input.value.trim();
@@ -40,86 +56,180 @@ function renderQuestion(root: HTMLElement, state: Extract<WebviewState, { kind: 
       post({ kind: 'ask', query });
     }
   });
-  const status = element('p', 'status');
+  root.append(form);
+  return input;
+}
+
+function renderReady(root: HTMLElement, state: Extract<WebviewState, { kind: 'ready' }>, post: PostMessage): void {
+  renderHeader(root);
+  const input = renderQuestionForm(root, post);
+  const warningSummary = state.warningCount === 1 ? '1 warning' : `${state.warningCount} warnings`;
+  const status = element(
+    'p',
+    'workspace-status',
+    `${state.filesIndexed} C files · ${warningSummary} · Clang ${state.clangStatus}`,
+  );
   status.role = 'status';
-  status.textContent = state.kind === 'ready'
-    ? `${state.filesIndexed} C files indexed · Clang ${state.clangStatus}`
-    : 'Index a C workspace to begin.';
-  root.append(header, form, status);
+  root.append(status);
   input.focus();
+}
+
+function renderCandidateResults(
+  root: HTMLElement,
+  state: Extract<WebviewState, { kind: 'candidates' }>,
+  post: PostMessage,
+): void {
+  renderHeader(root);
+  renderQuestionForm(root, post, state.query);
+  const resultCount = state.candidates.length;
+  root.append(element('p', 'result-summary', `${resultCount} ${resultCount === 1 ? 'result' : 'results'}`));
+  const list = element('ol', 'candidate-list');
+  let firstButton: HTMLButtonElement | undefined;
+  for (const candidate of state.candidates) {
+    const item = element('li', 'candidate-item');
+    const button = element('button', 'candidate-row');
+    button.type = 'button';
+    button.dataset.action = 'select-candidate';
+    button.append(element('span', 'candidate-name', candidate.name));
+    button.append(element('span', 'candidate-location', `${candidate.path}:${candidate.lineStart}`));
+    button.append(element('span', 'candidate-reasons', candidate.reasons.join(' · ')));
+    button.addEventListener('click', () => post({ kind: 'select-candidate', nodeId: candidate.nodeId }));
+    firstButton ??= button;
+    item.append(button);
+    list.append(item);
+  }
+  root.append(list);
+  firstButton?.focus();
+}
+
+function renderFileLink(link: FileLinkView): HTMLLIElement {
+  const item = element('li', 'file-link');
+  const route = element('p', 'file-route');
+  route.append(element('code', '', link.sourcePath));
+  route.append(element('span', 'route-arrow', '→'));
+  route.append(element('code', '', link.targetPath));
+  const meta = element('p', 'link-meta', `${link.relationship} · ${link.confidence} · ${link.evidenceCount} evidence`);
+  item.append(route, meta, element('p', 'relationship-reason', link.reason));
+  return item;
 }
 
 function renderStep(step: TrailStepView, post: PostMessage): HTMLLIElement {
   const item = element('li', 'trail-step');
-  const number = element('span', 'step-number', String(step.order).padStart(2, '0'));
-  const heading = element('h2', '', step.name);
-  const kind = element('span', 'node-kind', step.nodeKind);
-  const confidence = element('span', `confidence confidence-${step.confidence}`, step.confidence);
-  const signature = element('code', 'signature', step.signature);
-  const reason = element('p', 'reason', step.reason);
-  const path = element('p', 'path', `${step.path}:${step.lineStart}`);
-  const button = element('button', 'source-button', 'Open source');
+  item.append(element('span', 'step-number', String(step.order).padStart(2, '0')));
+  const body = element('div', 'step-body');
+  body.append(element('h4', '', step.name));
+  body.append(element('p', 'step-meta', `${step.nodeKind} · ${step.edgeKind} · ${step.confidence}`));
+  body.append(element('code', 'signature', step.signature));
+  body.append(element('p', 'relationship-reason', step.reason));
+  const source = element('div', 'source-row');
+  source.append(element('span', 'source-location', `${step.path}:${step.lineStart}`));
+  const button = element('button', 'text-button', 'Open');
   button.type = 'button';
   button.dataset.action = 'open-source';
   button.addEventListener('click', () => {
     post({ kind: 'open-source', path: step.path, lineStart: step.lineStart, lineEnd: step.lineEnd });
   });
-  const meta = element('div', 'meta');
-  meta.append(kind, confidence);
-  const body = element('div', 'step-body');
-  body.append(meta, heading, signature, reason, path, button);
-  item.append(number, body);
+  source.append(button);
+  body.append(source);
+  item.append(body);
   return item;
 }
 
-function renderTrail(root: HTMLElement, state: Extract<WebviewState, { kind: 'trail' }>, post: PostMessage): void {
-  const header = element('header', 'trail-header');
-  header.append(element('p', 'eyebrow', 'Evidence trail'));
-  header.append(element('h1', '', state.trail.title));
-  header.append(element('p', 'disclaimer', state.trail.disclaimer));
-  root.append(header);
-  for (const warning of state.trail.warnings) {
+function renderDiscovery(
+  root: HTMLElement,
+  state: Extract<WebviewState, { kind: 'discovery' }>,
+  post: PostMessage,
+): void {
+  renderHeader(root);
+  renderQuestionForm(root, post, state.query);
+  const summary = element('div', 'discovery-summary');
+  summary.append(element('p', 'discovery-title', state.discovery.title));
+  summary.append(element('p', 'disclaimer', state.discovery.disclaimer));
+  root.append(summary);
+  for (const warning of state.discovery.warnings) {
     const notice = element('p', 'warning', warning);
     notice.role = 'alert';
     root.append(notice);
   }
-  const list = element('ol', 'trail');
-  for (const step of state.trail.steps) {
-    list.append(renderStep(step, post));
+
+  const routeSection = element('section', 'discovery-section');
+  routeSection.append(element('h2', '', 'File route'));
+  if (state.discovery.fileLinks.length === 0) {
+    const path = state.discovery.fileSections[0]?.path;
+    routeSection.append(element('p', 'empty-note', path ? `This route stays within ${path}.` : 'No cross-file link found.'));
+  } else {
+    const list = element('ol', 'file-link-list');
+    for (const link of state.discovery.fileLinks) {
+      list.append(renderFileLink(link));
+    }
+    routeSection.append(list);
   }
-  root.append(list);
+  root.append(routeSection);
+
+  const filesSection = element('section', 'discovery-section');
+  filesSection.append(element('h2', '', 'Within files'));
+  for (const file of state.discovery.fileSections) {
+    const article = element('article', 'file-section');
+    article.append(element('h3', '', file.path));
+    if (file.steps.length === 0) {
+      article.append(element('p', 'empty-note', 'Cross-file relationship only; no selected symbol step in this file.'));
+    } else {
+      const steps = element('ol', 'trail-list');
+      for (const step of file.steps) {
+        steps.append(renderStep(step, post));
+      }
+      article.append(steps);
+    }
+    filesSection.append(article);
+  }
+  root.append(filesSection);
 }
 
-function renderCandidates(root: HTMLElement, state: Extract<WebviewState, { kind: 'candidates' }>, post: PostMessage): void {
-  root.append(element('p', 'eyebrow', 'Confirm the starting point'));
-  root.append(element('h1', '', state.query));
-  const list = element('ol', 'candidate-list');
-  for (const candidate of state.candidates) {
-    const item = element('li', 'candidate');
-    item.append(element('h2', '', candidate.name));
-    item.append(element('p', 'path', `${candidate.path}:${candidate.lineStart}`));
-    item.append(element('p', 'reason', candidate.reasons.join(' · ')));
-    const button = element('button', 'primary', 'Start here');
-    button.type = 'button';
-    button.addEventListener('click', () => post({ kind: 'select-candidate', nodeId: candidate.nodeId }));
-    item.append(button);
-    list.append(item);
-  }
-  root.append(list);
+function renderWelcome(root: HTMLElement, post: PostMessage): void {
+  renderHeader(root);
+  root.append(element('p', 'empty-note', 'Index the current C workspace to discover typed links between files and symbols.'));
+  root.append(renderReindexButton(post, 'Index this workspace'));
+}
+
+function renderIndexing(root: HTMLElement, state: Extract<WebviewState, { kind: 'indexing' }>): void {
+  renderHeader(root);
+  root.append(element('p', 'workspace-status', state.message));
+  const progress = element('progress', 'index-progress');
+  progress.max = 100;
+  progress.value = state.percent;
+  progress.setAttribute('aria-label', 'Indexing progress');
+  root.append(progress);
+}
+
+function renderEmpty(root: HTMLElement, state: Extract<WebviewState, { kind: 'empty' }>, post: PostMessage): void {
+  renderHeader(root);
+  renderQuestionForm(root, post, state.query);
+  root.append(element('p', 'empty-title', state.message));
+  root.append(element('p', 'empty-note', 'Try an exact symbol, file name, or relationship such as calls, registers, or dispatch.'));
+}
+
+function renderProblem(
+  root: HTMLElement,
+  state: Extract<WebviewState, { kind: 'partial' | 'error' }>,
+  post: PostMessage,
+): void {
+  renderHeader(root);
+  const message = element('p', state.kind === 'error' ? 'error' : 'warning', state.message);
+  message.role = 'alert';
+  root.append(message, renderReindexButton(post, state.kind === 'partial' ? 'Continue indexing' : 'Try indexing again'));
 }
 
 export function renderApp(root: HTMLElement, state: WebviewState, post: PostMessage): void {
   root.replaceChildren();
-  if (state.kind === 'welcome' || state.kind === 'ready') {
-    renderQuestion(root, state, post);
-  } else if (state.kind === 'trail') {
-    renderTrail(root, state, post);
-  } else if (state.kind === 'candidates') {
-    renderCandidates(root, state, post);
-  } else {
-    const heading = state.kind === 'indexing' ? 'Indexing workspace' : state.kind === 'partial' ? 'Partial index ready' : 'CodeTrail needs attention';
-    root.append(element('h1', '', heading));
-    root.append(element('p', state.kind === 'error' ? 'error' : 'status', state.message));
+  switch (state.kind) {
+    case 'welcome': renderWelcome(root, post); break;
+    case 'indexing': renderIndexing(root, state); break;
+    case 'ready': renderReady(root, state, post); break;
+    case 'candidates': renderCandidateResults(root, state, post); break;
+    case 'discovery': renderDiscovery(root, state, post); break;
+    case 'empty': renderEmpty(root, state, post); break;
+    case 'partial':
+    case 'error': renderProblem(root, state, post); break;
   }
 }
 

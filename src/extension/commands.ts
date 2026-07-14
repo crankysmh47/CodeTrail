@@ -21,6 +21,7 @@ export class CodeTrailCommands implements vscode.Disposable {
   private panel: vscode.WebviewPanel | undefined;
   private panelController: TrailPanelController | undefined;
   private clangStatus: 'available' | 'unavailable' = 'unavailable';
+  private lastQuery = '';
   private readonly codeLensProvider: CodeTrailCodeLensProvider;
 
   constructor(
@@ -179,6 +180,7 @@ export class CodeTrailCommands implements vscode.Disposable {
 
   private async ask(query: string): Promise<void> {
     try {
+      this.lastQuery = query;
       const index = this.coordinator.getCurrentIndex();
       const result = await this.coordinator.search(query, 8);
       const nodesById = new Map(index.nodes.map((node) => [node.id, node]));
@@ -198,7 +200,11 @@ export class CodeTrailCommands implements vscode.Disposable {
         }
       }
       if (candidates.length === 0) {
-        await this.showError('No evidence-backed starting point matched that question. Try a symbol or subsystem term.');
+        await this.setState({
+          kind: 'empty',
+          query,
+          message: 'No matching symbol or relationship.',
+        });
         return;
       }
       await this.setState({ kind: 'candidates', query, candidates });
@@ -211,7 +217,9 @@ export class CodeTrailCommands implements vscode.Disposable {
     try {
       const index = this.coordinator.getCurrentIndex();
       const discovery = await this.coordinator.discover(nodeId, graphBudget);
-      await this.setState({ kind: 'trail', trail: toTrailView(discovery, index) });
+      const query = this.lastQuery || index.nodes.find((node) => node.id === nodeId)?.name || 'Selected symbol';
+      this.lastQuery = query;
+      await this.setState({ kind: 'discovery', query, discovery: toTrailView(discovery, index) });
     } catch (error) {
       await this.showError(messageFrom(error));
     }

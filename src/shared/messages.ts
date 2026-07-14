@@ -52,7 +52,8 @@ export type WebviewState =
   | Readonly<{ kind: 'indexing'; message: string; percent: number }>
   | Readonly<{ kind: 'ready'; filesIndexed: number; warningCount: number; clangStatus: 'available' | 'unavailable' }>
   | Readonly<{ kind: 'candidates'; query: string; candidates: readonly CandidateView[] }>
-  | Readonly<{ kind: 'trail'; trail: TrailView }>
+  | Readonly<{ kind: 'discovery'; query: string; discovery: TrailView }>
+  | Readonly<{ kind: 'empty'; query: string; message: string }>
   | Readonly<{ kind: 'partial'; message: string; filesIndexed: number }>
   | Readonly<{ kind: 'error'; message: string }>;
 
