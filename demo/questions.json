@@ -1,0 +1,21 @@
+{
+  "repository": "https://github.com/torvalds/linux",
+  "commit": "7059bdf4f04a3e14f4fafb3ac35fdca913e3e21a",
+  "questions": [
+    {
+      "question": "How does the Linux fair scheduler choose the next task?",
+      "expectedSeed": "pick_next_task_fair",
+      "expectedTrail": ["pick_eevdf", "entity_eligible"]
+    },
+    {
+      "question": "How does EEVDF decide whether an entity is eligible?",
+      "expectedSeed": "entity_eligible",
+      "expectedTrail": ["vruntime", "deadline"]
+    },
+    {
+      "question": "How is the fair scheduler registered for dispatch?",
+      "expectedSeed": "pick_task",
+      "expectedTrail": ["pick_next_task_fair"]
+    }
+  ]
+}
