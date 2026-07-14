@@ -586,4 +586,3 @@ git commit -m "docs: finalize the CodeTrail relationship discovery release"
 - [ ] **Step 8: Perform final review and branch completion workflow**
 
 Run `git diff main...HEAD`, `git diff --check`, scan for placeholders and unsafe DOM/process patterns, rerun `npm test`, and use the finishing-development-branch workflow to choose merge, PR, or branch preservation.
-

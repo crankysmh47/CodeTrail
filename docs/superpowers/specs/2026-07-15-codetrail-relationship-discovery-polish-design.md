@@ -1,7 +1,7 @@
 # CodeTrail Relationship Discovery and Product Polish Design
 
-**Date:** 2026-07-15  
-**Status:** Approved through delegated product authority  
+**Date:** 2026-07-15
+**Status:** Approved through delegated product authority
 **Scope:** Search correctness, cross-file discovery, within-file hierarchy, editor entry points, and a minimal VS Code-native interface
 
 ## 1. Outcome
