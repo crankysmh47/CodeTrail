@@ -141,7 +141,11 @@ export async function analyzeCFile(input: AnalyzeCFileInput): Promise<FileAnalys
 
     let childContext = context;
     if (node.type === 'preproc_if' || node.type === 'preproc_ifdef' || node.type === 'preproc_ifndef') {
-      childContext = { ...context, guard: guardFor(node) };
+      const guard = guardFor(node);
+      childContext = { ...context, guard };
+      if (guard.length > 0) {
+        nodes.push(createNode(normalizedPath, 'macro', guard, node));
+      }
     }
 
     if (node.type === 'function_definition') {
@@ -172,6 +176,24 @@ export async function analyzeCFile(input: AnalyzeCFileInput): Promise<FileAnalys
           sourceName: childContext.functionName,
           targetName,
           kind: 'calls',
+          path: normalizedPath,
+          range: toRange(node),
+          guard: childContext.guard,
+          evidence: node.text.slice(0, 240),
+        });
+      }
+    } else if (node.type === 'initializer_pair') {
+      const designator = node.childForFieldName('designator');
+      const value = node.childForFieldName('value');
+      const fieldName = designator
+        ? firstDescendant(designator, ['field_identifier'])?.text ?? ''
+        : '';
+      const targetName = value ? firstDescendant(value, ['identifier'])?.text ?? '' : '';
+      if (fieldName.length > 0 && targetName.length > 0) {
+        unresolvedReferences.push({
+          sourceName: fieldName,
+          targetName,
+          kind: 'registers',
           path: normalizedPath,
           range: toRange(node),
           guard: childContext.guard,

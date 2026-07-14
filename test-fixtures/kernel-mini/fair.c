@@ -21,9 +21,15 @@ DEFINE_SCHED_CLASS(fair) = {
     .pick_task = pick_next_task_fair,
 };
 
+static struct task_struct *pick_task(struct rq *rq, const struct sched_class *class)
+{
+    return class->pick_task(rq);
+}
+
 #ifdef CONFIG_SMP
 static void update_load_balance(struct rq *rq)
 {
+    entity_eligible(&rq->current->se);
     rq->current->se.vruntime = rq->current->se.deadline;
 }
 #endif
