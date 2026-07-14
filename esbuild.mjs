@@ -1,8 +1,9 @@
-import { copyFile, mkdir } from 'node:fs/promises';
+import { copyFile, mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 
 const outdir = 'dist';
+await rm(outdir, { recursive: true, force: true });
 await mkdir(outdir, { recursive: true });
 
 await Promise.all([
@@ -13,7 +14,7 @@ await Promise.all([
     format: 'cjs',
     platform: 'node',
     target: 'node20',
-    outfile: `${outdir}/extension.js`,
+    outfile: `${outdir}/extension.cjs`,
     sourcemap: true,
   }),
   esbuild.build({
@@ -22,7 +23,7 @@ await Promise.all([
     format: 'cjs',
     platform: 'node',
     target: 'node20',
-    outfile: `${outdir}/analysis-worker.js`,
+    outfile: `${outdir}/analysis-worker.cjs`,
     sourcemap: true,
   }),
   esbuild.build({

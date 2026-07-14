@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "type": "module",
-  "main": "./dist/extension.js",
+  "main": "./dist/extension.cjs",
   "engines": {
     "vscode": "^1.125.0"
   },
