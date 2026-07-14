@@ -19,6 +19,8 @@
     "onCommand:codetrail.indexWorkspace",
     "onCommand:codetrail.askQuestion",
     "onCommand:codetrail.explainSymbol",
+    "onCommand:codetrail.discoverSymbolLinks",
+    "onCommand:codetrail.discoverNode",
     "onCommand:codetrail.openSource"
   ],
   "contributes": {
@@ -36,8 +38,33 @@
         "title": "CodeTrail: Explain Symbol"
       },
       {
+        "command": "codetrail.discoverSymbolLinks",
+        "title": "CodeTrail: Discover Symbol Links"
+      },
+      {
+        "command": "codetrail.discoverNode",
+        "title": "CodeTrail: Discover Indexed Function"
+      },
+      {
         "command": "codetrail.openSource",
         "title": "CodeTrail: Open Evidence Source"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codetrail.discoverSymbolLinks",
+          "when": "editorLangId == c",
+          "group": "navigation@20"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "codetrail.discoverSymbolLinks",
+        "key": "alt+shift+t",
+        "mac": "alt+shift+t",
+        "when": "editorTextFocus && editorLangId == c"
       }
     ],
     "configuration": {

@@ -3,10 +3,12 @@ import { join } from 'node:path';
 import * as vscode from 'vscode';
 import { probeClang } from '../analysis/clang-provider.js';
 import type { CandidateView, HostMessage, WebviewState } from '../shared/messages.js';
+import { CodeTrailCodeLensProvider } from './code-lens-provider.js';
 import { toTrailView } from './discovery-view.js';
 import { IndexCoordinator } from './index-coordinator.js';
 import { loadSnapshot, saveSnapshot } from './snapshot-store.js';
 import { resolveWorkspaceSource } from './source-navigation.js';
+import { resolveIndexedSymbol } from './symbol-shortcuts.js';
 import { buildWebviewHtml, TrailPanelController, type WebviewPort } from './trail-panel.js';
 
 const graphBudget = { nodesMax: 40, edgesMax: 80, depthMax: 4, timeMsMax: 100 } as const;
@@ -19,20 +21,27 @@ export class CodeTrailCommands implements vscode.Disposable {
   private panel: vscode.WebviewPanel | undefined;
   private panelController: TrailPanelController | undefined;
   private clangStatus: 'available' | 'unavailable' = 'unavailable';
+  private readonly codeLensProvider: CodeTrailCodeLensProvider;
 
   constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly coordinator: IndexCoordinator,
-  ) {}
+  ) {
+    this.codeLensProvider = new CodeTrailCodeLensProvider(() => this.coordinator.getCurrentIndex());
+  }
 
   register(): void {
     this.context.subscriptions.push(
       vscode.commands.registerCommand('codetrail.indexWorkspace', () => this.indexWorkspace()),
       vscode.commands.registerCommand('codetrail.askQuestion', () => this.showQuestion()),
-      vscode.commands.registerCommand('codetrail.explainSymbol', () => this.explainSymbol()),
+      vscode.commands.registerCommand('codetrail.explainSymbol', () => this.discoverSymbolLinks()),
+      vscode.commands.registerCommand('codetrail.discoverSymbolLinks', () => this.discoverSymbolLinks()),
+      vscode.commands.registerCommand('codetrail.discoverNode', (nodeId: string) => this.discoverNode(nodeId)),
       vscode.commands.registerCommand('codetrail.openSource', (path: string, lineStart: number, lineEnd: number) =>
         this.openSource(path, lineStart, lineEnd),
       ),
+      vscode.languages.registerCodeLensProvider({ language: 'c', scheme: 'file' }, this.codeLensProvider),
+      this.codeLensProvider,
       this,
     );
   }
@@ -41,6 +50,7 @@ export class CodeTrailCommands implements vscode.Disposable {
     const result = await loadSnapshot(this.snapshotPath());
     if (result.status === 'ready') {
       this.coordinator.restoreIndex(result.index);
+      this.codeLensProvider.refresh();
       await this.setState({
         kind: 'ready',
         filesIndexed: result.index.filesIndexed,
@@ -114,7 +124,7 @@ export class CodeTrailCommands implements vscode.Disposable {
     if (message.kind === 'ask') {
       await this.ask(message.query);
     } else if (message.kind === 'select-candidate') {
-      await this.selectCandidate(message.nodeId);
+      await this.discoverNode(message.nodeId);
     } else if (message.kind === 'open-source') {
       await this.openSource(message.path, message.lineStart, message.lineEnd);
     } else {
@@ -154,6 +164,7 @@ export class CodeTrailCommands implements vscode.Disposable {
       });
       const clang = await probeClang('clang');
       this.clangStatus = clang.status;
+      this.codeLensProvider.refresh();
       await saveSnapshot(this.snapshotPath(), index);
       await this.setState({
         kind: 'ready',
@@ -196,7 +207,7 @@ export class CodeTrailCommands implements vscode.Disposable {
     }
   }
 
-  private async selectCandidate(nodeId: string): Promise<void> {
+  async discoverNode(nodeId: string): Promise<void> {
     try {
       const index = this.coordinator.getCurrentIndex();
       const discovery = await this.coordinator.discover(nodeId, graphBudget);
@@ -206,13 +217,23 @@ export class CodeTrailCommands implements vscode.Disposable {
     }
   }
 
-  private async explainSymbol(): Promise<void> {
+  private async discoverSymbolLinks(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
     const range = editor?.document.getWordRangeAtPosition(editor.selection.active);
     const symbol = range ? editor?.document.getText(range) ?? '' : '';
-    await this.showQuestion();
-    if (symbol.length > 0) {
-      await this.ask(symbol);
+    if (!editor || symbol.length === 0) {
+      await this.showQuestion();
+      return;
+    }
+    try {
+      const resolution = resolveIndexedSymbol(this.coordinator.getCurrentIndex(), symbol, editor.document.uri.fsPath);
+      if (resolution.status === 'found') {
+        await this.discoverNode(resolution.node.id);
+      } else {
+        await this.ask(symbol);
+      }
+    } catch {
+      await this.showQuestion();
     }
   }
 
