@@ -20,7 +20,7 @@ export class CodeTrailCodeLensProvider implements vscode.CodeLensProvider, vscod
       return new vscode.CodeLens(new vscode.Range(line, 0, line, 0), {
         title: 'CodeTrail: discover links',
         command: 'codetrail.discoverNode',
-        arguments: [entry.nodeId],
+        arguments: [entry.nodeId, entry.name],
       });
     });
   }

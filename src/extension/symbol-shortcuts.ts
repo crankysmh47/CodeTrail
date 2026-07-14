@@ -3,6 +3,7 @@ import { normalizeWorkspacePath, type CodeNode, type WorkspaceIndex } from '../c
 
 export type IndexedFunctionEntry = Readonly<{
   nodeId: string;
+  name: string;
   lineStart: number;
   lineEnd: number;
 }>;
@@ -29,6 +30,7 @@ export function indexedFunctionsForDocument(
     .sort((left, right) => left.range.lineStart - right.range.lineStart || left.id.localeCompare(right.id))
     .map((node) => ({
       nodeId: node.id,
+      name: node.name,
       lineStart: node.range.lineStart,
       lineEnd: node.range.lineEnd,
     }));

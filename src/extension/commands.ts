@@ -37,7 +37,9 @@ export class CodeTrailCommands implements vscode.Disposable {
       vscode.commands.registerCommand('codetrail.askQuestion', () => this.showQuestion()),
       vscode.commands.registerCommand('codetrail.explainSymbol', () => this.discoverSymbolLinks()),
       vscode.commands.registerCommand('codetrail.discoverSymbolLinks', () => this.discoverSymbolLinks()),
-      vscode.commands.registerCommand('codetrail.discoverNode', (nodeId: string) => this.discoverNode(nodeId)),
+      vscode.commands.registerCommand('codetrail.discoverNode', (nodeId: string, label?: string) =>
+        this.discoverNode(nodeId, label),
+      ),
       vscode.commands.registerCommand('codetrail.openSource', (path: string, lineStart: number, lineEnd: number) =>
         this.openSource(path, lineStart, lineEnd),
       ),
@@ -213,11 +215,11 @@ export class CodeTrailCommands implements vscode.Disposable {
     }
   }
 
-  async discoverNode(nodeId: string): Promise<void> {
+  async discoverNode(nodeId: string, explicitQuery?: string): Promise<void> {
     try {
       const index = this.coordinator.getCurrentIndex();
       const discovery = await this.coordinator.discover(nodeId, graphBudget);
-      const query = this.lastQuery || index.nodes.find((node) => node.id === nodeId)?.name || 'Selected symbol';
+      const query = explicitQuery || this.lastQuery || index.nodes.find((node) => node.id === nodeId)?.name || 'Selected symbol';
       this.lastQuery = query;
       await this.setState({ kind: 'discovery', query, discovery: toTrailView(discovery, index) });
     } catch (error) {
@@ -236,7 +238,7 @@ export class CodeTrailCommands implements vscode.Disposable {
     try {
       const resolution = resolveIndexedSymbol(this.coordinator.getCurrentIndex(), symbol, editor.document.uri.fsPath);
       if (resolution.status === 'found') {
-        await this.discoverNode(resolution.node.id);
+        await this.discoverNode(resolution.node.id, resolution.node.name);
       } else {
         await this.ask(symbol);
       }

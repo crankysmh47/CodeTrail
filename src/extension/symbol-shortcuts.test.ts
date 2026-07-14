@@ -37,8 +37,8 @@ describe('editor symbol shortcuts', () => {
     const entries = indexedFunctionsForDocument(index, 'C:\\linux\\kernel\\sched\\fair.c');
 
     expect(entries).toStrictEqual([
-      { nodeId: pickEevdf.id, lineStart: 8, lineEnd: 10 },
-      { nodeId: pickNext.id, lineStart: 15, lineEnd: 17 },
+      { nodeId: pickEevdf.id, name: 'pick_eevdf', lineStart: 8, lineEnd: 10 },
+      { nodeId: pickNext.id, name: 'pick_next_task_fair', lineStart: 15, lineEnd: 17 },
     ]);
   });
 
