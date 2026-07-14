@@ -36,7 +36,7 @@ await Promise.all([
   }),
 ]);
 
-const parserWasm = fileURLToPath(import.meta.resolve('web-tree-sitter/web-tree-sitter.wasm'));
+const parserWasm = fileURLToPath(import.meta.resolve('web-tree-sitter/tree-sitter.wasm'));
 const cWasm = fileURLToPath(import.meta.resolve('tree-sitter-wasms/out/tree-sitter-c.wasm'));
 await Promise.all([
   copyFile(parserWasm, `${outdir}/tree-sitter.wasm`),
