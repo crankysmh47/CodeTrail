@@ -1,11 +1,16 @@
 .github/**
+.gitignore
+.agents.md
+AGENTS.md
 .worktrees/**
 coverage/**
 docs/superpowers/**
+node_modules/**
 src/**
 test-fixtures/**
 *.docx
-*.map
+**/*.map
+package-lock.json
 tsconfig.json
 vitest.config.ts
 esbuild.mjs

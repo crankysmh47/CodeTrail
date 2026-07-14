@@ -5,10 +5,11 @@ import { searchIndex } from '../core/search.js';
 import { buildTrail } from '../core/trail.js';
 import { indexWorkspace } from '../analysis/indexer.js';
 import { createCParser } from '../analysis/parser-runtime.js';
+import { IndexGenerationGuard } from './index-generation.js';
 import { workerRequestSchema, type WorkerResponse } from './protocol.js';
 
 let currentIndex: WorkspaceIndex | undefined;
-let activeController: AbortController | undefined;
+const generationGuard = new IndexGenerationGuard();
 
 function post(response: WorkerResponse): void {
   parentPort?.postMessage(response);
@@ -27,12 +28,11 @@ async function handle(value: unknown): Promise<void> {
   const request = parsed.data;
   try {
     if (request.kind === 'cancel') {
-      activeController?.abort();
+      generationGuard.cancel();
       return;
     }
     if (request.kind === 'index') {
-      activeController?.abort();
-      activeController = new AbortController();
+      const operation = generationGuard.begin(request.generation);
       post({ kind: 'progress', requestId: request.requestId, message: 'Indexing C sources', percent: 10 });
       const parser = await createCParser({
         parserWasmPath: request.parserWasmPath,
@@ -42,9 +42,11 @@ async function handle(value: unknown): Promise<void> {
         rootPath: request.rootPath,
         parser,
         limits: request.limits,
-        signal: activeController.signal,
+        signal: operation.signal,
       });
-      currentIndex = index;
+      if (generationGuard.canPublish(operation)) {
+        currentIndex = index;
+      }
       post({ kind: 'indexed', requestId: request.requestId, generation: request.generation, index });
       return;
     }
