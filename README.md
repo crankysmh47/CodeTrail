@@ -153,7 +153,7 @@ Use the absolute paths from [demo/mcp-config.example.json](demo/mcp-config.examp
 
 There is also a `codetrail://workspace/status` resource. Responses are structured, capped at 256 KiB, and contain evidence rather than full source files.
 
-On the pinned Linux scheduler tasks, two MCP calls retrieved the required answer and evidence while returning 93.71% to 99.34% fewer bytes than the indexed source. That is a context-volume result, not an LLM accuracy claim. The [method and raw result](demo/mcp-evaluation.md) spell out the boundary.
+On the pinned Linux scheduler tasks, two MCP calls retrieved the required answer and evidence while returning 97.33% to 99.34% fewer bytes than the indexed source. That is a context-volume result, not an LLM accuracy claim. The [method and raw result](demo/mcp-evaluation.md) spell out the boundary.
 
 ## Privacy and security
 

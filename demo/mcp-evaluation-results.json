@@ -21,8 +21,8 @@
       "expectedAnswerPresent": true,
       "expectedEvidencePresent": true,
       "protocolCalls": 2,
-      "structuredResponseBytes": 129007,
-      "contextReductionPercent": 93.71,
+      "structuredResponseBytes": 54784,
+      "contextReductionPercent": 97.33,
       "sourceFilesReturned": [
         "autogroup.c",
         "autogroup.h",
@@ -47,8 +47,8 @@
         "topology.c",
         "wait_bit.c"
       ],
-      "symbolsReturned": 42,
-      "durationMs": 98.43
+      "symbolsReturned": 29,
+      "durationMs": 102.25
     },
     {
       "id": "eevdf-eligibility",
@@ -71,7 +71,7 @@
         "fair.c"
       ],
       "symbolsReturned": 14,
-      "durationMs": 32.41
+      "durationMs": 35.29
     },
     {
       "id": "registration-dispatch",
@@ -109,7 +109,7 @@
         "stop_task.c"
       ],
       "symbolsReturned": 30,
-      "durationMs": 2437.69
+      "durationMs": 2627.24
     }
   ]
 }

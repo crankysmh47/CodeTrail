@@ -81,7 +81,7 @@ The release evidence also includes a sparse upstream Linux checkout at commit `7
 
 ## Installed VSIX verification
 
-On 2026-07-15, the packaged VSIX was installed into VS Code 1.128.1 on Windows and exercised against `test-fixtures/kernel-mini`. This was a visual click-through of the installed extension, not the development host.
+On 2026-07-15, the release `codetrail.vsix` was installed into VS Code 1.128.1 on Windows as `crankysmh47.codetrail-c-evidence-paths@0.1.0` and exercised against `test-fixtures/kernel-mini`. This was a visual click-through of the installed extension, not the development host. The package contained 18 files, measured 654,043 bytes, and passed the package-content verifier before installation.
 
 | Judge-facing check | Visual observation | Result |
 |---|---|---|
@@ -98,5 +98,21 @@ On 2026-07-15, the packaged VSIX was installed into VS Code 1.128.1 on Windows a
 | Editor context menu | `CodeTrail: Discover Symbol Links` appeared with its shortcut and opened `Trail from pick_task`. | Pass |
 
 The narrow two-column layout stayed readable at normal VS Code zoom and used native editor colors and controls. The longer `pick_task` traversal displayed `Traversal reached depth 4.`, which is the intended visible bounded-analysis notice. Clang was not installed in the verification environment; structural analysis remained fully usable and this capability state was disclosed in the panel.
+
+The final click-through also confirmed that the Marketplace identity change did not alter command activation or persisted UI behavior. A stale VS Code recent-folder entry pointed at an earlier deleted development worktree; opening the current release fixture resolved it and was unrelated to CodeTrail.
+
+## MCP protocol and value verification
+
+The release gate spawns `dist/mcp-server.cjs` through the official MCP stdio client rather than calling server functions directly. It verifies initialization on a workspace path containing spaces, the exact three-tool surface, the status resource, structured search and reading-path calls, deterministic repeated results, unknown-symbol recovery, invalid-workspace failure, and bounded shutdown. Package verification separately requires that exact bundle and both parser WASM assets inside the VSIX.
+
+The pinned Linux evaluation then used the same stdio bundle against 50 upstream scheduler files. Every task took two protocol calls and returned its required answer and evidence:
+
+| Task | Required answer | Evidence | Context reduction |
+|---|---|---|---:|
+| Scheduler entry | `__schedule` at rank 1 | `calls` | 97.33% |
+| EEVDF eligibility | `entity_eligible` at rank 2 | `calls` | 99.34% |
+| Registration dispatch | `pick_task_fair` at rank 10 | `registers`, `dispatches-to` | 98.80% |
+
+This is evidence that MCP can reduce retrieved source volume for a coding agent. It is not evidence that a model became more accurate. The VS Code extension remains the product shown first; MCP is a small local adapter over the same tested core.
 
 This file summarizes repository evidence. It does not include private chat transcripts or claim that Codex made unreviewed product decisions.

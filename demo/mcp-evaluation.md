@@ -17,7 +17,7 @@ A task passes only if the expected symbol appears and the follow-up contains eve
 
 | Task | Required answer | Rank | Required evidence | Retrieved bytes | Source reduction |
 |---|---:|---:|---|---:|---:|
-| Scheduler entry | `__schedule` | 1 | `calls` | 129,007 | 93.71% |
+| Scheduler entry | `__schedule` | 1 | `calls` | 54,784 | 97.33% |
 | EEVDF eligibility | `entity_eligible` | 2 | `calls` | 13,431 | 99.34% |
 | Registration dispatch | `pick_task_fair` | 10 | `registers`, `dispatches-to` | 24,609 | 98.80% |
 

@@ -167,6 +167,54 @@ describe('MCP output projections', () => {
     );
   });
 
+  it('should keep reading-path relationships on the selected trail without weakening direct symbol inspection', () => {
+    const index = service.getIndex();
+    const seed = index.nodes.find((node) => node.kind === 'function' && node.name === 'pick_next_task_fair');
+    const discovery = service.discover(seed?.id ?? '');
+    const route = discovery.fileLinks[0];
+    const routeEdge = index.edges.find((edge) => {
+      const source = index.nodes.find((node) => node.id === edge.sourceId);
+      const target = index.nodes.find((node) => node.id === edge.targetId);
+      return source?.path === route?.sourcePath && target?.path === route?.targetPath;
+    });
+    if (!route || !routeEdge) {
+      throw new Error('Fixture discovery did not produce a route edge.');
+    }
+    const extraEdges = Array.from({ length: 12 }, (_, indexValue) => ({
+      ...routeEdge,
+      id: `${routeEdge.id}:bounded-${indexValue}`,
+      range: {
+        lineStart: 800 + indexValue,
+        columnStart: 1,
+        lineEnd: 800 + indexValue,
+        columnEnd: 2,
+      },
+    }));
+    const extraEdgeIds = extraEdges.map((edge) => edge.id);
+    const expandedDiscovery = {
+      ...discovery,
+      fileLinks: discovery.fileLinks.map((link) =>
+        link === route ? { ...link, evidenceCount: link.evidenceCount + extraEdges.length } : link,
+      ),
+      fileSections: discovery.fileSections.map((section) =>
+        section.path === route.sourcePath || section.path === route.targetPath
+          ? { ...section, relatedEdgeIds: [...section.relatedEdgeIds, ...extraEdgeIds] }
+          : section,
+      ),
+    };
+
+    const output = projectReadingPath({ ...index, edges: [...index.edges, ...extraEdges] }, expandedDiscovery);
+
+    expect(output.fileRoute.find((link) => link.sourcePath === route.sourcePath)?.evidence).toHaveLength(8);
+    expect(output.withinFiles.every((section) => section.relationships.length <= 8)).toBe(true);
+    expect(output.withinFiles.flatMap((section) => section.relationships).map((relationship) => relationship.relationshipId)).not.toEqual(
+      expect.arrayContaining(extraEdgeIds),
+    );
+    expect(projectSymbol({ ...index, edges: [...index.edges, ...extraEdges] }, routeEdge.sourceId).relationships.length).toBe(
+      13,
+    );
+  });
+
   it('should expose bounded workspace status without host or repository secrets', () => {
     const output = projectWorkspaceStatus(service.getIndex());
     const serialized = JSON.stringify(output);

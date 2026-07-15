@@ -15,7 +15,8 @@ const pathLengthMax = 500;
 const signatureLengthMax = 1_000;
 const summaryLengthMax = 1_000;
 const reasonLengthMax = 1_000;
-const relationshipCountMax = 40;
+const symbolRelationshipCountMax = 40;
+const readingPathRelationshipCountMax = 8;
 const warningCountMax = 50;
 
 const analysisKind = 'static-reading-path' as const;
@@ -251,7 +252,7 @@ export function projectSymbol(index: WorkspaceIndex, symbolId: string): GetSymbo
   }
   const incidentEdges = sortedIncidentEdges(index, symbolId);
   const relationships = incidentEdges
-    .slice(0, relationshipCountMax)
+    .slice(0, symbolRelationshipCountMax)
     .flatMap((edge) => {
       const relationship = projectRelationship(edge, symbolId, lookup);
       return relationship ? [relationship] : [];
@@ -297,6 +298,9 @@ export function projectReadingPath(index: WorkspaceIndex, discovery: CodeDiscove
   });
   const projectedByNodeId = new Map(projectedSteps.map((step) => [step.symbol.symbolId, step]));
   const discoveredEdgeIds = new Set(discovery.fileSections.flatMap((section) => section.relatedEdgeIds));
+  const trailEdgeIds = new Set(
+    discovery.trail.steps.flatMap((step) => (step.incomingEdgeId.length > 0 ? [step.incomingEdgeId] : [])),
+  );
   const fileRoute = discovery.fileLinks.map((link) => {
     const matchingEdges = index.edges.filter((edge) => {
       const source = lookup.get(edge.sourceId);
@@ -315,7 +319,9 @@ export function projectReadingPath(index: WorkspaceIndex, discovery: CodeDiscove
       confidence: link.confidence,
       reason: boundedText(link.reason, reasonLengthMax),
       evidenceCount: link.evidenceCount,
-      evidence: matchingEdges.slice(0, relationshipCountMax).map((edge) => projectSource(edge.path, edge.range)),
+      evidence: matchingEdges
+        .slice(0, readingPathRelationshipCountMax)
+        .map((edge) => projectSource(edge.path, edge.range)),
     };
   });
   const withinFiles = discovery.fileSections.map((section) => ({
@@ -324,7 +330,10 @@ export function projectReadingPath(index: WorkspaceIndex, discovery: CodeDiscove
       const projected = projectedByNodeId.get(boundedText(step.nodeId, symbolIdLengthMax));
       return projected ? [projected] : [];
     }),
-    relationships: section.relatedEdgeIds.slice(0, relationshipCountMax).flatMap((edgeId) => {
+    relationships: section.relatedEdgeIds
+      .filter((edgeId) => trailEdgeIds.has(edgeId))
+      .slice(0, readingPathRelationshipCountMax)
+      .flatMap((edgeId) => {
       const edge = index.edges.find((candidate) => candidate.id === edgeId);
       if (!edge) {
         return [];
@@ -332,7 +341,7 @@ export function projectReadingPath(index: WorkspaceIndex, discovery: CodeDiscove
       const focusId = section.steps[0]?.nodeId ?? edge.sourceId;
       const relationship = projectRelationship(edge, focusId, lookup);
       return relationship ? [relationship] : [];
-    }),
+      }),
   }));
   return {
     analysisKind,

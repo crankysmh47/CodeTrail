@@ -25,7 +25,7 @@ CodeTrail's claim is deliberately narrow: it turns unfamiliar C source into the 
 
 The audience is developers and coding agents entering large C systems: kernels, runtimes, databases, embedded firmware, and infrastructure tools. Their problem is not finding one identifier; it is reconstructing why multiple files and indirect calls belong to the behavior they are debugging.
 
-The pinned upstream run is the impact proof. CodeTrail indexed 2,049,984 source bytes and found all three required scheduler answers. For an agent, two MCP calls returned the required answer and evidence with 93.71% to 99.34% less data than the indexed source. This measures retrieved context only. It does not claim that an LLM became smarter or more accurate.
+The pinned upstream run is the impact proof. CodeTrail indexed 2,049,984 source bytes and found all three required scheduler answers. For an agent, two MCP calls returned the required answer and evidence with 97.33% to 99.34% less data than the indexed source. This measures retrieved context only. It does not claim that an LLM became smarter or more accurate.
 
 ## Quality of the idea
 
