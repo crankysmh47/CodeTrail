@@ -40,6 +40,22 @@ The repository history preserves those units:
 | `5ee056b` | CodeLens, context action, and symbol shortcut |
 | `801da34` | Minimal progressive discovery panel |
 
+The winner-release pass kept those editor decisions intact and added proof and release engineering around them:
+
+| Commit | Work unit |
+|---|---|
+| `96c3a0c` | Headless CodeTrail service shared by non-editor adapters |
+| `608e1ce` | Bounded MCP input/output contracts |
+| `e6e612a` | Read-only MCP tools and status resource through the real protocol SDK |
+| `2c3bfa9` | Spawned stdio server, bundled assets, invalid-workspace handling, and shutdown test |
+| `2737675` | MCP retrieval-context evaluation harness |
+| `33e748e` | Broad-search diversity for cross-file structural neighbors |
+| `27325c4` | Discovery-subgraph confinement for MCP file-route evidence |
+| `7d50241` | Pinned upstream Linux and MCP evidence generators and observed results |
+| `fdcc064` | Marketplace identity, visual assets, privacy, support, and security boundaries |
+
+The MCP work followed the same rule as the extension: no separate analyzer and no agent-specific claims. Codex first extracted a headless service from the tested core, then placed a small read-only protocol adapter over it. The evaluation calls the built stdio bundle and checks required symbols and relationship evidence. It measures returned context bytes only; it does not score an LLM.
+
 ## Debugging evidence
 
 Codex diagnosed several integration failures instead of patching around them:
@@ -60,6 +76,8 @@ Codex diagnosed several integration failures instead of patching around them:
 - runtime dependencies have no known npm vulnerabilities;
 - runtime source contains no OpenAI/Codex SDK, `eval`, or HTML injection;
 - the VSIX contents exclude tests, source maps, planning documents, and the original product document.
+
+The release evidence also includes a sparse upstream Linux checkout at commit `7059bdf4f04a3e14f4fafb3ac35fdca913e3e21a`. Codex wrote a generator that reads the Git revision without invoking Git, refuses a mismatch, indexes only `kernel/sched`, and fails if any required search answer is absent. The observed report covers 50 files, 3,743 nodes, 33,099 edges, explicit parse warnings, and the same static-analysis disclaimer shown in VS Code.
 
 ## Installed VSIX verification
 

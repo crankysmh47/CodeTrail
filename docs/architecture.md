@@ -13,9 +13,12 @@ flowchart LR
     G --> H["Discovery projection"]
     H --> I["Cross-file route"]
     H --> J["Within-file symbol paths"]
-    I --> K["VS Code webview"]
+    I --> K["VS Code adapter"]
     J --> K
-    K --> L["Validated source navigation"]
+    K --> L["Webview and validated source navigation"]
+    I --> M["Read-only MCP adapter"]
+    J --> M
+    M --> N["Bounded structured tool responses"]
 ```
 
 The extension host owns commands, VS Code navigation, workspace storage, and the webview panel. Parsing and graph work run in `analysis-worker.cjs`. Every message crossing that boundary is schema-validated.
@@ -51,7 +54,7 @@ It never upgrades pointer or macro evidence to `confirmed` without compiler proo
 
 ## Search and trail selection
 
-Search normalizes snake case, camel case, punctuation, stop words, and a small documented synonym set. Kernel vocabulary such as `schedule`, `scheduler`, and `scheduling` normalizes to `sched`. Scores come from symbol tokens, signatures, paths, summaries, and typed incident edges for terms such as `call`, `register`, `dispatch`, `read`, `write`, and `guard`. Direct matches rank before typed one-hop neighbors. Adjacent results carry a `related via <kind>` reason. Candidate IDs are unique before the 20-result limit is applied, and stable path, line, and ID tie-breaking keeps results reproducible.
+Search normalizes snake case, camel case, punctuation, stop words, and a small documented synonym set. Kernel vocabulary such as `schedule`, `scheduler`, and `scheduling` normalizes to `sched`. Scores come from symbol tokens, signatures, paths, summaries, and typed incident edges for terms such as `call`, `register`, `dispatch`, `read`, `write`, and `guard`. Adjacent results carry a `related via <kind>` reason. A saturated single-token search reserves part of its result budget for high-value structural neighbors and limits one file to two candidates in the first pass; this prevents a large implementation file from hiding cross-file registrations or dispatch targets. Candidate IDs are unique before the 20-result limit, and stable path, line, and ID tie-breaking keeps results reproducible.
 
 Subgraph construction uses explicit node, edge, depth, and wall-clock budgets. Trail selection follows typed outgoing evidence and stops at a 12-step readability limit. The discovery projection collapses cross-file edges by source and target path, retains typed evidence and least-certain confidence, then groups trail steps by file. The result is a recommended reading sequence, not an execution trace.
 
@@ -60,6 +63,14 @@ Subgraph construction uses explicit node, edge, depth, and wall-clock budgets. T
 The panel keeps one keyword search field across ready, candidate, discovery, and empty states. Results use a progressive outline: **File route** comes before **Within files**. The webview uses VS Code theme variables and source-derived content is assigned through `textContent`.
 
 The extension also registers CodeLens on indexed C function definitions, an editor context action, and `Alt+Shift+T`. These entry points resolve an exact symbol from the immutable workspace index and reuse the same bounded discovery request; they do not parse on the editor thread.
+
+## MCP adapter
+
+The optional MCP process builds the same `CodeTrailService` index once at startup, then exposes three read-only tools: `search_code`, `get_symbol`, and `get_reading_path`. `codetrail://workspace/status` reports scope, readiness, warnings, and fixed limits. The adapter projects core results into versioned Zod schemas; it does not duplicate parsing, search, or traversal logic.
+
+The stdio process writes only MCP protocol frames to stdout. Human diagnostics go to stderr. Input lengths, result counts, relationship counts, graph traversal, and serialized tool responses are bounded; any response above 256 KiB becomes a concise tool error. File-route evidence is restricted to edge IDs in the selected discovery subgraph, so unrelated edges between the same files cannot leak into a reading path.
+
+The MCP adapter is intentionally subordinate to the editor product. Its role is to let coding agents request the same source-backed reading path instead of loading an entire subsystem into context.
 
 ## Persistence and trust boundaries
 

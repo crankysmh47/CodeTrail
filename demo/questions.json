@@ -1,22 +1,32 @@
 {
   "repository": "https://github.com/torvalds/linux",
   "commit": "7059bdf4f04a3e14f4fafb3ac35fdca913e3e21a",
-  "searches": [
-    {
-      "search": "schedule",
-      "expectedCandidates": ["pick_task", "pick_next_task_fair"],
-      "selectedSeed": "pick_next_task_fair",
-      "expectedTrail": ["pick_eevdf", "entity_eligible"]
+  "profiles": {
+    "threeMinuteFixture": {
+      "workspace": "test-fixtures/kernel-mini",
+      "searches": [
+        {
+          "search": "schedule",
+          "selectedSeed": "pick_next_task_fair",
+          "expectedTrail": ["pick_next_task_fair", "pick_eevdf", "entity_eligible"]
+        },
+        {
+          "search": "eevdf eligible",
+          "expectedCandidates": ["entity_eligible", "pick_eevdf"]
+        },
+        {
+          "search": "register dispatch",
+          "expectedCandidates": ["pick_task", "pick_next_task_fair"]
+        }
+      ]
     },
-    {
-      "search": "eevdf eligible",
-      "expectedSeed": "entity_eligible",
-      "expectedTrail": ["vruntime", "deadline"]
-    },
-    {
-      "search": "register dispatch",
-      "expectedSeed": "pick_task",
-      "expectedTrail": ["pick_next_task_fair"]
+    "upstreamLinuxEvidence": {
+      "workspace": "kernel/sched",
+      "searches": [
+        { "search": "schedule", "expectedSymbol": "__schedule", "expectedRank": 1 },
+        { "search": "eevdf eligible", "expectedSymbol": "entity_eligible", "expectedRank": 2 },
+        { "search": "register dispatch", "expectedSymbol": "pick_task_fair", "expectedRank": 10 }
+      ]
     }
-  ]
+  }
 }

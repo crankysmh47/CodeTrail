@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "codetrail": {
+      "command": "node",
+      "args": [
+        "C:\\absolute\\path\\to\\CodeTrail\\dist\\mcp-server.cjs",
+        "--workspace",
+        "C:\\absolute\\path\\to\\c-workspace"
+      ]
+    }
+  }
+}

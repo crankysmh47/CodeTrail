@@ -1,74 +1,86 @@
 # Three-minute CodeTrail demo
 
-## Before recording
+Use `test-fixtures/kernel-mini` for the live UI. It contains the same scheduler relationship patterns as the upstream evaluation but keeps the route short enough to explain. Keep `demo/linux-scheduler-evaluation.json` ready as proof that the required searches also pass on 50 real upstream files.
 
-1. Install `codetrail.vsix`.
-2. Open `test-fixtures/kernel-mini` or the pinned upstream `kernel/sched` sparse checkout.
+## Before the timer
+
+1. Install the release `codetrail.vsix` and reload VS Code.
+2. Open `test-fixtures/kernel-mini`.
 3. Run `CodeTrail: Index Workspace` once.
-4. Open `fair.c` and leave the cursor in `pick_next_task_fair` so the CodeLens and shortcut are ready.
-5. Keep the CodeTrail panel narrow enough to demonstrate its compact layout.
+4. Open `fair.c` at `pick_next_task_fair` so CodeLens is visible.
+5. Leave the CodeTrail panel at its normal narrow width.
 
-## 0:00-0:25 — the problem
+## 0:00-0:25 | The problem
 
-Say: "Kernel scheduler behavior crosses headers, function pointers, designated initializers, and direct calls. Search can find a name, but it does not tell you how the files and functions connect. CodeTrail does."
+Say:
 
-## 0:25-0:50 — index
+> Kernel behavior crosses headers, function pointers, registrations, and direct calls. Text search finds names. It does not tell me which files and functions to read, or which links are inferred. CodeTrail does.
 
-Run `CodeTrail: Index Workspace`.
+## 0:25-0:55 | Find the route
 
-Point out:
-
-- local C file count;
-- Clang availability without treating it as required;
-- no account, upload, or AI runtime call.
-
-## 0:50-1:15 — search and confirm
-
-Search:
+Run `CodeTrail: Search Code` and enter:
 
 ```text
 schedule
 ```
 
-Show the direct scheduler matches and typed related candidates. Point out the visible match reasons, then select `pick_next_task_fair`.
+Point to the ranked results and their match reasons. Select `pick_next_task_fair`.
 
-## 1:15-2:05 — follow evidence
+Do not narrate every row. The important transition is from a broad term to one evidence-backed path.
 
-Read the result in the same order CodeTrail presents it:
+## 0:55-1:45 | Read files first, functions second
 
-1. In **File route**, show the inferred `sched.h → fair.c` registration link and its evidence count.
-2. In **Within files**, show `pick_next_task_fair → pick_eevdf → entity_eligible`.
-3. Point out the direct-call edges are confirmed while registration is inferred.
-4. Open one source location and return to the panel.
+In **File route**, show the inferred `sched.h -> fair.c` registration and its source evidence count.
 
-The important visual is progressive disclosure: files first, functions second. There is no unrestricted graph to untangle.
+Then read the first three **Within files** steps:
 
-## 2:05-2:30 — editor-native workflow
+```text
+pick_next_task_fair -> pick_eevdf -> entity_eligible
+```
 
-Return to `pick_next_task_fair` in `fair.c`.
+Point out that direct calls are `confirmed`, while registration and pointer dispatch stay `inferred`. Select `Open` on `entity_eligible` and show the editor jump to the exact source range.
 
-1. Click `CodeTrail: discover links` above the definition.
+## 1:45-2:15 | Stay in the editor
+
+Return to `pick_next_task_fair`.
+
+1. Click its `CodeTrail: discover links` CodeLens.
 2. Put the cursor on `pick_eevdf` and press `Alt+Shift+T`.
-3. Mention the same action is in the editor context menu.
+3. Open the editor context menu long enough to show the same command there.
 
-The exact symbol route opens without retyping the search.
+Say: "I can start from search or from the code under my cursor. The result is the same bounded trail."
 
-## 2:30-2:45 — trust boundary
+## 2:15-2:35 | Make the trust boundary visible
 
-Point to: `Static reading order; not a runtime trace.`
+Point to:
 
-Say: "CodeTrail separates what it sees directly from what it infers. It never presents this as runtime execution."
+```text
+Static reading order; not a runtime trace.
+```
 
-## 2:45-3:00 — Build Week close
+If a depth or trail warning is visible, use it. The product shows where it stopped instead of hiding a limit behind a confidence score.
 
-Say: "The product is C-first, with language-neutral graph and discovery contracts underneath. Codex was used throughout development and testing. The extension itself stays deterministic and local."
+## 2:35-2:50 | Prove it is not fixture-only
 
-Close on the CodeTrail panel with **File route** and **Within files** both visible.
+Open `demo/linux-scheduler-evaluation.md` or its JSON result.
 
-## Backup
+Say:
 
-If indexing the upstream folder takes too long, switch to `test-fixtures/kernel-mini`. The same gold test runs in CI. Keep a terminal ready with:
+> The same analyzer indexed 50 upstream scheduler files at a pinned Linux commit: 3,743 nodes and 33,099 typed edges. The three required searches found `__schedule`, `entity_eligible`, and `pick_task_fair` at ranks 1, 2, and 10.
+
+## 2:50-3:00 | Close
+
+Say:
+
+> CodeTrail is a minimal reading tool, not an AI chat panel or an unrestricted graph. Codex built and tested it; the product itself stays deterministic and local.
+
+Close on the VS Code trail, not the MCP report.
+
+## Backup commands
 
 ```powershell
-npm test -- src/gold.test.ts
+npm exec -- vitest run src/gold.test.ts src/core/search.test.ts
+npm run evaluate:linux -- --workspace .cache/linux-scheduler
 ```
+
+MCP is optional backup evidence if a judge asks about agent workflows. Show the two-call retrieval result, then return to the extension.

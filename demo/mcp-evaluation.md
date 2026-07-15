@@ -33,4 +33,4 @@ After creating the pinned sparse checkout described in [linux-scheduler-evaluati
 npm run evaluate:mcp -- --workspace .cache/linux-scheduler/kernel/sched --output demo/mcp-evaluation-results.json --profile linux-7059
 ```
 
-The MCP server is local, read-only, and deterministic after indexing. It has three tools—`search_code`, `get_symbol`, and `get_reading_path`—plus a status resource. Source remains on the machine; the server returns bounded structured evidence, not source-file contents.
+The MCP server is local, read-only, and deterministic after indexing. It has three tools (`search_code`, `get_symbol`, and `get_reading_path`) and a status resource. Source remains on the machine; the server returns bounded structured evidence, not source-file contents.

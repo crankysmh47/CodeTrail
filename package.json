@@ -1,6 +1,6 @@
 {
-  "name": "codetrail",
-  "displayName": "CodeTrail",
+  "name": "codetrail-c-evidence-paths",
+  "displayName": "CodeTrail: C Evidence Paths",
   "description": "Search unfamiliar C code as evidence-backed file and symbol paths.",
   "version": "0.1.0",
   "publisher": "crankysmh47",
@@ -126,7 +126,7 @@
     "check": "tsc --noEmit",
     "test": "npm run build && vitest run",
     "test:coverage": "npm run build && vitest run --coverage",
-    "package": "npm run build && vsce package --out codetrail.vsix --no-dependencies --allow-missing-repository",
+    "package": "npm run build && vsce package --out codetrail.vsix --no-dependencies --baseContentUrl https://github.com/crankysmh47/CodeTrail/blob/main --baseImagesUrl https://raw.githubusercontent.com/crankysmh47/CodeTrail/main",
     "mcp": "node dist/mcp-server.cjs",
     "evaluate:mcp": "npm run build && node scripts/run-mcp-evaluation.mjs",
     "evaluate:linux": "npm run build && node scripts/run-linux-evaluation.mjs",

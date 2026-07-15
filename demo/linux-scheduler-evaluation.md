@@ -19,7 +19,7 @@ The generator reads `.git/HEAD` and refs itself and refuses to run if the checko
 |---|---:|---:|---|
 | `schedule` | `__schedule` | 1 | A broad behavior term finds the central scheduler function. |
 | `eevdf eligible` | `entity_eligible` | 2 | Split identifier concepts reach the concrete eligibility function. |
-| `register dispatch` | `pick_task_fair` | 10 | Relationship intent recovers scheduler-class registration and indirect dispatch, not just lexical matches. |
+| `register dispatch` | `pick_task_fair` | 10 | Relationship intent recovers scheduler-class registration and indirect dispatch rather than lexical matches alone. |
 
 The generated `__schedule` reading path contains 12 ordered symbols across 17 file sections. Every included relationship carries source coordinates, a reason, and a confidence label. The path is visibly truncated at its configured graph and trail budgets and remains labeled `Static reading order; not a runtime trace.`
 
