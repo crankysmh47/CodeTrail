@@ -51,8 +51,14 @@ The winner-release pass kept those editor decisions intact and added proof and r
 | `2737675` | MCP retrieval-context evaluation harness |
 | `33e748e` | Broad-search diversity for cross-file structural neighbors |
 | `27325c4` | Discovery-subgraph confinement for MCP file-route evidence |
+| `fbfbff6` | Reproducible MCP benchmark profile for the pinned Linux source |
 | `7d50241` | Pinned upstream Linux and MCP evidence generators and observed results |
 | `fdcc064` | Marketplace identity, visual assets, privacy, support, and security boundaries |
+| `df34720` | Judge-facing README, demo runbook, evidence reports, and publishing guide |
+| `fe2f9d4` | Complete package, MCP, and pinned-source CI release gate |
+| `9754df2` | Tighter MCP reading-path context without reducing direct inspection evidence |
+| `3d38972` | Lockfile synchronization with the npm version used by hosted CI |
+| `2b9c680` | Bounded, platform-neutral VSIX inspection with regression coverage |
 
 The MCP work followed the same rule as the extension: no separate analyzer and no agent-specific claims. Codex first extracted a headless service from the tested core, then placed a small read-only protocol adapter over it. The evaluation calls the built stdio bundle and checks required symbols and relationship evidence. It measures returned context bytes only; it does not score an LLM.
 
@@ -66,6 +72,8 @@ Codex diagnosed several integration failures instead of patching around them:
 - Zod's mutable inferred arrays conflicted with readonly domain contracts. Runtime schemas and domain response types were separated instead of weakening immutability.
 - The security pass found a low-severity development-only `esbuild` advisory. The dependency was upgraded to 0.28.1 and the audit was rerun.
 - An installed-extension smoke test exposed `#ifndef` being tokenized as `if` plus `ndef`. The preprocessor matcher now checks the longest directive first, with a regression test covering the exact guard.
+- Hosted npm 11.16 enforced two optional peer entries omitted by the locally generated lockfile. The lockfile was regenerated with that exact npm version, then clean-installed and audited locally before the fix was pushed.
+- Windows BSD `tar` happened to read VSIX ZIP archives while Ubuntu GNU `tar` correctly rejected them. The package verifier now reads ZIP entries directly with strict filenames, bounded manifest extraction, an entry ceiling, and a cross-platform regression test.
 
 ## What Codex verified
 
@@ -100,6 +108,8 @@ On 2026-07-15, the release `codetrail.vsix` was installed into VS Code 1.128.1 o
 The narrow two-column layout stayed readable at normal VS Code zoom and used native editor colors and controls. The longer `pick_task` traversal displayed `Traversal reached depth 4.`, which is the intended visible bounded-analysis notice. Clang was not installed in the verification environment; structural analysis remained fully usable and this capability state was disclosed in the panel.
 
 The final click-through also confirmed that the Marketplace identity change did not alter command activation or persisted UI behavior. A stale VS Code recent-folder entry pointed at an earlier deleted development worktree; opening the current release fixture resolved it and was unrelated to CodeTrail.
+
+The final `main` artifact was force-installed after the two release-only portability fixes. It contains the same 18 allowed files and measures 654,079 bytes; no extension, worker, webview, analysis-core, or MCP runtime behavior changed after the visual pass. GitHub Actions run `29397216763` then passed the complete gate on both Ubuntu and Windows, including package inspection, spawned MCP tests, pinned Linux indexing, and pinned Linux MCP evaluation.
 
 ## MCP protocol and value verification
 
