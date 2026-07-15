@@ -130,6 +130,43 @@ describe('MCP output projections', () => {
     expect(output.disclaimer).toBe('Static reading order; not a runtime trace.');
   });
 
+  it('should keep file-route evidence inside the bounded discovery subgraph', () => {
+    const index = service.getIndex();
+    const seed = index.nodes.find((node) => node.kind === 'function' && node.name === 'pick_next_task_fair');
+    const discovery = service.discover(seed?.id ?? '');
+    const discoveredEdgeIds = new Set(discovery.fileSections.flatMap((section) => section.relatedEdgeIds));
+    const route = discovery.fileLinks[0];
+    if (!route) {
+      throw new Error('Fixture discovery did not produce a cross-file route.');
+    }
+    const routeEdge = index.edges.find((edge) => {
+      const source = index.nodes.find((node) => node.id === edge.sourceId);
+      const target = index.nodes.find((node) => node.id === edge.targetId);
+      return (
+        discoveredEdgeIds.has(edge.id) &&
+        source?.path === route?.sourcePath &&
+        target?.path === route.targetPath &&
+        route.kinds.includes(edge.kind)
+      );
+    });
+    expect(routeEdge).toBeDefined();
+    const unrelatedEdge = {
+      ...routeEdge!,
+      id: `${routeEdge?.id}:outside-discovery`,
+      range: { lineStart: 999, columnStart: 1, lineEnd: 999, columnEnd: 2 },
+    };
+
+    const output = projectReadingPath({ ...index, edges: [...index.edges, unrelatedEdge] }, discovery);
+    const projectedRoute = output.fileRoute.find(
+      (link) => link.sourcePath === route.sourcePath && link.targetPath === route.targetPath,
+    );
+
+    expect(projectedRoute?.evidence).toHaveLength(route.evidenceCount);
+    expect(projectedRoute?.evidence).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ range: expect.objectContaining({ lineStart: 999 }) })]),
+    );
+  });
+
   it('should expose bounded workspace status without host or repository secrets', () => {
     const output = projectWorkspaceStatus(service.getIndex());
     const serialized = JSON.stringify(output);

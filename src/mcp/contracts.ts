@@ -296,11 +296,17 @@ export function projectReadingPath(index: WorkspaceIndex, discovery: CodeDiscove
     return projected ? [projected] : [];
   });
   const projectedByNodeId = new Map(projectedSteps.map((step) => [step.symbol.symbolId, step]));
+  const discoveredEdgeIds = new Set(discovery.fileSections.flatMap((section) => section.relatedEdgeIds));
   const fileRoute = discovery.fileLinks.map((link) => {
     const matchingEdges = index.edges.filter((edge) => {
       const source = lookup.get(edge.sourceId);
       const target = lookup.get(edge.targetId);
-      return source?.path === link.sourcePath && target?.path === link.targetPath && link.kinds.includes(edge.kind);
+      return (
+        discoveredEdgeIds.has(edge.id) &&
+        source?.path === link.sourcePath &&
+        target?.path === link.targetPath &&
+        link.kinds.includes(edge.kind)
+      );
     });
     return {
       sourcePath: boundedText(link.sourcePath, pathLengthMax),
