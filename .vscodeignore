@@ -16,6 +16,7 @@ test-fixtures/**
 media/*.svg
 dist/mcp-evaluation.cjs
 dist/linux-evaluation.cjs
+dist/package-verifier.cjs
 codetrail.vsix
 package-lock.json
 tsconfig.json

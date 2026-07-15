@@ -130,7 +130,9 @@
     "mcp": "node dist/mcp-server.cjs",
     "evaluate:mcp": "npm run build && node scripts/run-mcp-evaluation.mjs",
     "evaluate:linux": "npm run build && node scripts/run-linux-evaluation.mjs",
-    "test:mcp:e2e": "npm run build && vitest run src/mcp/stdio.e2e.test.ts"
+    "test:mcp:e2e": "npm run build && vitest run src/mcp/stdio.e2e.test.ts",
+    "verify:package": "node scripts/verify-package.mjs codetrail.vsix",
+    "verify:release": "npm run check && npm test && npm run test:coverage && npm audit --omit=dev --audit-level=high && npm run package && npm run verify:package && npm run test:mcp:e2e"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",

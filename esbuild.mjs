@@ -48,6 +48,15 @@ await Promise.all([
     sourcemap: true,
   }),
   esbuild.build({
+    entryPoints: ['src/release/package-verifier-cli.ts'],
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    target: 'node20',
+    outfile: `${outdir}/package-verifier.cjs`,
+    sourcemap: true,
+  }),
+  esbuild.build({
     entryPoints: ['src/worker/analysis-worker.ts'],
     bundle: true,
     format: 'cjs',

@@ -24,10 +24,27 @@ jobs:
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run check
       - run: npm run test:coverage
-      - run: npm run build
       - run: npm run package
+      - run: npm run verify:package
+      - run: npm run test:mcp:e2e
+      - name: Fetch pinned Linux scheduler source
+        shell: bash
+        run: |
+          git init .cache/linux-scheduler
+          git -C .cache/linux-scheduler remote add origin https://github.com/torvalds/linux.git
+          git -C .cache/linux-scheduler sparse-checkout init --cone
+          git -C .cache/linux-scheduler sparse-checkout set kernel/sched Documentation/scheduler
+          git -C .cache/linux-scheduler fetch --depth=1 --filter=blob:none origin 7059bdf4f04a3e14f4fafb3ac35fdca913e3e21a
+          git -C .cache/linux-scheduler checkout --detach FETCH_HEAD
+      - name: Generate pinned source evidence
+        run: npm run evaluate:linux -- --workspace .cache/linux-scheduler --output coverage/linux-scheduler-evaluation.json
+      - name: Exercise MCP on pinned source
+        run: npm run evaluate:mcp -- --workspace .cache/linux-scheduler/kernel/sched --output coverage/mcp-evaluation-results.json --profile linux-7059
       - uses: actions/upload-artifact@v4
         with:
           name: codetrail-${{ matrix.os }}
-          path: codetrail.vsix
+          path: |
+            codetrail.vsix
+            coverage/linux-scheduler-evaluation.json
+            coverage/mcp-evaluation-results.json
           if-no-files-found: error
