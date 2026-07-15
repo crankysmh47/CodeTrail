@@ -37,11 +37,12 @@ function withoutTiming<T extends { tasks: readonly { durationMs: number }[] }>(r
 
 describe('MCP retrieval-context evaluation', () => {
   it('should prove the expected scheduler answers and evidence through real protocol calls', async () => {
-    const first = await evaluateMcpContext(client, fixtureRootPath);
-    const second = await evaluateMcpContext(client, fixtureRootPath);
+    const first = await evaluateMcpContext(client, fixtureRootPath, 'fixture');
+    const second = await evaluateMcpContext(client, fixtureRootPath, 'fixture');
 
     expect(withoutTiming(second)).toStrictEqual(withoutTiming(first));
     expect(first.benchmarkKind).toBe('retrieval-context');
+    expect(first.profile).toBe('fixture');
     expect(first.claimBoundary).toBe(
       'Measures retrieved context and evidence presence; does not measure model intelligence.',
     );

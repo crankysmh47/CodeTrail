@@ -27,7 +27,7 @@ async function main(): Promise<void> {
   const client = new Client({ name: 'codetrail-context-evaluation', version: '1.0.0' });
   try {
     await client.connect(transport, { timeout: 60_000 });
-    const result = await evaluateMcpContext(client, options.workspacePath);
+    const result = await evaluateMcpContext(client, options.workspacePath, options.profile);
     if (result.tasks.some((task) => !task.expectedAnswerPresent || !task.expectedEvidencePresent)) {
       throw new Error('The MCP evaluation did not satisfy its expected answer and evidence rubric.');
     }

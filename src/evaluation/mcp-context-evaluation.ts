@@ -10,6 +10,7 @@ import {
   searchCodeOutputSchema,
 } from '../mcp/contracts.js';
 import { serviceIndexLimits } from '../service/codetrail-service.js';
+import type { EvaluationProfile } from './evaluation-cli-options.js';
 
 const directoryCountMax = 20_000;
 const sourceExtensions = new Set(['.c', '.h']);
@@ -25,29 +26,54 @@ type EvaluationTask = Readonly<{
   expectedRelationshipKinds: readonly CodeEdgeKind[];
 }>;
 
-const evaluationTasks: readonly EvaluationTask[] = [
-  {
-    id: 'fair-selection-entry',
-    query: 'schedule',
-    expectedSymbolName: 'pick_next_task_fair',
-    followUpTool: 'get_reading_path',
-    expectedRelationshipKinds: ['registers', 'calls'],
-  },
-  {
-    id: 'eevdf-eligibility',
-    query: 'eevdf eligible',
-    expectedSymbolName: 'entity_eligible',
-    followUpTool: 'get_symbol',
-    expectedRelationshipKinds: ['calls'],
-  },
-  {
-    id: 'registration-dispatch',
-    query: 'register dispatch',
-    expectedSymbolName: 'pick_task',
-    followUpTool: 'get_reading_path',
-    expectedRelationshipKinds: ['registers', 'dispatches-to'],
-  },
-];
+const evaluationTasksByProfile: Readonly<Record<EvaluationProfile, readonly EvaluationTask[]>> = {
+  fixture: [
+    {
+      id: 'fair-selection-entry',
+      query: 'schedule',
+      expectedSymbolName: 'pick_next_task_fair',
+      followUpTool: 'get_reading_path',
+      expectedRelationshipKinds: ['registers', 'calls'],
+    },
+    {
+      id: 'eevdf-eligibility',
+      query: 'eevdf eligible',
+      expectedSymbolName: 'entity_eligible',
+      followUpTool: 'get_symbol',
+      expectedRelationshipKinds: ['calls'],
+    },
+    {
+      id: 'registration-dispatch',
+      query: 'register dispatch',
+      expectedSymbolName: 'pick_task',
+      followUpTool: 'get_reading_path',
+      expectedRelationshipKinds: ['registers', 'dispatches-to'],
+    },
+  ],
+  'linux-7059': [
+    {
+      id: 'scheduler-entry',
+      query: 'schedule',
+      expectedSymbolName: '__schedule',
+      followUpTool: 'get_reading_path',
+      expectedRelationshipKinds: ['calls'],
+    },
+    {
+      id: 'eevdf-eligibility',
+      query: 'eevdf eligible',
+      expectedSymbolName: 'entity_eligible',
+      followUpTool: 'get_symbol',
+      expectedRelationshipKinds: ['calls'],
+    },
+    {
+      id: 'registration-dispatch',
+      query: 'register dispatch',
+      expectedSymbolName: 'pick_task_fair',
+      followUpTool: 'get_symbol',
+      expectedRelationshipKinds: ['registers', 'dispatches-to'],
+    },
+  ],
+};
 
 export type ContextEvaluationTaskResult = Readonly<{
   id: string;
@@ -69,6 +95,7 @@ export type ContextEvaluationTaskResult = Readonly<{
 export type ContextEvaluationResult = Readonly<{
   benchmarkKind: 'retrieval-context';
   claimBoundary: 'Measures retrieved context and evidence presence; does not measure model intelligence.';
+  profile: EvaluationProfile;
   workspace: Readonly<{ files: number; bytes: number }>;
   tasks: readonly ContextEvaluationTaskResult[];
 }>;
@@ -242,18 +269,20 @@ async function evaluateTask(
 export async function evaluateMcpContext(
   client: EvaluationClient,
   rootPath: string,
+  profile: EvaluationProfile,
 ): Promise<ContextEvaluationResult> {
   const workspace = await measureWorkspace(rootPath);
   if (workspace.bytes < 1) {
     throw new Error('The evaluation workspace contains no bounded C or header source bytes.');
   }
   const tasks: ContextEvaluationTaskResult[] = [];
-  for (const task of evaluationTasks) {
+  for (const task of evaluationTasksByProfile[profile]) {
     tasks.push(await evaluateTask(client, task, workspace.bytes));
   }
   return {
     benchmarkKind: 'retrieval-context',
     claimBoundary: 'Measures retrieved context and evidence presence; does not measure model intelligence.',
+    profile,
     workspace,
     tasks,
   };
