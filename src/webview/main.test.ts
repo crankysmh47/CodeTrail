@@ -19,13 +19,13 @@ function render(state: WebviewState): HTMLElement {
 }
 
 describe('CodeTrail webview', () => {
-  it('should render a compact persistent question toolbar', () => {
+  it('should render a compact persistent code search toolbar', () => {
     render({ kind: 'ready', filesIndexed: 42, warningCount: 0, clangStatus: 'unavailable' });
-    const input = document.querySelector<HTMLInputElement>('[name="question"]');
+    const input = document.querySelector<HTMLInputElement>('[name="search"]');
     if (!input) {
-      throw new Error('Expected the question input');
+      throw new Error('Expected the search input');
     }
-    input.value = 'How does the fair scheduler choose the next task?';
+    input.value = 'schedule';
 
     document.querySelector<HTMLFormElement>('form')?.dispatchEvent(
       new Event('submit', { bubbles: true, cancelable: true }),
@@ -33,8 +33,13 @@ describe('CodeTrail webview', () => {
 
     expect(document.querySelector('h1')?.textContent).toBe('CodeTrail');
     expect(document.body.textContent).not.toContain('Follow the code that matters');
+    expect(document.querySelector('label')?.textContent).toBe('Search');
+    expect(input.placeholder).toBe('Search symbols, files, or relationships');
+    expect(document.querySelector('button[type="submit"]')?.textContent).toBe('Search');
+    expect(document.body.textContent).not.toContain('Question');
+    expect(document.body.textContent).not.toContain('Ask');
     expect(document.querySelector('[role="status"]')?.textContent).toContain('42 C files');
-    expect(messages).toStrictEqual([{ kind: 'ask', query: 'How does the fair scheduler choose the next task?' }]);
+    expect(messages).toStrictEqual([{ kind: 'ask', query: 'schedule' }]);
   });
 
   it('should render dense candidate rows and focus the first result', () => {
@@ -130,6 +135,6 @@ describe('CodeTrail webview', () => {
 
     renderApp(root, { kind: 'empty', query: 'unknown subsystem', message: 'No matching symbol or relationship.' }, (message) => messages.push(message));
     expect(document.body.textContent).toContain('No matching symbol or relationship.');
-    expect(document.querySelector<HTMLInputElement>('[name="question"]')?.value).toBe('unknown subsystem');
+    expect(document.querySelector<HTMLInputElement>('[name="search"]')?.value).toBe('unknown subsystem');
   });
 });

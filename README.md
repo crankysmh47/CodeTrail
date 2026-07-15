@@ -2,7 +2,7 @@
 
 Find the files and functions behind unfamiliar C behavior without leaving VS Code.
 
-CodeTrail is a local-first VS Code extension for unfamiliar C codebases. Ask a code question or invoke it on a function definition. CodeTrail shows the cross-file route first, then the ordered symbol path inside each file. Every link includes its relationship, confidence, and source-backed reason.
+CodeTrail is a local-first VS Code extension for unfamiliar C codebases. Search for a symbol, file, or relationship keyword, or invoke it on a function definition. CodeTrail shows the cross-file route first, then the ordered symbol path inside each file. Every link includes its relationship, confidence, and source-backed reason.
 
 CodeTrail does not call an AI service at runtime. The index, ranking, graph traversal, and trail ordering are deterministic and run on your machine.
 
@@ -54,13 +54,13 @@ Press `F5` in VS Code to open an Extension Development Host.
 
 1. Open a folder containing `.c` and `.h` files.
 2. Run `CodeTrail: Index Workspace` from the Command Palette.
-3. Run `CodeTrail: Ask a Code Question`.
-4. Ask a concrete question, for example: `How does the fair scheduler choose the next task?`
+3. Run `CodeTrail: Search Code`.
+4. Search for a code term, for example: `schedule`.
 5. Confirm the best starting symbol. CodeTrail focuses the highest-ranked result so you can press `Enter` immediately.
 6. Read **File route** to see how the relevant files connect.
 7. Continue through **Within files**. Use `Open` to jump to any function in the editor.
 
-The status under the question box tells you how many C files were indexed and whether Clang is available. Structural mode works without Clang.
+The status under the search box tells you how many C files were indexed and whether Clang is available. Structural mode works without Clang.
 
 ### Start from a function definition
 
@@ -70,7 +70,7 @@ After indexing, open a C file and use any of these entry points:
 - Put the cursor on a symbol and press `Alt+Shift+T`.
 - Right-click a symbol and choose `CodeTrail: Discover Symbol Links`.
 
-Exact indexed symbols open their hierarchy directly. If the symbol is ambiguous, CodeTrail shows the same ranked candidate list used by question search.
+Exact indexed symbols open their hierarchy directly. If the symbol is ambiguous, CodeTrail shows the same ranked candidate list used by keyword search.
 
 ## Try the Linux scheduler demo
 
@@ -93,15 +93,15 @@ git checkout 7059bdf4f04a3e14f4fafb3ac35fdca913e3e21a
 code kernel\sched
 ```
 
-Start with these questions:
+Start with these searches:
 
 ```text
-How does the Linux fair scheduler choose the next task?
-How does EEVDF decide whether an entity is eligible?
-How is the fair scheduler registered for dispatch?
+schedule
+eevdf eligible
+register dispatch
 ```
 
-The expected starting points are `pick_next_task_fair`, `entity_eligible`, and `pick_task`, respectively. The exact gold questions also live in `demo/questions.json`.
+The broad `schedule` search includes `pick_task` and `pick_next_task_fair`; select `pick_next_task_fair` for the main trail. The other searches rank `entity_eligible` and `pick_task` first. The exact gold searches live in `demo/questions.json`.
 
 ## How it works
 
@@ -127,7 +127,7 @@ Within-file symbol paths in VS Code
 
 The C adapter extracts definitions for functions, structs, fields, and macros, plus direct calls, designated initializers, and preprocessor guards. The scheduler enricher recovers relationships that a plain call graph misses, including scheduler-class registration and function-pointer dispatch.
 
-Search splits identifier forms, handles a bounded one-edit typo, removes duplicate node IDs, and scores typed relationship intent. A question about registration or dispatch therefore ranks the field that provides that relationship instead of whichever symbol shares the most words. Result rows show the reasons used in ranking.
+Search splits identifier forms, normalizes common code terms such as `schedule` to `sched`, handles a bounded one-edit typo, removes duplicate node IDs, and scores typed relationship intent. A `register dispatch` search therefore ranks the field that provides that relationship instead of whichever symbol shares the most words. Typed one-hop neighbors may follow direct matches, with the relationship shown as a reason. Results are capped at 20 to keep ranking and rendering bounded.
 
 Analysis runs in a Node worker so indexing does not block the extension host. CodeTrail stores validated, gzip-compressed snapshots in VS Code workspace storage and rejects stale or malformed snapshots.
 
@@ -136,7 +136,7 @@ Analysis runs in a Node worker so indexing does not block the extension host. Co
 | Command | What it does |
 |---|---|
 | `CodeTrail: Index Workspace` | Parses the current C workspace and creates a fresh local index. |
-| `CodeTrail: Ask a Code Question` | Opens the persistent question and discovery panel. |
+| `CodeTrail: Search Code` | Opens the persistent code search and discovery panel. |
 | `CodeTrail: Discover Symbol Links` | Discovers the hierarchy for the symbol under the cursor. Also available from the editor context menu and `Alt+Shift+T`. |
 | `CodeTrail: Explain Symbol` | Compatibility alias for `Discover Symbol Links`. |
 | `CodeTrail: Discover Indexed Function` | Opens an exact indexed function. CodeTrail invokes this from CodeLens. |
@@ -213,7 +213,7 @@ Useful scripts:
 | `npm run build` | Bundles the extension host, worker, and webview; copies WASM assets. |
 | `npm run package` | Produces `codetrail.vsix`. |
 
-The current gold suite covers direct calls, macro/designated-initializer registration, scheduler dispatch, configuration guards, unique and typo-tolerant search, all three Linux questions, the `sched.h` to `fair.c` route, the within-file function path, graph budgets, snapshot validation, worker generation safety, CSP, source path confinement, UI states, and latency.
+The current gold suite covers direct calls, macro/designated-initializer registration, scheduler dispatch, configuration guards, unique and typo-tolerant search, all three Linux searches, the `sched.h` to `fair.c` route, the within-file function path, graph budgets, snapshot validation, worker generation safety, CSP, source path confinement, UI states, and latency.
 
 ## Project documents
 

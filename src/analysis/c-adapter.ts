@@ -104,7 +104,7 @@ function guardFor(node: Parser.SyntaxNode): string {
     return condition.text.trim();
   }
   const firstLine = node.text.split(/\r?\n/, 1)[0] ?? '';
-  return firstLine.replace(/^#\s*(if|ifdef|ifndef)\s*/, '').trim();
+  return firstLine.replace(/^#\s*(ifndef|ifdef|if)\s*/, '').trim();
 }
 
 function directCallTarget(node: Parser.SyntaxNode): string {

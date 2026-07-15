@@ -49,15 +49,36 @@ Codex diagnosed several integration failures instead of patching around them:
 - CommonJS worker output used a `.js` extension inside an ESM package. A real worker smoke test caught the mismatch; runtime bundles now use `.cjs`.
 - Zod's mutable inferred arrays conflicted with readonly domain contracts. Runtime schemas and domain response types were separated instead of weakening immutability.
 - The security pass found a low-severity development-only `esbuild` advisory. The dependency was upgraded to 0.28.1 and the audit was rerun.
+- An installed-extension smoke test exposed `#ifndef` being tokenized as `if` plus `ndef`. The preprocessor matcher now checks the longest directive first, with a regression test covering the exact guard.
 
 ## What Codex verified
 
 - strict TypeScript checks include test files;
-- unit and integration tests cover parsing, malformed C recovery, enrichment, unique candidate ranking, bounded typo matching, relationship intent, budgets, snapshots, protocol validation, generation races, CSP, path confinement, UI states, all three Linux questions, the cross-file route, and latency;
+- unit and integration tests cover parsing, malformed C recovery, enrichment, unique candidate ranking, scheduler keyword normalization, typed adjacent matches, bounded typo matching, relationship intent, budgets, snapshots, protocol validation, generation races, CSP, path confinement, UI states, all three Linux searches, the cross-file route, and latency;
 - the bundled worker can load both WASM assets and index the scheduler fixture;
 - CodeLens and editor symbol resolution use stable index IDs without parsing on the extension host;
 - runtime dependencies have no known npm vulnerabilities;
 - runtime source contains no OpenAI/Codex SDK, `eval`, or HTML injection;
 - the VSIX contents exclude tests, source maps, planning documents, and the original product document.
+
+## Installed VSIX verification
+
+On 2026-07-15, the packaged VSIX was installed into VS Code 1.128.1 on Windows and exercised against `test-fixtures/kernel-mini`. This was a visual click-through of the installed extension, not the development host.
+
+| Judge-facing check | Visual observation | Result |
+|---|---|---|
+| Activation and indexing | The panel opened as `CodeTrail — Local C relationship explorer` and reported `2 C files · 0 warnings · Clang unavailable`. | Pass |
+| Broad scheduler search | `schedule` returned 16 unique results. Direct scheduler matches appeared first; `pick_next_task_fair` remained discoverable with both registration and dispatch reasons. | Pass |
+| Eligibility search | `eevdf eligible` returned four results headed by `entity_eligible` and `pick_eevdf`, followed by typed call-adjacent matches. | Pass |
+| Registration search | `register dispatch` returned four results headed by the two indexed `pick_task` nodes, with the relationship kind and source/target direction visible. | Pass |
+| Persistent search | The search control remained available above discovery results and accepted both follow-up searches without reopening the panel. | Pass |
+| Cross-file and within-file hierarchy | Selecting `pick_next_task_fair` showed `sched.h → fair.c` first, then the confirmed `pick_next_task_fair → pick_eevdf → entity_eligible` path in `fair.c`. | Pass |
+| Confidence, evidence, and disclaimer | The route showed `registers · inferred · 1 evidence`; within-file call steps showed `confirmed`; the panel stated `Static reading order; not a runtime trace.` | Pass |
+| Source navigation | `Open` moved the editor from `pick_next_task_fair` to the selected `entity_eligible` definition and highlighted its source range. | Pass |
+| CodeLens | The CodeLens above `pick_next_task_fair` opened the matching trail. | Pass |
+| Keyboard shortcut | With the cursor on `pick_eevdf`, `Alt+Shift+T` opened `Trail from pick_eevdf`. | Pass |
+| Editor context menu | `CodeTrail: Discover Symbol Links` appeared with its shortcut and opened `Trail from pick_task`. | Pass |
+
+The narrow two-column layout stayed readable at normal VS Code zoom and used native editor colors and controls. The longer `pick_task` traversal displayed `Traversal reached depth 4.`, which is the intended visible bounded-analysis notice. Clang was not installed in the verification environment; structural analysis remained fully usable and this capability state was disclosed in the panel.
 
 This file summarizes repository evidence. It does not include private chat transcripts or claim that Codex made unreviewed product decisions.

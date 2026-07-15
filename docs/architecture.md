@@ -51,13 +51,13 @@ It never upgrades pointer or macro evidence to `confirmed` without compiler proo
 
 ## Search and trail selection
 
-Search normalizes snake case, camel case, punctuation, stop words, and a small documented synonym set. It supports adjacent transpositions and one edit for identifier-like terms of at least four characters. Scores come from symbol tokens, signatures, paths, summaries, and typed incident edges when a query asks about calls, registration, dispatch, reads, writes, or guards. Candidate IDs are unique before the result limit is applied. Stable path, line, and ID tie-breaking keeps results reproducible.
+Search normalizes snake case, camel case, punctuation, stop words, and a small documented synonym set. Kernel vocabulary such as `schedule`, `scheduler`, and `scheduling` normalizes to `sched`. Scores come from symbol tokens, signatures, paths, summaries, and typed incident edges for terms such as `call`, `register`, `dispatch`, `read`, `write`, and `guard`. Direct matches rank before typed one-hop neighbors. Adjacent results carry a `related via <kind>` reason. Candidate IDs are unique before the 20-result limit is applied, and stable path, line, and ID tie-breaking keeps results reproducible.
 
 Subgraph construction uses explicit node, edge, depth, and wall-clock budgets. Trail selection follows typed outgoing evidence and stops at a 12-step readability limit. The discovery projection collapses cross-file edges by source and target path, retains typed evidence and least-certain confidence, then groups trail steps by file. The result is a recommended reading sequence, not an execution trace.
 
 ## VS Code interaction
 
-The panel keeps one question field across ready, candidate, discovery, and empty states. Results use a progressive outline: **File route** comes before **Within files**. The webview uses VS Code theme variables and source-derived content is assigned through `textContent`.
+The panel keeps one keyword search field across ready, candidate, discovery, and empty states. Results use a progressive outline: **File route** comes before **Within files**. The webview uses VS Code theme variables and source-derived content is assigned through `textContent`.
 
 The extension also registers CodeLens on indexed C function definitions, an editor context action, and `Alt+Shift+T`. These entry points resolve an exact symbol from the immutable workspace index and reuse the same bounded discovery request; they do not parse on the editor thread.
 

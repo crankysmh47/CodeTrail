@@ -184,7 +184,7 @@ export class CodeTrailCommands implements vscode.Disposable {
     try {
       this.lastQuery = query;
       const index = this.coordinator.getCurrentIndex();
-      const result = await this.coordinator.search(query, 8);
+      const result = await this.coordinator.search(query, 20);
       const nodesById = new Map(index.nodes.map((node) => [node.id, node]));
       const candidates: CandidateView[] = [];
       for (const candidate of result.candidates) {
@@ -205,7 +205,7 @@ export class CodeTrailCommands implements vscode.Disposable {
         await this.setState({
           kind: 'empty',
           query,
-          message: 'No matching symbol or relationship.',
+          message: 'No indexed code matched that search.',
         });
         return;
       }

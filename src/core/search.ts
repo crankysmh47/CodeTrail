@@ -21,6 +21,10 @@ const synonyms: Readonly<Record<string, string>> = {
   registers: 'register',
   registering: 'register',
   registration: 'register',
+  schedule: 'sched',
+  scheduled: 'sched',
+  scheduler: 'sched',
+  scheduling: 'sched',
   select: 'pick',
   selects: 'pick',
   selection: 'pick',
@@ -190,10 +194,46 @@ export function searchIndex(index: WorkspaceIndex, query: string, limit: number)
       nodesById.set(node.id, node);
     }
   }
-  const candidates = [...nodesById.values()]
+  const directCandidates = [...nodesById.values()]
     .map((node) => scoreNode(node, index.edges, queryTokens))
-    .filter((candidate): candidate is SearchCandidate => candidate !== undefined)
+    .filter((candidate): candidate is SearchCandidate => candidate !== undefined);
+  const directById = new Map(directCandidates.map((candidate) => [candidate.nodeId, candidate]));
+  const relatedById = new Map<string, { score: number; reasons: string[] }>();
+  for (const edge of [...index.edges].sort((left, right) => left.id.localeCompare(right.id))) {
+    const sourceMatch = directById.get(edge.sourceId);
+    const targetMatch = directById.get(edge.targetId);
+    const matched = sourceMatch ?? targetMatch;
+    const relatedId = sourceMatch ? edge.targetId : targetMatch ? edge.sourceId : '';
+    if (!matched || relatedId.length === 0 || directById.has(relatedId)) {
+      continue;
+    }
+    const source = nodesById.get(edge.sourceId);
+    const target = nodesById.get(edge.targetId);
+    if (!source || !target) {
+      continue;
+    }
+    const reason = `related via ${edge.kind}: ${source.name} → ${target.name}`;
+    const existing = relatedById.get(relatedId);
+    if (existing) {
+      existing.score = Math.max(existing.score, Math.max(1, Math.floor(matched.score / 4)));
+      if (!existing.reasons.includes(reason)) {
+        existing.reasons.push(reason);
+      }
+    } else {
+      relatedById.set(relatedId, {
+        score: Math.max(1, Math.floor(matched.score / 4)),
+        reasons: [reason],
+      });
+    }
+  }
+  const candidates = [
+    ...directCandidates.map((candidate) => ({ ...candidate, tier: 0 })),
+    ...[...relatedById.entries()].map(([nodeId, candidate]) => ({ nodeId, ...candidate, tier: 1 })),
+  ]
     .sort((left, right) => {
+      if (left.tier !== right.tier) {
+        return left.tier - right.tier;
+      }
       if (left.score !== right.score) {
         return right.score - left.score;
       }
@@ -208,7 +248,8 @@ export function searchIndex(index: WorkspaceIndex, query: string, limit: number)
         leftNode.id.localeCompare(rightNode.id)
       );
     })
-    .slice(0, limit);
+    .slice(0, limit)
+    .map(({ nodeId, score, reasons }): SearchCandidate => ({ nodeId, score, reasons }));
 
   return { normalizedQuery, candidates };
 }

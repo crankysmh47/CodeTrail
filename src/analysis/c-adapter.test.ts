@@ -72,4 +72,18 @@ describe('C structural adapter', () => {
 
     expect(result.nodes.filter((node) => node.kind === 'struct' && node.name === 'task_struct')).toStrictEqual([]);
   });
+
+  it('should preserve the full identifier of an ifndef guard', async () => {
+    const parser = await createCParser({ parserWasmPath, languageWasmPath });
+    const result = await analyzeCFile({
+      parser,
+      path: 'guarded.h',
+      source: '#ifndef CODETRAIL_SCHED_H\nstruct rq { int ready; };\n#endif',
+      nodeCountMax: 100,
+    });
+
+    expect(result.nodes.filter((node) => node.kind === 'macro').map((node) => node.name)).toStrictEqual([
+      'CODETRAIL_SCHED_H',
+    ]);
+  });
 });

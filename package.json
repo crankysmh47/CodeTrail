@@ -1,7 +1,7 @@
 {
   "name": "codetrail",
   "displayName": "CodeTrail",
-  "description": "Turn a code question into the smallest evidence-backed reading trail.",
+  "description": "Search unfamiliar C code as evidence-backed file and symbol paths.",
   "version": "0.1.0",
   "publisher": "codetrail-build-week",
   "license": "MIT",
@@ -31,7 +31,7 @@
       },
       {
         "command": "codetrail.askQuestion",
-        "title": "CodeTrail: Ask a Code Question"
+        "title": "CodeTrail: Search Code"
       },
       {
         "command": "codetrail.explainSymbol",

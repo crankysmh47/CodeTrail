@@ -36,17 +36,17 @@ function renderReindexButton(post: PostMessage, text = 'Reindex'): HTMLButtonEle
 
 function renderQuestionForm(root: HTMLElement, post: PostMessage, initialQuery = ''): HTMLInputElement {
   const form = element('form', 'question-form');
-  const label = element('label', 'visually-hidden', 'Question');
-  label.htmlFor = 'question';
+  const label = element('label', 'visually-hidden', 'Search');
+  label.htmlFor = 'search';
   const input = element('input');
-  input.id = 'question';
-  input.name = 'question';
+  input.id = 'search';
+  input.name = 'search';
   input.type = 'text';
   input.maxLength = 500;
-  input.placeholder = 'Ask about a symbol or relationship';
+  input.placeholder = 'Search symbols, files, or relationships';
   input.autocomplete = 'off';
   input.value = initialQuery;
-  const submit = element('button', 'primary-button', 'Discover');
+  const submit = element('button', 'primary-button', 'Search');
   submit.type = 'submit';
   form.append(label, input, submit, renderReindexButton(post));
   form.addEventListener('submit', (event) => {
@@ -205,7 +205,7 @@ function renderEmpty(root: HTMLElement, state: Extract<WebviewState, { kind: 'em
   renderHeader(root);
   renderQuestionForm(root, post, state.query);
   root.append(element('p', 'empty-title', state.message));
-  root.append(element('p', 'empty-note', 'Try an exact symbol, file name, or relationship such as calls, registers, or dispatch.'));
+  root.append(element('p', 'empty-note', 'Try a symbol, file, or relationship keyword such as sched, calls, registers, or dispatch.'));
 }
 
 function renderProblem(

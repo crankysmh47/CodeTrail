@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { createNodeId, createRange, type CodeNode, type WorkspaceIndex } from './contracts.js';
+import {
+  createEdgeId,
+  createNodeId,
+  createRange,
+  type CodeEdge,
+  type CodeNode,
+  type WorkspaceIndex,
+} from './contracts.js';
 import { searchIndex } from './search.js';
 
 function node(name: string, path: string, lineStart: number, summary = ''): CodeNode {
@@ -72,5 +79,39 @@ describe('deterministic search', () => {
 
     expect(result.candidates[0]?.nodeId).toBe(pickNextTaskFair.id);
     expect(result.candidates[0]?.reasons).toContain('identifier typo: taks → task');
+  });
+
+  it('should return direct scheduler keyword matches before typed adjacent symbols', () => {
+    const schedulerField = node('pick_task', 'kernel/sched/sched.h', 70);
+    const registeredImplementation = node('pick_next_task_fair', 'kernel/fair.c', 90);
+    const unrelated = node('device_probe', 'drivers/device.c', 10);
+    const range = createRange(72, 5, 72, 38);
+    const registration: CodeEdge = {
+      id: createEdgeId(schedulerField.id, 'registers', registeredImplementation.id, range),
+      sourceId: schedulerField.id,
+      targetId: registeredImplementation.id,
+      kind: 'registers',
+      confidence: 'inferred',
+      reason: 'pick_task registers pick_next_task_fair',
+      path: schedulerField.path,
+      range,
+    };
+    const schedulerIndex: WorkspaceIndex = {
+      ...index,
+      nodes: [unrelated, registeredImplementation, schedulerField],
+      edges: [registration],
+      filesIndexed: 3,
+    };
+
+    const result = searchIndex(schedulerIndex, 'schedule', 20);
+
+    expect(result.normalizedQuery).toBe('sched');
+    expect(result.candidates.map((candidate) => candidate.nodeId)).toStrictEqual([
+      schedulerField.id,
+      registeredImplementation.id,
+    ]);
+    expect(result.candidates[1]?.reasons).toStrictEqual([
+      'related via registers: pick_task → pick_next_task_fair',
+    ]);
   });
 });

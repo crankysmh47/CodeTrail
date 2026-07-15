@@ -22,15 +22,15 @@ Point out:
 - Clang availability without treating it as required;
 - no account, upload, or AI runtime call.
 
-## 0:50-1:15 — ask and confirm
+## 0:50-1:15 — search and confirm
 
-Ask:
+Search:
 
 ```text
-How does the Linux fair scheduler choose the next task?
+schedule
 ```
 
-Show the ranked candidates and the visible match reasons. Confirm `pick_next_task_fair`.
+Show the direct scheduler matches and typed related candidates. Point out the visible match reasons, then select `pick_next_task_fair`.
 
 ## 1:15-2:05 — follow evidence
 
@@ -51,7 +51,7 @@ Return to `pick_next_task_fair` in `fair.c`.
 2. Put the cursor on `pick_eevdf` and press `Alt+Shift+T`.
 3. Mention the same action is in the editor context menu.
 
-The exact symbol route opens without retyping the question.
+The exact symbol route opens without retyping the search.
 
 ## 2:30-2:45 — trust boundary
 

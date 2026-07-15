@@ -7,7 +7,7 @@ import { buildBoundedSubgraph } from './core/graph.js';
 import { searchIndex } from './core/search.js';
 
 describe('Linux scheduler gold path', () => {
-  it('should turn the primary question into an evidence-backed fair scheduler trail', async () => {
+  it('should turn a broad scheduler search into an evidence-backed selected trail', async () => {
     const parser = await createCParser({
       parserWasmPath: fileURLToPath(import.meta.resolve('web-tree-sitter/tree-sitter.wasm')),
       languageWasmPath: fileURLToPath(import.meta.resolve('tree-sitter-wasms/out/tree-sitter-c.wasm')),
@@ -19,8 +19,15 @@ describe('Linux scheduler gold path', () => {
       signal: new AbortController().signal,
     });
 
-    const result = searchIndex(index, 'How does the Linux fair scheduler choose the next task?', 5);
-    const seed = index.nodes.find((node) => node.id === result.candidates[0]?.nodeId);
+    const result = searchIndex(index, 'schedule', 20);
+    const resultNames = result.candidates.map(
+      (candidate) => index.nodes.find((node) => node.id === candidate.nodeId)?.name,
+    );
+    expect(resultNames).toEqual(expect.arrayContaining(['pick_task', 'pick_next_task_fair']));
+    const seedCandidate = result.candidates.find(
+      (candidate) => index.nodes.find((node) => node.id === candidate.nodeId)?.name === 'pick_next_task_fair',
+    );
+    const seed = index.nodes.find((node) => node.id === seedCandidate?.nodeId);
     expect(seed?.name).toBe('pick_next_task_fair');
     const subgraph = buildBoundedSubgraph(index, [seed!.id], {
       nodesMax: 40,
@@ -59,9 +66,9 @@ describe('Linux scheduler gold path', () => {
   });
 
   it.each([
-    ['How does the Linux fair scheduler choose the next task?', 'pick_next_task_fair'],
-    ['How does EEVDF decide whether an entity is eligible?', 'entity_eligible'],
-    ['How is the fair scheduler registered for dispatch?', 'pick_task'],
+    ['pick next task fair', 'pick_next_task_fair'],
+    ['eevdf eligible', 'entity_eligible'],
+    ['register dispatch', 'pick_task'],
   ])('should rank the expected seed for %s', async (query, expectedName) => {
     const parser = await createCParser({
       parserWasmPath: fileURLToPath(import.meta.resolve('web-tree-sitter/tree-sitter.wasm')),
