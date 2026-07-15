@@ -39,6 +39,16 @@ const relationshipIntent: Readonly<Record<string, CodeEdgeKind>> = {
   register: 'registers',
   write: 'writes',
 };
+const relatedEdgeBoost: Readonly<Record<CodeEdgeKind, number>> = {
+  calls: 0,
+  'dispatches-to': 50,
+  registers: 60,
+  reads: 0,
+  writes: 0,
+  contains: 0,
+  documents: 0,
+  'guarded-by': 10,
+};
 
 function tokenize(value: string): readonly string[] {
   const expanded = value.replaceAll(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase();
@@ -104,6 +114,39 @@ function typoMatches(nodeTokens: readonly string[], queryTokens: readonly string
     }
   }
   return matches;
+}
+
+function takePathDiverse(
+  candidates: readonly SearchCandidate[],
+  count: number,
+  nodesById: ReadonlyMap<string, CodeNode>,
+): readonly SearchCandidate[] {
+  const selected: SearchCandidate[] = [];
+  const selectedIds = new Set<string>();
+  const pathCounts = new Map<string, number>();
+  for (const candidate of candidates) {
+    const path = nodesById.get(candidate.nodeId)?.path ?? '';
+    const pathCount = pathCounts.get(path) ?? 0;
+    if (pathCount >= 2) {
+      continue;
+    }
+    selected.push(candidate);
+    selectedIds.add(candidate.nodeId);
+    pathCounts.set(path, pathCount + 1);
+    if (selected.length >= count) {
+      return selected;
+    }
+  }
+  for (const candidate of candidates) {
+    if (selectedIds.has(candidate.nodeId)) {
+      continue;
+    }
+    selected.push(candidate);
+    if (selected.length >= count) {
+      break;
+    }
+  }
+  return selected;
 }
 
 function scoreRelationships(node: CodeNode, edges: readonly CodeEdge[], queryTokens: readonly string[]): SearchCandidate {
@@ -213,27 +256,21 @@ export function searchIndex(index: WorkspaceIndex, query: string, limit: number)
       continue;
     }
     const reason = `related via ${edge.kind}: ${source.name} → ${target.name}`;
+    const relatedScore = Math.max(1, Math.floor(matched.score / 4)) + relatedEdgeBoost[edge.kind];
     const existing = relatedById.get(relatedId);
     if (existing) {
-      existing.score = Math.max(existing.score, Math.max(1, Math.floor(matched.score / 4)));
+      existing.score = Math.max(existing.score, relatedScore);
       if (!existing.reasons.includes(reason)) {
         existing.reasons.push(reason);
       }
     } else {
       relatedById.set(relatedId, {
-        score: Math.max(1, Math.floor(matched.score / 4)),
+        score: relatedScore,
         reasons: [reason],
       });
     }
   }
-  const candidates = [
-    ...directCandidates.map((candidate) => ({ ...candidate, tier: 0 })),
-    ...[...relatedById.entries()].map(([nodeId, candidate]) => ({ nodeId, ...candidate, tier: 1 })),
-  ]
-    .sort((left, right) => {
-      if (left.tier !== right.tier) {
-        return left.tier - right.tier;
-      }
+  const compareCandidates = (left: SearchCandidate, right: SearchCandidate): number => {
       if (left.score !== right.score) {
         return right.score - left.score;
       }
@@ -247,9 +284,21 @@ export function searchIndex(index: WorkspaceIndex, query: string, limit: number)
         leftNode.range.lineStart - rightNode.range.lineStart ||
         leftNode.id.localeCompare(rightNode.id)
       );
-    })
-    .slice(0, limit)
-    .map(({ nodeId, score, reasons }): SearchCandidate => ({ nodeId, score, reasons }));
+  };
+  const sortedDirect = [...directCandidates].sort(compareCandidates);
+  const sortedRelated = [...relatedById.entries()]
+    .map(([nodeId, candidate]): SearchCandidate => ({ nodeId, ...candidate }))
+    .sort(compareCandidates);
+  let candidates: readonly SearchCandidate[];
+  if (queryTokens.length === 1 && sortedDirect.length >= limit && sortedRelated.length > 0) {
+    const relatedCount = Math.min(sortedRelated.length, limit - 1, Math.ceil(limit / 3));
+    candidates = [
+      ...takePathDiverse(sortedDirect, limit - relatedCount, nodesById),
+      ...takePathDiverse(sortedRelated, relatedCount, nodesById),
+    ];
+  } else {
+    candidates = [...sortedDirect, ...sortedRelated].slice(0, limit);
+  }
 
   return { normalizedQuery, candidates };
 }

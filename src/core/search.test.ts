@@ -114,4 +114,62 @@ describe('deterministic search', () => {
       'related via registers: pick_task → pick_next_task_fair',
     ]);
   });
+
+  it('should reserve broad-query results for high-value structural neighbors', () => {
+    const schedulerField = node('pick_task', 'kernel/sched/sched.h', 70);
+    const registeredImplementation = node('pick_next_task_fair', 'fair.c', 90);
+    const noisyDirectMatches = Array.from({ length: 30 }, (_, indexValue) =>
+      node(`sched_noise_${indexValue}`, 'kernel/sched/core_sched.c', indexValue + 1),
+    );
+    const noisyRegistrationSources = Array.from({ length: 10 }, (_, indexValue) =>
+      node(`sched_hook_${indexValue}`, 'hooks.h', indexValue + 1),
+    );
+    const noisyRegistrationTargets = Array.from({ length: 10 }, (_, indexValue) =>
+      node(`extension_${indexValue}`, 'ext/internal.h', indexValue + 1),
+    );
+    const range = createRange(72, 5, 72, 38);
+    const registration: CodeEdge = {
+      id: createEdgeId(schedulerField.id, 'registers', registeredImplementation.id, range),
+      sourceId: schedulerField.id,
+      targetId: registeredImplementation.id,
+      kind: 'registers',
+      confidence: 'inferred',
+      reason: 'pick_task registers pick_next_task_fair',
+      path: schedulerField.path,
+      range,
+    };
+    const noisyRegistrations: CodeEdge[] = noisyRegistrationSources.map((source, indexValue) => {
+      const target = noisyRegistrationTargets[indexValue]!;
+      return {
+        id: createEdgeId(source.id, 'registers', target.id, range),
+        sourceId: source.id,
+        targetId: target.id,
+        kind: 'registers',
+        confidence: 'inferred',
+        reason: `${source.name} registers ${target.name}`,
+        path: source.path,
+        range,
+      };
+    });
+    const noisyIndex: WorkspaceIndex = {
+      ...index,
+      nodes: [
+        ...noisyDirectMatches,
+        ...noisyRegistrationSources,
+        ...noisyRegistrationTargets,
+        schedulerField,
+        registeredImplementation,
+      ],
+      edges: [registration, ...noisyRegistrations],
+      filesIndexed: 3,
+    };
+
+    const result = searchIndex(noisyIndex, 'schedule', 20);
+
+    expect(result.candidates).toHaveLength(20);
+    expect(result.candidates.map((candidate) => candidate.nodeId)).toContain(registeredImplementation.id);
+    expect(result.candidates.find((candidate) => candidate.nodeId === registeredImplementation.id)?.reasons).toEqual(
+      expect.arrayContaining([expect.stringContaining('related via registers: pick_task')]),
+    );
+  });
 });

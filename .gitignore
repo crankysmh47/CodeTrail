@@ -1,4 +1,5 @@
 .worktrees/
+.cache/
 node_modules/
 dist/
 coverage/
