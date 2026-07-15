@@ -1,4 +1,4 @@
-import { relative, resolve } from 'node:path';
+import { posix, win32 } from 'node:path';
 import { normalizeWorkspacePath, type CodeNode, type WorkspaceIndex } from '../core/contracts.js';
 
 export type IndexedFunctionEntry = Readonly<{
@@ -13,8 +13,15 @@ export type SymbolResolution =
   | Readonly<{ status: 'missing' }>;
 
 function documentWorkspacePath(index: WorkspaceIndex, documentPath: string): string {
-  const path = normalizeWorkspacePath(relative(resolve(index.rootPath), resolve(documentPath)));
-  return path === '..' || path.startsWith('../') ? '' : path;
+  const isWindowsRoot = /^[A-Za-z]:[\\/]/.test(index.rootPath) || index.rootPath.startsWith('\\\\');
+  const isWindowsDocument = /^[A-Za-z]:[\\/]/.test(documentPath) || documentPath.startsWith('\\\\');
+  if (isWindowsRoot !== isWindowsDocument) {
+    return '';
+  }
+  const pathApi = isWindowsRoot ? win32 : posix;
+  const relativePath = pathApi.relative(pathApi.resolve(index.rootPath), pathApi.resolve(documentPath));
+  const path = normalizeWorkspacePath(relativePath);
+  return path === '..' || path.startsWith('../') || pathApi.isAbsolute(relativePath) ? '' : path;
 }
 
 export function indexedFunctionsForDocument(

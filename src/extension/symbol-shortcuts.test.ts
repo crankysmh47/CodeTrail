@@ -46,6 +46,10 @@ describe('editor symbol shortcuts', () => {
     expect(indexedFunctionsForDocument(index, 'C:\\other\\fair.c')).toStrictEqual([]);
   });
 
+  it('should reject a document path that uses a different platform style than the index', () => {
+    expect(indexedFunctionsForDocument(index, '/linux/kernel/sched/fair.c')).toStrictEqual([]);
+  });
+
   it('should resolve an exact symbol in the active document before another file', () => {
     const result = resolveIndexedSymbol(index, 'pick_next_task_fair', 'C:\\linux\\kernel\\sched\\fair.c');
 
