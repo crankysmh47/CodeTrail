@@ -586,3 +586,70 @@ git commit -m "docs: finalize the CodeTrail relationship discovery release"
 - [ ] **Step 8: Perform final review and branch completion workflow**
 
 Run `git diff main...HEAD`, `git diff --check`, scan for placeholders and unsafe DOM/process patterns, rerun `npm test`, and use the finishing-development-branch workflow to choose merge, PR, or branch preservation.
+
+---
+
+### Task 7: Make the product search keyword-first and finish installed verification
+
+**Files:**
+- Modify: `src/core/search.test.ts`
+- Modify: `src/core/search.ts`
+- Modify: `src/gold.test.ts`
+- Modify: `src/webview/main.test.ts`
+- Modify: `src/webview/main.ts`
+- Modify: `src/extension/commands.ts`
+- Modify: `package.json`
+- Modify: `README.md`
+- Modify: `demo/runbook.md`
+- Modify: `docs/architecture.md`
+- Modify: `docs/build-with-codex.md`
+- Modify: `CHANGELOG.md`
+
+**Interfaces:**
+- Consumes: the existing `searchIndex(index, query, limit)` and validated `ask` host message.
+- Produces: keyword-first search copy, scheduler abbreviation normalization, bounded relationship-adjacent candidates, and a 20-result request from the extension host.
+
+- [ ] **Step 1: Write failing keyword and webview tests**
+
+Assert that `searchIndex(index, 'schedule', 20)` returns directly matching scheduler nodes plus typed adjacent nodes without duplicates. Assert that the toolbar label and action are `Search`, the placeholder is `Search symbols, files, or relationships`, and no visible `Ask` or `Question` copy remains.
+
+- [ ] **Step 2: Verify RED**
+
+Run:
+
+```powershell
+npx vitest run src/core/search.test.ts src/webview/main.test.ts
+```
+
+Expected: scheduler keyword expansion and search-oriented UI assertions fail.
+
+- [ ] **Step 3: Implement bounded keyword search**
+
+Normalize `schedule`, `scheduled`, and `scheduling` to `sched`. Score direct matches first. Add a lower-scored candidate only when a typed edge connects it to a directly matched node; include `related via <kind>` in its reasons. Deduplicate by stable node ID, preserve deterministic ordering, and keep the existing maximum of 20.
+
+- [ ] **Step 4: Replace conversational product copy**
+
+Change the visible form label, placeholder, button, command title, empty state, README, architecture description, demo runbook, and changelog to code-search language. Keep internal command and message IDs for compatibility.
+
+- [ ] **Step 5: Verify and package**
+
+Run:
+
+```powershell
+npm audit --audit-level=low
+npm run check
+npm run test:coverage
+npm run build
+npm run package
+code --install-extension .\codetrail.vsix --force
+```
+
+Expected: zero audit findings, every test passes, all bundles build, and the VSIX installs.
+
+- [ ] **Step 6: Complete installed click-through and record it**
+
+Exercise activation, indexing, `schedule`, `eevdf eligible`, and `register dispatch`; candidate selection; CodeLens; `Alt+Shift+T`; editor context discovery; source navigation; persistent search; confidence/evidence display; and the static-analysis disclaimer. Record exact results and observations in `docs/build-with-codex.md`.
+
+- [ ] **Step 7: Commit and integrate**
+
+Commit the keyword search correction and verification log, run the full final gate again, merge `codex/build-week-mvp` into `main`, verify the merged result, package the VSIX from the main worktree, and remove the owned feature worktree.

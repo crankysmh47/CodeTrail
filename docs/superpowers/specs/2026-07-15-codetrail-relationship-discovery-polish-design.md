@@ -6,7 +6,7 @@
 
 ## 1. Outcome
 
-CodeTrail will answer a code question in two levels:
+CodeTrail will turn a code search into two levels:
 
 1. Show how the relevant files connect.
 2. Show the ordered and branched symbol relationships inside those files.
@@ -36,17 +36,17 @@ This retains CodeTrail's minimal product character while making repository topol
 
 ## 3. Information Architecture
 
-### 3.1 Persistent toolbar
+### 3.1 Persistent search toolbar
 
 Every usable state shows a compact header containing:
 
 - `CodeTrail`;
 - local index status;
-- a single-line question input;
-- an `Ask` action;
+- a single-line code search input;
+- a `Search` action;
 - a secondary reindex action.
 
-There is no marketing headline inside the working product surface. A user can ask another question without reopening a command.
+There is no marketing headline inside the working product surface. A user can run another search without reopening a command.
 
 ### 3.2 Candidate confirmation
 
@@ -119,6 +119,8 @@ File links are derived only from edges whose endpoints have different paths. Con
 
 Search remains local, lexical, deterministic, and explainable.
 
+The product is keyword-first rather than conversational. The visible input asks for symbols, files, and relationship terms. Common source vocabulary is normalized, including `schedule`, `scheduled`, and `scheduling` to the kernel abbreviation `sched`. Direct symbol, signature, summary, and path matches rank first. Typed one-hop neighbors may appear with an explicit relationship reason so a matched header field can expose its registered implementation. The UI requests at most 20 deterministic results. Longer natural-language input may still tokenize, but it is not presented as a conversational interface.
+
 Required behavior:
 
 - deduplicate candidates by stable node ID before limiting results;
@@ -176,7 +178,7 @@ The Accelint design package will not be added: CodeTrail is a plain VS Code webv
 
 - `welcome`: index action and a one-sentence explanation.
 - `indexing`: stage, percentage, and cancellation-safe generation.
-- `ready`: persistent question toolbar and index summary.
+- `ready`: persistent search toolbar and index summary.
 - `candidates`: unique selectable rows and the searched evidence fields.
 - `discovery`: file route followed by within-file sections.
 - `empty`: no-match explanation with exact-symbol and subsystem suggestions.
@@ -192,7 +194,7 @@ Implementation follows failing-test-first cycles.
 Core tests must cover:
 
 - duplicate declaration and candidate removal;
-- exact identifier, natural-language, typo, relationship-intent, empty, and stable-order search;
+- exact identifier, `schedule` subsystem keyword, typo, relationship-intent, empty, and stable-order search;
 - all three scheduler gold questions;
 - cross-file link projection with registration from `sched.h` to `fair.c`;
 - one-file fallback;
@@ -206,7 +208,7 @@ Extension and webview tests must cover:
 - compact persistent toolbar;
 - file route before within-file sections;
 - confidence and relationship direction text;
-- new-question flow and source actions;
+- persistent search flow and source actions;
 - empty, partial, indexing, and error states;
 - CSP and `textContent` safety.
 
