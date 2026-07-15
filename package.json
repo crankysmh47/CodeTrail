@@ -3,9 +3,34 @@
   "displayName": "CodeTrail",
   "description": "Search unfamiliar C code as evidence-backed file and symbol paths.",
   "version": "0.1.0",
-  "publisher": "codetrail-build-week",
+  "publisher": "crankysmh47",
+  "author": {
+    "name": "CodeTrail contributors"
+  },
   "license": "MIT",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crankysmh47/CodeTrail.git"
+  },
+  "homepage": "https://github.com/crankysmh47/CodeTrail#readme",
+  "bugs": {
+    "url": "https://github.com/crankysmh47/CodeTrail/issues"
+  },
+  "icon": "media/icon.png",
+  "keywords": [
+    "C",
+    "Linux kernel",
+    "code navigation",
+    "call graph",
+    "static analysis",
+    "MCP"
+  ],
+  "galleryBanner": {
+    "color": "#101418",
+    "theme": "dark"
+  },
+  "pricing": "Free",
+  "preview": true,
   "type": "module",
   "main": "./dist/extension.cjs",
   "bin": {
@@ -15,9 +40,22 @@
     "vscode": "^1.125.0"
   },
   "categories": [
-    "Other",
-    "Visualization"
+    "Programming Languages",
+    "Visualization",
+    "Other"
   ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "CodeTrail reads workspace source files and starts a local analysis worker only after the folder is trusted."
+    },
+    "virtualWorkspaces": {
+      "supported": false
+    }
+  },
   "activationEvents": [
     "onCommand:codetrail.indexWorkspace",
     "onCommand:codetrail.askQuestion",

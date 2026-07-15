@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <rect width="1280" height="640" fill="#101418"/>
+  <g fill="none" stroke="#273139" stroke-width="1">
+    <path d="M0 80H1280M0 160H1280M0 240H1280M0 320H1280M0 400H1280M0 480H1280M0 560H1280"/>
+    <path d="M80 0V640M160 0V640M240 0V640M320 0V640M400 0V640M480 0V640M560 0V640M640 0V640M720 0V640M800 0V640M880 0V640M960 0V640M1040 0V640M1120 0V640M1200 0V640"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="96" y="224" fill="#F2F4F3" font-size="76" font-weight="650">CodeTrail</text>
+    <text x="100" y="282" fill="#AEB8B4" font-size="29">The shortest evidence-backed path</text>
+    <text x="100" y="322" fill="#AEB8B4" font-size="29">through unfamiliar C code.</text>
+    <rect x="100" y="376" width="330" height="46" rx="23" fill="#18221F" stroke="#4A675E"/>
+    <text x="130" y="407" fill="#8CC7B5" font-size="20" font-weight="600">LOCAL · STATIC · BOUNDED</text>
+  </g>
+  <g transform="translate(682 98)" font-family="Consolas, Menlo, monospace">
+    <text x="0" y="0" fill="#7F8B86" font-size="18">FILE ROUTE</text>
+    <g transform="translate(0 36)">
+      <rect width="188" height="54" rx="10" fill="#171D21" stroke="#526069"/>
+      <text x="22" y="34" fill="#DCE2DF" font-size="20">core.c</text>
+      <path d="M188 27H238" stroke="#8CC7B5" stroke-width="4"/>
+      <path d="M228 17L240 27L228 37" fill="none" stroke="#8CC7B5" stroke-width="4"/>
+      <rect x="240" width="188" height="54" rx="10" fill="#171D21" stroke="#526069"/>
+      <text x="262" y="34" fill="#DCE2DF" font-size="20">sched.h</text>
+    </g>
+    <g transform="translate(240 126)">
+      <path d="M94 -36V0" stroke="#8CC7B5" stroke-width="4"/>
+      <path d="M84 -10L94 2L104 -10" fill="none" stroke="#8CC7B5" stroke-width="4"/>
+      <rect width="188" height="54" rx="10" fill="#171D21" stroke="#526069"/>
+      <text x="22" y="34" fill="#DCE2DF" font-size="20">fair.c</text>
+      <text x="0" y="84" fill="#8CC7B5" font-size="16">inferred · 3 sources</text>
+    </g>
+    <text x="0" y="246" fill="#7F8B86" font-size="18">WITHIN FILES</text>
+    <g transform="translate(14 282)">
+      <path d="M8 8V178" stroke="#526069" stroke-width="3"/>
+      <circle cx="8" cy="8" r="8" fill="#8CC7B5"/>
+      <circle cx="8" cy="93" r="8" fill="#101418" stroke="#8CC7B5" stroke-width="4"/>
+      <circle cx="8" cy="178" r="8" fill="#101418" stroke="#8CC7B5" stroke-width="4"/>
+      <text x="36" y="15" fill="#F2F4F3" font-size="20">pick_task_fair</text>
+      <text x="36" y="41" fill="#82908A" font-size="15">dispatches-to · inferred</text>
+      <text x="36" y="100" fill="#F2F4F3" font-size="20">pick_eevdf</text>
+      <text x="36" y="126" fill="#82908A" font-size="15">calls · confirmed</text>
+      <text x="36" y="185" fill="#F2F4F3" font-size="20">entity_eligible</text>
+      <text x="36" y="211" fill="#82908A" font-size="15">source: fair.c:913</text>
+    </g>
+  </g>
+</svg>

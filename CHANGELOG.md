@@ -11,4 +11,7 @@
 - Added a compact VS Code-native panel with persistent search and explicit empty-state recovery.
 - Added worker-thread analysis, validated gzip snapshots, source navigation, and optional Clang capability reporting.
 - Added the pinned Linux scheduler demo, gold tests, performance budgets, and an installable VSIX build.
+- Added a read-only local MCP adapter for coding agents, backed by the same bounded index and evidence contracts as the extension.
+- Added reproducible upstream Linux scheduler and MCP retrieval-context evidence at pinned commit `7059bdf4f04a3e14f4fafb3ac35fdca913e3e21a`.
+- Added Marketplace identity, privacy, support, security, and package-content release gates.
 - Fixed longest-match parsing of `#ifndef` guards and verified the complete installed-VSIX judge flow in VS Code.
