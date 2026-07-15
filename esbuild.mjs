@@ -1,6 +1,7 @@
 import { copyFile, mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
+import packageMetadata from './package.json' with { type: 'json' };
 
 const outdir = 'dist';
 await rm(outdir, { recursive: true, force: true });
@@ -16,6 +17,17 @@ await Promise.all([
     target: 'node20',
     outfile: `${outdir}/extension.cjs`,
     sourcemap: true,
+  }),
+  esbuild.build({
+    entryPoints: ['src/mcp/stdio.ts'],
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    target: 'node20',
+    outfile: `${outdir}/mcp-server.cjs`,
+    sourcemap: true,
+    banner: { js: '#!/usr/bin/env node' },
+    define: { __CODETRAIL_VERSION__: JSON.stringify(packageMetadata.version) },
   }),
   esbuild.build({
     entryPoints: ['src/worker/analysis-worker.ts'],
