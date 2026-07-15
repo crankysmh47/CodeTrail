@@ -1,4 +1,4 @@
-const archiveBytesMax = 5 * 1024 * 1024;
+export const archiveBytesMax = 5 * 1024 * 1024;
 
 const requiredEntryPaths = [
   'extension/package.json',

@@ -1,12 +1,8 @@
-import { execFile } from 'node:child_process';
 import { readFile, realpath, stat } from 'node:fs/promises';
 import { extname } from 'node:path';
 import process from 'node:process';
-import { promisify } from 'node:util';
-import { validatePackageContents } from './package-content.js';
-
-const execFileAsync = promisify(execFile);
-const commandOutputBytesMax = 2 * 1024 * 1024;
+import { archiveBytesMax, validatePackageContents } from './package-content.js';
+import { inspectVsixArchive } from './zip-archive.js';
 
 type PackageManifest = Readonly<{ name?: unknown; publisher?: unknown; version?: unknown }>;
 
@@ -31,17 +27,15 @@ async function main(): Promise<void> {
   if (!archiveMetadata.isFile()) {
     throw new Error('VSIX path must be a file.');
   }
-  const [{ stdout: tableOfContents }, { stdout: packagedManifestText }, rootManifestText] = await Promise.all([
-    execFileAsync('tar', ['-tf', archivePath], { encoding: 'utf8', maxBuffer: commandOutputBytesMax, windowsHide: true }),
-    execFileAsync('tar', ['-xOf', archivePath, 'extension/package.json'], {
-      encoding: 'utf8',
-      maxBuffer: commandOutputBytesMax,
-      windowsHide: true,
-    }),
+  if (archiveMetadata.size > archiveBytesMax) {
+    throw new Error(`VSIX exceeded the ${archiveBytesMax}-byte release size ceiling.`);
+  }
+  const [{ entryPaths, packagedManifestText }, rootManifestText] = await Promise.all([
+    inspectVsixArchive(archivePath),
     readFile('package.json', 'utf8'),
   ]);
   const report = validatePackageContents({
-    entryPaths: tableOfContents.split(/\r?\n/),
+    entryPaths,
     manifest: manifestIdentity(JSON.parse(packagedManifestText) as PackageManifest, 'Packaged manifest'),
     expectedManifest: manifestIdentity(JSON.parse(rootManifestText) as PackageManifest, 'Root package.json'),
     archiveBytes: archiveMetadata.size,
