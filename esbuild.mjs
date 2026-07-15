@@ -30,6 +30,15 @@ await Promise.all([
     define: { __CODETRAIL_VERSION__: JSON.stringify(packageMetadata.version) },
   }),
   esbuild.build({
+    entryPoints: ['src/evaluation/mcp-evaluation-cli.ts'],
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    target: 'node20',
+    outfile: `${outdir}/mcp-evaluation.cjs`,
+    sourcemap: true,
+  }),
+  esbuild.build({
     entryPoints: ['src/worker/analysis-worker.ts'],
     bundle: true,
     format: 'cjs',
