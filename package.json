@@ -88,6 +88,7 @@
     "package": "npm run build && vsce package --out codetrail.vsix --no-dependencies --allow-missing-repository"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
     "web-tree-sitter": "^0.20.8",
     "zod": "^4.1.12"
   },
