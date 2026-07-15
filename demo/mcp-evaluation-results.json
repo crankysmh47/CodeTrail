@@ -1,0 +1,115 @@
+{
+  "benchmarkKind": "retrieval-context",
+  "claimBoundary": "Measures retrieved context and evidence presence; does not measure model intelligence.",
+  "profile": "linux-7059",
+  "workspace": {
+    "files": 50,
+    "bytes": 2049984
+  },
+  "tasks": [
+    {
+      "id": "scheduler-entry",
+      "query": "schedule",
+      "expectedSymbolName": "__schedule",
+      "expectedSymbolRank": 1,
+      "expectedRelationshipKinds": [
+        "calls"
+      ],
+      "observedRelationshipKinds": [
+        "calls"
+      ],
+      "expectedAnswerPresent": true,
+      "expectedEvidencePresent": true,
+      "protocolCalls": 2,
+      "structuredResponseBytes": 129007,
+      "contextReductionPercent": 93.71,
+      "sourceFilesReturned": [
+        "autogroup.c",
+        "autogroup.h",
+        "build_policy.c",
+        "build_utility.c",
+        "clock.c",
+        "core_sched.c",
+        "core.c",
+        "deadline.c",
+        "ext/ext.c",
+        "ext/internal.h",
+        "fair.c",
+        "idle.c",
+        "isolation.c",
+        "membarrier.c",
+        "psi.c",
+        "rt.c",
+        "sched.h",
+        "stats.c",
+        "stats.h",
+        "syscalls.c",
+        "topology.c",
+        "wait_bit.c"
+      ],
+      "symbolsReturned": 42,
+      "durationMs": 98.43
+    },
+    {
+      "id": "eevdf-eligibility",
+      "query": "eevdf eligible",
+      "expectedSymbolName": "entity_eligible",
+      "expectedSymbolRank": 2,
+      "expectedRelationshipKinds": [
+        "calls"
+      ],
+      "observedRelationshipKinds": [
+        "calls"
+      ],
+      "expectedAnswerPresent": true,
+      "expectedEvidencePresent": true,
+      "protocolCalls": 2,
+      "structuredResponseBytes": 13431,
+      "contextReductionPercent": 99.34,
+      "sourceFilesReturned": [
+        "debug.c",
+        "fair.c"
+      ],
+      "symbolsReturned": 14,
+      "durationMs": 32.41
+    },
+    {
+      "id": "registration-dispatch",
+      "query": "register dispatch",
+      "expectedSymbolName": "pick_task_fair",
+      "expectedSymbolRank": 10,
+      "expectedRelationshipKinds": [
+        "registers",
+        "dispatches-to"
+      ],
+      "observedRelationshipKinds": [
+        "calls",
+        "dispatches-to",
+        "registers"
+      ],
+      "expectedAnswerPresent": true,
+      "expectedEvidencePresent": true,
+      "protocolCalls": 2,
+      "structuredResponseBytes": 24609,
+      "contextReductionPercent": 98.8,
+      "sourceFilesReturned": [
+        "core.c",
+        "cpuacct.c",
+        "deadline.c",
+        "debug.c",
+        "ext/cid.c",
+        "ext/ext.c",
+        "ext/internal.h",
+        "fair.c",
+        "idle.c",
+        "membarrier.c",
+        "psi.c",
+        "rt.c",
+        "sched.h",
+        "stop_task.c"
+      ],
+      "symbolsReturned": 30,
+      "durationMs": 2437.69
+    }
+  ]
+}

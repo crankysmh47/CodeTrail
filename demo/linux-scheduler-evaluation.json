@@ -1,0 +1,2782 @@
+{
+  "benchmarkKind": "pinned-source-validation",
+  "claimBoundary": "Static structural evidence only; this report does not measure runtime behavior.",
+  "source": {
+    "repository": "https://github.com/torvalds/linux.git",
+    "revision": "7059bdf4f04a3e14f4fafb3ac35fdca913e3e21a",
+    "scope": "kernel/sched",
+    "files": 50,
+    "bytes": 2049984
+  },
+  "index": {
+    "files": 50,
+    "nodes": 3743,
+    "edges": 33099,
+    "warnings": [
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "autogroup.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "clock.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "completion.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "core_sched.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "core.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "cpuacct.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "cpudeadline.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "cpufreq_schedutil.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "cpufreq.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "cpupri.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "cputime.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "deadline.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "debug.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "ext/arena.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "ext/cid.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "ext/ext.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "ext/idle.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "ext/internal.h"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "ext/types.h"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "fair.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "features.h"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "idle.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "isolation.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "membarrier.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "pelt.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "psi.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "rt.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "sched-pelt.h"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "sched.h"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "stats.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "stats.h"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "syscalls.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "topology.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "wait_bit.c"
+      },
+      {
+        "code": "C_PARSE_PARTIAL",
+        "message": "The file contains syntax errors; CodeTrail kept the structure it could verify.",
+        "path": "wait.c"
+      }
+    ],
+    "isPartial": false,
+    "durationMs": 1419.71
+  },
+  "bounds": {
+    "searchResultsMax": 20,
+    "graph": {
+      "nodesMax": 40,
+      "edgesMax": 120,
+      "depthMax": 4,
+      "timeMsMax": 1000
+    },
+    "index": {
+      "filesMax": 2000,
+      "fileBytesMax": 2097152,
+      "totalBytesMax": 262144000
+    },
+    "fileRouteEvidencePerLinkMax": 2
+  },
+  "searches": [
+    {
+      "query": "schedule",
+      "normalizedQuery": "sched",
+      "expectedSymbolName": "__schedule",
+      "expectedSymbolRank": 1,
+      "candidates": [
+        {
+          "symbolId": "c:core.c:function:__schedule",
+          "language": "c",
+          "kind": "function",
+          "name": "__schedule",
+          "qualifiedName": "__schedule",
+          "signature": "notrace __schedule(int sched_mode)",
+          "summary": "function __schedule",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7061,
+              "columnStart": 21,
+              "lineEnd": 7242,
+              "columnEnd": 2
+            }
+          },
+          "score": 212,
+          "reasons": [
+            "exact symbol phrase",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:core_sched.c:struct:sched_core_cookie",
+          "language": "c",
+          "kind": "struct",
+          "name": "sched_core_cookie",
+          "qualifiedName": "sched_core_cookie",
+          "signature": "struct sched_core_cookie",
+          "summary": "struct sched_core_cookie",
+          "source": {
+            "path": "core_sched.c",
+            "range": {
+              "lineStart": 9,
+              "columnStart": 1,
+              "lineEnd": 11,
+              "columnEnd": 2
+            }
+          },
+          "score": 43,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "path: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:core_sched.c:function:sched_core_alloc_cookie",
+          "language": "c",
+          "kind": "function",
+          "name": "sched_core_alloc_cookie",
+          "qualifiedName": "sched_core_alloc_cookie",
+          "signature": "static unsigned long sched_core_alloc_cookie(void)",
+          "summary": "function sched_core_alloc_cookie",
+          "source": {
+            "path": "core_sched.c",
+            "range": {
+              "lineStart": 13,
+              "columnStart": 1,
+              "lineEnd": 23,
+              "columnEnd": 2
+            }
+          },
+          "score": 43,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "path: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:sched.h:macro:_KERNEL_SCHED_SCHED_H",
+          "language": "c",
+          "kind": "macro",
+          "name": "_KERNEL_SCHED_SCHED_H",
+          "qualifiedName": "_KERNEL_SCHED_SCHED_H",
+          "signature": "#ifndef _KERNEL_SCHED_SCHED_H #define _KERNEL_SCHED_SCHED_H #include <linux/prandom.h> #include <linux/sched/affinity.h> #include <linux/sched/autogroup.h> #include <linux/sched/cpufreq.h> #include <linux/sched/deadline.h> #include <linux/s",
+          "summary": "macro _KERNEL_SCHED_SCHED_H",
+          "source": {
+            "path": "sched.h",
+            "range": {
+              "lineStart": 5,
+              "columnStart": 1,
+              "lineEnd": 4216,
+              "columnEnd": 35
+            }
+          },
+          "score": 43,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "path: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:sched.h:macro:CONFIG_SCHED_CLASS_EXT",
+          "language": "c",
+          "kind": "macro",
+          "name": "CONFIG_SCHED_CLASS_EXT",
+          "qualifiedName": "CONFIG_SCHED_CLASS_EXT",
+          "signature": "#ifdef CONFIG_SCHED_CLASS_EXT if (policy == SCHED_EXT) return true; #endif",
+          "summary": "macro CONFIG_SCHED_CLASS_EXT",
+          "source": {
+            "path": "sched.h",
+            "range": {
+              "lineStart": 196,
+              "columnStart": 1,
+              "lineEnd": 199,
+              "columnEnd": 7
+            }
+          },
+          "score": 43,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "path: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:autogroup.c:macro:sched_autogroup_sysctl_init",
+          "language": "c",
+          "kind": "macro",
+          "name": "sched_autogroup_sysctl_init",
+          "qualifiedName": "sched_autogroup_sysctl_init",
+          "signature": "#define sched_autogroup_sysctl_init() do",
+          "summary": "macro sched_autogroup_sysctl_init",
+          "source": {
+            "path": "autogroup.c",
+            "range": {
+              "lineStart": 32,
+              "columnStart": 1,
+              "lineEnd": 33,
+              "columnEnd": 1
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:autogroup.c:macro:CONFIG_RT_GROUP_SCHED",
+          "language": "c",
+          "kind": "macro",
+          "name": "CONFIG_RT_GROUP_SCHED",
+          "qualifiedName": "CONFIG_RT_GROUP_SCHED",
+          "signature": "#ifdef CONFIG_RT_GROUP_SCHED /* We've redirected RT tasks to the root task group... */ ag->tg->rt_se = NULL; ag->tg->rt_rq = NULL; #endif",
+          "summary": "macro CONFIG_RT_GROUP_SCHED",
+          "source": {
+            "path": "autogroup.c",
+            "range": {
+              "lineStart": 53,
+              "columnStart": 1,
+              "lineEnd": 57,
+              "columnEnd": 7
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:autogroup.h:macro:_KERNEL_SCHED_AUTOGROUP_H",
+          "language": "c",
+          "kind": "macro",
+          "name": "_KERNEL_SCHED_AUTOGROUP_H",
+          "qualifiedName": "_KERNEL_SCHED_AUTOGROUP_H",
+          "signature": "#ifndef _KERNEL_SCHED_AUTOGROUP_H #define _KERNEL_SCHED_AUTOGROUP_H #include \"sched.h\" #ifdef CONFIG_SCHED_AUTOGROUP struct autogroup",
+          "summary": "macro _KERNEL_SCHED_AUTOGROUP_H",
+          "source": {
+            "path": "autogroup.h",
+            "range": {
+              "lineStart": 2,
+              "columnStart": 1,
+              "lineEnd": 68,
+              "columnEnd": 7
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:autogroup.h:macro:CONFIG_SCHED_AUTOGROUP",
+          "language": "c",
+          "kind": "macro",
+          "name": "CONFIG_SCHED_AUTOGROUP",
+          "qualifiedName": "CONFIG_SCHED_AUTOGROUP",
+          "signature": "#ifdef CONFIG_SCHED_AUTOGROUP struct autogroup",
+          "summary": "macro CONFIG_SCHED_AUTOGROUP",
+          "source": {
+            "path": "autogroup.h",
+            "range": {
+              "lineStart": 7,
+              "columnStart": 1,
+              "lineEnd": 66,
+              "columnEnd": 7
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:build_policy.c:macro:CONFIG_SCHED_CLASS_EXT",
+          "language": "c",
+          "kind": "macro",
+          "name": "CONFIG_SCHED_CLASS_EXT",
+          "qualifiedName": "CONFIG_SCHED_CLASS_EXT",
+          "signature": "#ifdef CONFIG_SCHED_CLASS_EXT # include <linux/btf_ids.h> # include <linux/find.h> # include <linux/genalloc.h> # include \"ext/types.h\" # include \"ext/internal.h\" # include \"ext/cid.h\" # include \"ext/arena.h\" # include \"ext/idle.h\" # includ",
+          "summary": "macro CONFIG_SCHED_CLASS_EXT",
+          "source": {
+            "path": "build_policy.c",
+            "range": {
+              "lineStart": 60,
+              "columnStart": 1,
+              "lineEnd": 73,
+              "columnEnd": 7
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:build_utility.c:macro:CONFIG_SCHED_CORE",
+          "language": "c",
+          "kind": "macro",
+          "name": "CONFIG_SCHED_CORE",
+          "qualifiedName": "CONFIG_SCHED_CORE",
+          "signature": "#ifdef CONFIG_SCHED_CORE # include \"core_sched.c\" #endif",
+          "summary": "macro CONFIG_SCHED_CORE",
+          "source": {
+            "path": "build_utility.c",
+            "range": {
+              "lineStart": 88,
+              "columnStart": 1,
+              "lineEnd": 90,
+              "columnEnd": 7
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:build_utility.c:macro:CONFIG_SCHED_AUTOGROUP",
+          "language": "c",
+          "kind": "macro",
+          "name": "CONFIG_SCHED_AUTOGROUP",
+          "qualifiedName": "CONFIG_SCHED_AUTOGROUP",
+          "signature": "#ifdef CONFIG_SCHED_AUTOGROUP # include \"autogroup.c\" #endif",
+          "summary": "macro CONFIG_SCHED_AUTOGROUP",
+          "source": {
+            "path": "build_utility.c",
+            "range": {
+              "lineStart": 104,
+              "columnStart": 1,
+              "lineEnd": 106,
+              "columnEnd": 7
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:clock.c:macro:CONFIG_HAVE_UNSTABLE_SCHED_CLOCK",
+          "language": "c",
+          "kind": "macro",
+          "name": "CONFIG_HAVE_UNSTABLE_SCHED_CLOCK",
+          "qualifiedName": "CONFIG_HAVE_UNSTABLE_SCHED_CLOCK",
+          "signature": "#ifdef CONFIG_HAVE_UNSTABLE_SCHED_CLOCK /* * We must start with !__sched_clock_stable because the unstable -> stable * transition is accurate, while the stable -> unstable transition is not. * * Similarly we start with __sched_clock_stable_",
+          "summary": "macro CONFIG_HAVE_UNSTABLE_SCHED_CLOCK",
+          "source": {
+            "path": "clock.c",
+            "range": {
+              "lineStart": 74,
+              "columnStart": 1,
+              "lineEnd": 498,
+              "columnEnd": 7
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: sched",
+            "signature: sched",
+            "summary: sched"
+          ]
+        },
+        {
+          "symbolId": "c:ext/ext.c:field:next",
+          "language": "c",
+          "kind": "field",
+          "name": "next",
+          "qualifiedName": "next",
+          "signature": "next",
+          "summary": "field next",
+          "source": {
+            "path": "ext/ext.c",
+            "range": {
+              "lineStart": 152,
+              "columnStart": 6,
+              "lineEnd": 152,
+              "columnEnd": 10
+            }
+          },
+          "score": 69,
+          "reasons": [
+            "related via registers: next → sched_debug_next"
+          ]
+        },
+        {
+          "symbolId": "c:ext/internal.h:field:dump",
+          "language": "c",
+          "kind": "field",
+          "name": "dump",
+          "qualifiedName": "dump",
+          "signature": "dump",
+          "summary": "field dump",
+          "source": {
+            "path": "ext/internal.h",
+            "range": {
+              "lineStart": 97,
+              "columnStart": 10,
+              "lineEnd": 97,
+              "columnEnd": 14
+            }
+          },
+          "score": 69,
+          "reasons": [
+            "related via registers: dump → sched_ext_ops__dump"
+          ]
+        },
+        {
+          "symbolId": "c:ext/internal.h:field:select_cpu",
+          "language": "c",
+          "kind": "field",
+          "name": "select_cpu",
+          "qualifiedName": "select_cpu",
+          "signature": "select_cpu",
+          "summary": "field select_cpu",
+          "source": {
+            "path": "ext/internal.h",
+            "range": {
+              "lineStart": 314,
+              "columnStart": 8,
+              "lineEnd": 314,
+              "columnEnd": 18
+            }
+          },
+          "score": 69,
+          "reasons": [
+            "related via registers: select_cpu → sched_ext_ops__select_cpu"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:field:runnable",
+          "language": "c",
+          "kind": "field",
+          "name": "runnable",
+          "qualifiedName": "runnable",
+          "signature": "runnable",
+          "summary": "field runnable",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 2806,
+              "columnStart": 16,
+              "lineEnd": 2806,
+              "columnEnd": 24
+            }
+          },
+          "score": 69,
+          "reasons": [
+            "related via registers: runnable → sched_ext_ops__runnable"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:field:dst_grpmask",
+          "language": "c",
+          "kind": "field",
+          "name": "dst_grpmask",
+          "qualifiedName": "dst_grpmask",
+          "signature": "dst_grpmask",
+          "summary": "field dst_grpmask",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 10268,
+              "columnStart": 19,
+              "lineEnd": 10268,
+              "columnEnd": 30
+            }
+          },
+          "score": 63,
+          "reasons": [
+            "related via registers: dst_grpmask → group_balance_mask"
+          ]
+        },
+        {
+          "symbolId": "c:core.c:function:set_cpus_allowed_common",
+          "language": "c",
+          "kind": "function",
+          "name": "set_cpus_allowed_common",
+          "qualifiedName": "set_cpus_allowed_common",
+          "signature": "void set_cpus_allowed_common(struct task_struct *p, struct affinity_context *ctx)",
+          "summary": "function set_cpus_allowed_common",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 2774,
+              "columnStart": 1,
+              "lineEnd": 2790,
+              "columnEnd": 2
+            }
+          },
+          "score": 61,
+          "reasons": [
+            "related via registers: set_cpus_allowed → set_cpus_allowed_common"
+          ]
+        },
+        {
+          "symbolId": "c:core.c:function:balance_push",
+          "language": "c",
+          "kind": "function",
+          "name": "balance_push",
+          "qualifiedName": "balance_push",
+          "signature": "static void balance_push(struct rq *rq) __must_hold(__rq_lockp(rq))",
+          "summary": "function balance_push",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 8439,
+              "columnStart": 1,
+              "lineEnd": 8501,
+              "columnEnd": 2
+            }
+          },
+          "score": 61,
+          "reasons": [
+            "related via calls: balance_push → __rq_lockp",
+            "related via calls: balance_push → is_migration_disabled",
+            "related via calls: balance_push → lockdep_assert_rq_held",
+            "related via calls: balance_push → raw_spin_rq_lock",
+            "related via calls: balance_push → raw_spin_rq_unlock",
+            "related via guarded-by: balance_push → CONFIG_HOTPLUG_CPU",
+            "related via registers: func → balance_push",
+            "related via dispatches-to: cpufreq_update_util → balance_push"
+          ]
+        }
+      ]
+    },
+    {
+      "query": "eevdf eligible",
+      "normalizedQuery": "eevdf eligible",
+      "expectedSymbolName": "entity_eligible",
+      "expectedSymbolRank": 2,
+      "candidates": [
+        {
+          "symbolId": "c:fair.c:function:vruntime_eligible",
+          "language": "c",
+          "kind": "function",
+          "name": "vruntime_eligible",
+          "qualifiedName": "vruntime_eligible",
+          "signature": "static int vruntime_eligible(struct cfs_rq *cfs_rq, u64 vruntime)",
+          "summary": "function vruntime_eligible",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 894,
+              "columnStart": 1,
+              "lineEnd": 937,
+              "columnEnd": 2
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: eligible",
+            "signature: eligible",
+            "summary: eligible"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:entity_eligible",
+          "language": "c",
+          "kind": "function",
+          "name": "entity_eligible",
+          "qualifiedName": "entity_eligible",
+          "signature": "int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se)",
+          "summary": "function entity_eligible",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 939,
+              "columnStart": 1,
+              "lineEnd": 942,
+              "columnEnd": 2
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: eligible",
+            "signature: eligible",
+            "summary: eligible"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:pick_eevdf",
+          "language": "c",
+          "kind": "function",
+          "name": "pick_eevdf",
+          "qualifiedName": "pick_eevdf",
+          "signature": "static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq, bool protect)",
+          "summary": "function pick_eevdf",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 1136,
+              "columnStart": 1,
+              "lineEnd": 1205,
+              "columnEnd": 2
+            }
+          },
+          "score": 37,
+          "reasons": [
+            "symbol tokens: eevdf",
+            "signature: eevdf",
+            "summary: eevdf"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:macro:CONFIG_ARCH_SUPPORTS_INT128",
+          "language": "c",
+          "kind": "macro",
+          "name": "CONFIG_ARCH_SUPPORTS_INT128",
+          "qualifiedName": "CONFIG_ARCH_SUPPORTS_INT128",
+          "signature": "#ifdef CONFIG_ARCH_SUPPORTS_INT128 /* This often results in simpler code than __builtin_mul_overflow(). */ return avg >= (__int128)key * load; #else s64 rhs; /* * On overflow, the sign of key tells us the correct answer: a large * positive ",
+          "summary": "macro CONFIG_ARCH_SUPPORTS_INT128",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 919,
+              "columnStart": 1,
+              "lineEnd": 933,
+              "columnEnd": 7
+            }
+          },
+          "score": 19,
+          "reasons": [
+            "related via guarded-by: vruntime_eligible → CONFIG_ARCH_SUPPORTS_INT128"
+          ]
+        },
+        {
+          "symbolId": "c:debug.c:function:print_task",
+          "language": "c",
+          "kind": "function",
+          "name": "print_task",
+          "qualifiedName": "print_task",
+          "signature": "static void print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)",
+          "summary": "function print_task",
+          "source": {
+            "path": "debug.c",
+            "range": {
+              "lineStart": 890,
+              "columnStart": 1,
+              "lineEnd": 922,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: print_task → entity_eligible"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:entity_before",
+          "language": "c",
+          "kind": "function",
+          "name": "entity_before",
+          "qualifiedName": "entity_before",
+          "signature": "static inline bool entity_before(const struct sched_entity *a, const struct sched_entity *b)",
+          "summary": "function entity_before",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 589,
+              "columnStart": 1,
+              "lineEnd": 597,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: pick_eevdf → entity_before"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:entity_key",
+          "language": "c",
+          "kind": "function",
+          "name": "entity_key",
+          "qualifiedName": "entity_key",
+          "signature": "static inline s64 entity_key(struct cfs_rq *cfs_rq, struct sched_entity *se)",
+          "summary": "function entity_key",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 614,
+              "columnStart": 1,
+              "lineEnd": 617,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: vruntime_eligible → entity_key"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:avg_vruntime_weight",
+          "language": "c",
+          "kind": "function",
+          "name": "avg_vruntime_weight",
+          "qualifiedName": "avg_vruntime_weight",
+          "signature": "static inline unsigned long avg_vruntime_weight(struct cfs_rq *cfs_rq, unsigned long w)",
+          "summary": "function avg_vruntime_weight",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 676,
+              "columnStart": 1,
+              "lineEnd": 683,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: vruntime_eligible → avg_vruntime_weight"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:__pick_first_entity",
+          "language": "c",
+          "kind": "function",
+          "name": "__pick_first_entity",
+          "qualifiedName": "__pick_first_entity",
+          "signature": "struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)",
+          "summary": "function __pick_first_entity",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 1066,
+              "columnStart": 1,
+              "lineEnd": 1074,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: pick_eevdf → __pick_first_entity"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:protect_slice",
+          "language": "c",
+          "kind": "function",
+          "name": "protect_slice",
+          "qualifiedName": "protect_slice",
+          "signature": "static inline bool protect_slice(struct sched_entity *se)",
+          "summary": "function protect_slice",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 1106,
+              "columnStart": 1,
+              "lineEnd": 1109,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: pick_eevdf → protect_slice"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:dequeue_entity",
+          "language": "c",
+          "kind": "function",
+          "name": "dequeue_entity",
+          "qualifiedName": "dequeue_entity",
+          "signature": "static bool dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)",
+          "summary": "function dequeue_entity",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 6233,
+              "columnStart": 1,
+              "lineEnd": 6322,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: dequeue_entity → entity_eligible"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:pick_next_entity",
+          "language": "c",
+          "kind": "function",
+          "name": "pick_next_entity",
+          "qualifiedName": "pick_next_entity",
+          "signature": "static struct sched_entity * pick_next_entity(struct rq *rq, struct cfs_rq *cfs_rq, bool protect)",
+          "summary": "function pick_next_entity",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 6375,
+              "columnStart": 1,
+              "lineEnd": 6389,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: pick_next_entity → pick_eevdf"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:yield_task_fair",
+          "language": "c",
+          "kind": "function",
+          "name": "yield_task_fair",
+          "qualifiedName": "yield_task_fair",
+          "signature": "static void yield_task_fair(struct rq *rq)",
+          "summary": "function yield_task_fair",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 10012,
+              "columnStart": 1,
+              "lineEnd": 10050,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: yield_task_fair → entity_eligible"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:task_is_ineligible_on_dst_cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "task_is_ineligible_on_dst_cpu",
+          "qualifiedName": "task_is_ineligible_on_dst_cpu",
+          "signature": "static inline int task_is_ineligible_on_dst_cpu(struct task_struct *p, int dest_cpu)",
+          "summary": "function task_is_ineligible_on_dst_cpu",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 10398,
+              "columnStart": 1,
+              "lineEnd": 10412,
+              "columnEnd": 2
+            }
+          },
+          "score": 9,
+          "reasons": [
+            "related via calls: task_is_ineligible_on_dst_cpu → entity_eligible"
+          ]
+        }
+      ]
+    },
+    {
+      "query": "register dispatch",
+      "normalizedQuery": "register dispatch",
+      "expectedSymbolName": "pick_task_fair",
+      "expectedSymbolRank": 10,
+      "candidates": [
+        {
+          "symbolId": "c:ext/internal.h:field:dispatch",
+          "language": "c",
+          "kind": "field",
+          "name": "dispatch",
+          "qualifiedName": "dispatch",
+          "signature": "dispatch",
+          "summary": "field dispatch",
+          "source": {
+            "path": "ext/internal.h",
+            "range": {
+              "lineStart": 368,
+              "columnStart": 9,
+              "lineEnd": 368,
+              "columnEnd": 17
+            }
+          },
+          "score": 117,
+          "reasons": [
+            "symbol tokens: dispatch",
+            "signature: dispatch",
+            "summary: dispatch",
+            "relationship source: registers"
+          ]
+        },
+        {
+          "symbolId": "c:core.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_possible_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 10896,
+              "columnStart": 2,
+              "lineEnd": 10934,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:cpuacct.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_possible_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "cpuacct.c",
+            "range": {
+              "lineStart": 252,
+              "columnStart": 2,
+              "lineEnd": 258,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:deadline.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_online_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "deadline.c",
+            "range": {
+              "lineStart": 1847,
+              "columnStart": 2,
+              "lineEnd": 1884,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:debug.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_possible_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "debug.c",
+            "range": {
+              "lineStart": 570,
+              "columnStart": 2,
+              "lineEnd": 579,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:ext/cid.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_possible_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "ext/cid.c",
+            "range": {
+              "lineStart": 323,
+              "columnStart": 2,
+              "lineEnd": 334,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:ext/ext.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_online_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "ext/ext.c",
+            "range": {
+              "lineStart": 3503,
+              "columnStart": 2,
+              "lineEnd": 3508,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:update_curr_fair",
+          "language": "c",
+          "kind": "function",
+          "name": "update_curr_fair",
+          "qualifiedName": "update_curr_fair",
+          "signature": "static void update_curr_fair(struct rq *rq)",
+          "summary": "function update_curr_fair",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 2033,
+              "columnStart": 1,
+              "lineEnd": 2036,
+              "columnEnd": 2
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:wakeup_preempt_fair",
+          "language": "c",
+          "kind": "function",
+          "name": "wakeup_preempt_fair",
+          "qualifiedName": "wakeup_preempt_fair",
+          "signature": "static void wakeup_preempt_fair(struct rq *rq, struct task_struct *p, int wake_flags)",
+          "summary": "function wakeup_preempt_fair",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 9770,
+              "columnStart": 1,
+              "lineEnd": 9910,
+              "columnEnd": 2
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:pick_task_fair",
+          "language": "c",
+          "kind": "function",
+          "name": "pick_task_fair",
+          "qualifiedName": "pick_task_fair",
+          "signature": "struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf) __must_hold(__rq_lockp(rq))",
+          "summary": "function pick_task_fair",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 9912,
+              "columnStart": 1,
+              "lineEnd": 9954,
+              "columnEnd": 2
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:yield_task_fair",
+          "language": "c",
+          "kind": "function",
+          "name": "yield_task_fair",
+          "qualifiedName": "yield_task_fair",
+          "signature": "static void yield_task_fair(struct rq *rq)",
+          "summary": "function yield_task_fair",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 10012,
+              "columnStart": 1,
+              "lineEnd": 10050,
+              "columnEnd": 2
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:prio_changed_fair",
+          "language": "c",
+          "kind": "function",
+          "name": "prio_changed_fair",
+          "qualifiedName": "prio_changed_fair",
+          "signature": "static void prio_changed_fair(struct rq *rq, struct task_struct *p, u64 oldprio)",
+          "summary": "function prio_changed_fair",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 14889,
+              "columnStart": 1,
+              "lineEnd": 14912,
+              "columnEnd": 2
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:switching_from_fair",
+          "language": "c",
+          "kind": "function",
+          "name": "switching_from_fair",
+          "qualifiedName": "switching_from_fair",
+          "signature": "static void switching_from_fair(struct rq *rq, struct task_struct *p)",
+          "summary": "function switching_from_fair",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 14995,
+              "columnStart": 1,
+              "lineEnd": 14999,
+              "columnEnd": 2
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:switched_to_fair",
+          "language": "c",
+          "kind": "function",
+          "name": "switched_to_fair",
+          "qualifiedName": "switched_to_fair",
+          "signature": "static void switched_to_fair(struct rq *rq, struct task_struct *p)",
+          "summary": "function switched_to_fair",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 15006,
+              "columnStart": 1,
+              "lineEnd": 15025,
+              "columnEnd": 2
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:fair.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_possible_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "fair.c",
+            "range": {
+              "lineStart": 15161,
+              "columnStart": 2,
+              "lineEnd": 15186,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:membarrier.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_online_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "membarrier.c",
+            "range": {
+              "lineStart": 293,
+              "columnStart": 2,
+              "lineEnd": 320,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:psi.c:function:cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "cpu",
+          "qualifiedName": "cpu",
+          "signature": "for_each_possible_cpu(cpu)",
+          "summary": "function cpu",
+          "source": {
+            "path": "psi.c",
+            "range": {
+              "lineStart": 380,
+              "columnStart": 2,
+              "lineEnd": 394,
+              "columnEnd": 3
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:rt.c:function:switched_to_rt",
+          "language": "c",
+          "kind": "function",
+          "name": "switched_to_rt",
+          "qualifiedName": "switched_to_rt",
+          "signature": "static void switched_to_rt(struct rq *rq, struct task_struct *p)",
+          "summary": "function switched_to_rt",
+          "source": {
+            "path": "rt.c",
+            "range": {
+              "lineStart": 2442,
+              "columnStart": 1,
+              "lineEnd": 2464,
+              "columnEnd": 2
+            }
+          },
+          "score": 95,
+          "reasons": [
+            "relationship target: registers",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:ext/ext.c:function:local_dsq_post_enq",
+          "language": "c",
+          "kind": "function",
+          "name": "local_dsq_post_enq",
+          "qualifiedName": "local_dsq_post_enq",
+          "signature": "static void local_dsq_post_enq(struct scx_sched *sch, struct scx_dispatch_q *dsq, struct task_struct *p, u64 enq_flags)",
+          "summary": "function local_dsq_post_enq",
+          "source": {
+            "path": "ext/ext.c",
+            "range": {
+              "lineStart": 1453,
+              "columnStart": 1,
+              "lineEnd": 1511,
+              "columnEnd": 2
+            }
+          },
+          "score": 93,
+          "reasons": [
+            "signature: dispatch",
+            "relationship source: dispatches-to"
+          ]
+        },
+        {
+          "symbolId": "c:core.c:function:resched_cpu",
+          "language": "c",
+          "kind": "function",
+          "name": "resched_cpu",
+          "qualifiedName": "resched_cpu",
+          "signature": "void resched_cpu(int cpu)",
+          "summary": "function resched_cpu",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 1262,
+              "columnStart": 1,
+              "lineEnd": 1271,
+              "columnEnd": 2
+            }
+          },
+          "score": 85,
+          "reasons": [
+            "relationship source: dispatches-to"
+          ]
+        }
+      ]
+    }
+  ],
+  "readingPath": {
+    "analysisKind": "static-reading-path",
+    "disclaimer": "Static reading order; not a runtime trace.",
+    "seed": {
+      "symbolId": "c:core.c:function:__schedule",
+      "language": "c",
+      "kind": "function",
+      "name": "__schedule",
+      "qualifiedName": "__schedule",
+      "signature": "notrace __schedule(int sched_mode)",
+      "summary": "function __schedule",
+      "source": {
+        "path": "core.c",
+        "range": {
+          "lineStart": 7061,
+          "columnStart": 21,
+          "lineEnd": 7242,
+          "columnEnd": 2
+        }
+      }
+    },
+    "title": "Trail from __schedule",
+    "trail": [
+      {
+        "order": 1,
+        "symbol": {
+          "symbolId": "c:core.c:function:__schedule",
+          "language": "c",
+          "kind": "function",
+          "name": "__schedule",
+          "qualifiedName": "__schedule",
+          "signature": "notrace __schedule(int sched_mode)",
+          "summary": "function __schedule",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7061,
+              "columnStart": 21,
+              "lineEnd": 7242,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "Selected entry point."
+      },
+      {
+        "order": 2,
+        "symbol": {
+          "symbolId": "c:core.c:function:__balance_callbacks",
+          "language": "c",
+          "kind": "function",
+          "name": "__balance_callbacks",
+          "qualifiedName": "__balance_callbacks",
+          "signature": "void __balance_callbacks(struct rq *rq, struct rq_flags *rf)",
+          "summary": "function __balance_callbacks",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 5186,
+              "columnStart": 1,
+              "lineEnd": 5193,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__schedule directly calls __balance_callbacks.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__schedule:calls:c:core.c:function:__balance_callbacks:7237:3",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__schedule directly calls __balance_callbacks.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__schedule",
+            "language": "c",
+            "kind": "function",
+            "name": "__schedule",
+            "qualifiedName": "__schedule",
+            "signature": "notrace __schedule(int sched_mode)",
+            "summary": "function __schedule",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 7061,
+                "columnStart": 21,
+                "lineEnd": 7242,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7237,
+              "columnStart": 3,
+              "lineEnd": 7237,
+              "columnEnd": 32
+            }
+          }
+        }
+      },
+      {
+        "order": 3,
+        "symbol": {
+          "symbolId": "c:sched.h:function:rq_unpin_lock",
+          "language": "c",
+          "kind": "function",
+          "name": "rq_unpin_lock",
+          "qualifiedName": "rq_unpin_lock",
+          "signature": "static inline void rq_unpin_lock(struct rq *rq, struct rq_flags *rf)",
+          "summary": "function rq_unpin_lock",
+          "source": {
+            "path": "sched.h",
+            "range": {
+              "lineStart": 1920,
+              "columnStart": 1,
+              "lineEnd": 1927,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__balance_callbacks directly calls rq_unpin_lock.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__balance_callbacks:calls:c:sched.h:function:rq_unpin_lock:5189:3",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__balance_callbacks directly calls rq_unpin_lock.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__balance_callbacks",
+            "language": "c",
+            "kind": "function",
+            "name": "__balance_callbacks",
+            "qualifiedName": "__balance_callbacks",
+            "signature": "void __balance_callbacks(struct rq *rq, struct rq_flags *rf)",
+            "summary": "function __balance_callbacks",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 5186,
+                "columnStart": 1,
+                "lineEnd": 5193,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 5189,
+              "columnStart": 3,
+              "lineEnd": 5189,
+              "columnEnd": 24
+            }
+          }
+        }
+      },
+      {
+        "order": 4,
+        "symbol": {
+          "symbolId": "c:core.c:function:context_switch",
+          "language": "c",
+          "kind": "function",
+          "name": "context_switch",
+          "qualifiedName": "context_switch",
+          "signature": "rq * context_switch(struct rq *rq, struct task_struct *prev, struct task_struct *next, struct rq_flags *rf) __releases(__rq_lockp(rq))",
+          "summary": "function context_switch",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 5450,
+              "columnStart": 31,
+              "lineEnd": 5514,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__schedule directly calls context_switch.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__schedule:calls:c:core.c:function:context_switch:7234:8",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__schedule directly calls context_switch.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__schedule",
+            "language": "c",
+            "kind": "function",
+            "name": "__schedule",
+            "qualifiedName": "__schedule",
+            "signature": "notrace __schedule(int sched_mode)",
+            "summary": "function __schedule",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 7061,
+                "columnStart": 21,
+                "lineEnd": 7242,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7234,
+              "columnStart": 8,
+              "lineEnd": 7234,
+              "columnEnd": 43
+            }
+          }
+        }
+      },
+      {
+        "order": 5,
+        "symbol": {
+          "symbolId": "c:core.c:function:find_proxy_task",
+          "language": "c",
+          "kind": "function",
+          "name": "find_proxy_task",
+          "qualifiedName": "find_proxy_task",
+          "signature": "static struct task_struct * find_proxy_task(struct rq *rq, struct task_struct *donor, struct rq_flags *rf) __must_hold(__rq_lockp(rq))",
+          "summary": "function find_proxy_task",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 6870,
+              "columnStart": 1,
+              "lineEnd": 7012,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__schedule directly calls find_proxy_task.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__schedule:calls:c:core.c:function:find_proxy_task:7157:11",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__schedule directly calls find_proxy_task.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__schedule",
+            "language": "c",
+            "kind": "function",
+            "name": "__schedule",
+            "qualifiedName": "__schedule",
+            "signature": "notrace __schedule(int sched_mode)",
+            "summary": "function __schedule",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 7061,
+                "columnStart": 21,
+                "lineEnd": 7242,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7157,
+              "columnStart": 11,
+              "lineEnd": 7157,
+              "columnEnd": 41
+            }
+          }
+        }
+      },
+      {
+        "order": 6,
+        "symbol": {
+          "symbolId": "c:sched.h:function:task_on_rq_queued",
+          "language": "c",
+          "kind": "function",
+          "name": "task_on_rq_queued",
+          "qualifiedName": "task_on_rq_queued",
+          "signature": "static inline int task_on_rq_queued(struct task_struct *p)",
+          "summary": "function task_on_rq_queued",
+          "source": {
+            "path": "sched.h",
+            "range": {
+              "lineStart": 2478,
+              "columnStart": 1,
+              "lineEnd": 2481,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "find_proxy_task directly calls task_on_rq_queued.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:find_proxy_task:calls:c:sched.h:function:task_on_rq_queued:6968:8",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "find_proxy_task directly calls task_on_rq_queued.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:find_proxy_task",
+            "language": "c",
+            "kind": "function",
+            "name": "find_proxy_task",
+            "qualifiedName": "find_proxy_task",
+            "signature": "static struct task_struct * find_proxy_task(struct rq *rq, struct task_struct *donor, struct rq_flags *rf) __must_hold(__rq_lockp(rq))",
+            "summary": "function find_proxy_task",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 6870,
+                "columnStart": 1,
+                "lineEnd": 7012,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 6968,
+              "columnStart": 8,
+              "lineEnd": 6968,
+              "columnEnd": 32
+            }
+          }
+        }
+      },
+      {
+        "order": 7,
+        "symbol": {
+          "symbolId": "c:core.c:function:hrtick_schedule_enter",
+          "language": "c",
+          "kind": "function",
+          "name": "hrtick_schedule_enter",
+          "qualifiedName": "hrtick_schedule_enter",
+          "signature": "static inline void hrtick_schedule_enter(struct rq *rq)",
+          "summary": "function hrtick_schedule_enter",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 990,
+              "columnStart": 1,
+              "lineEnd": 995,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__schedule directly calls hrtick_schedule_enter.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__schedule:calls:c:core.c:function:hrtick_schedule_enter:7111:2",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__schedule directly calls hrtick_schedule_enter.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__schedule",
+            "language": "c",
+            "kind": "function",
+            "name": "__schedule",
+            "qualifiedName": "__schedule",
+            "signature": "notrace __schedule(int sched_mode)",
+            "summary": "function __schedule",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 7061,
+                "columnStart": 21,
+                "lineEnd": 7242,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7111,
+              "columnStart": 2,
+              "lineEnd": 7111,
+              "columnEnd": 27
+            }
+          }
+        }
+      },
+      {
+        "order": 8,
+        "symbol": {
+          "symbolId": "c:core.c:function:hrtick_schedule_exit",
+          "language": "c",
+          "kind": "function",
+          "name": "hrtick_schedule_exit",
+          "qualifiedName": "hrtick_schedule_exit",
+          "signature": "static inline void hrtick_schedule_exit(struct rq *rq)",
+          "summary": "function hrtick_schedule_exit",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 997,
+              "columnStart": 1,
+              "lineEnd": 1016,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__schedule directly calls hrtick_schedule_exit.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__schedule:calls:c:core.c:function:hrtick_schedule_exit:7238:3",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__schedule directly calls hrtick_schedule_exit.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__schedule",
+            "language": "c",
+            "kind": "function",
+            "name": "__schedule",
+            "qualifiedName": "__schedule",
+            "signature": "notrace __schedule(int sched_mode)",
+            "summary": "function __schedule",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 7061,
+                "columnStart": 21,
+                "lineEnd": 7242,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7238,
+              "columnStart": 3,
+              "lineEnd": 7238,
+              "columnEnd": 27
+            }
+          }
+        }
+      },
+      {
+        "order": 9,
+        "symbol": {
+          "symbolId": "c:core.c:function:migrate_disable_switch",
+          "language": "c",
+          "kind": "function",
+          "name": "migrate_disable_switch",
+          "qualifiedName": "migrate_disable_switch",
+          "signature": "static void migrate_disable_switch(struct rq *rq, struct task_struct *p)",
+          "summary": "function migrate_disable_switch",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 2451,
+              "columnStart": 1,
+              "lineEnd": 2466,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__schedule directly calls migrate_disable_switch.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__schedule:calls:c:core.c:function:migrate_disable_switch:7089:2",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__schedule directly calls migrate_disable_switch.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__schedule",
+            "language": "c",
+            "kind": "function",
+            "name": "__schedule",
+            "qualifiedName": "__schedule",
+            "signature": "notrace __schedule(int sched_mode)",
+            "summary": "function __schedule",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 7061,
+                "columnStart": 21,
+                "lineEnd": 7242,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7089,
+              "columnStart": 2,
+              "lineEnd": 7089,
+              "columnEnd": 34
+            }
+          }
+        }
+      },
+      {
+        "order": 10,
+        "symbol": {
+          "symbolId": "c:core.c:function:pick_next_task",
+          "language": "c",
+          "kind": "function",
+          "name": "pick_next_task",
+          "qualifiedName": "pick_next_task",
+          "signature": "static struct task_struct * pick_next_task(struct rq *rq, struct rq_flags *rf) __must_hold(__rq_lockp(rq))",
+          "summary": "function pick_next_task",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 6215,
+              "columnStart": 1,
+              "lineEnd": 6453,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__schedule directly calls pick_next_task.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__schedule:calls:c:core.c:function:pick_next_task:7149:9",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__schedule directly calls pick_next_task.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__schedule",
+            "language": "c",
+            "kind": "function",
+            "name": "__schedule",
+            "qualifiedName": "__schedule",
+            "signature": "notrace __schedule(int sched_mode)",
+            "summary": "function __schedule",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 7061,
+                "columnStart": 21,
+                "lineEnd": 7242,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7149,
+              "columnStart": 9,
+              "lineEnd": 7149,
+              "columnEnd": 32
+            }
+          }
+        }
+      },
+      {
+        "order": 11,
+        "symbol": {
+          "symbolId": "c:core.c:function:update_rq_clock",
+          "language": "c",
+          "kind": "function",
+          "name": "update_rq_clock",
+          "qualifiedName": "update_rq_clock",
+          "signature": "void update_rq_clock(struct rq *rq)",
+          "summary": "function update_rq_clock",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 860,
+              "columnStart": 1,
+              "lineEnd": 883,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "pick_next_task directly calls update_rq_clock.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:pick_next_task:calls:c:core.c:function:update_rq_clock:6275:4",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "pick_next_task directly calls update_rq_clock.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:pick_next_task",
+            "language": "c",
+            "kind": "function",
+            "name": "pick_next_task",
+            "qualifiedName": "pick_next_task",
+            "signature": "static struct task_struct * pick_next_task(struct rq *rq, struct rq_flags *rf) __must_hold(__rq_lockp(rq))",
+            "summary": "function pick_next_task",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 6215,
+                "columnStart": 1,
+                "lineEnd": 6453,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 6275,
+              "columnStart": 4,
+              "lineEnd": 6275,
+              "columnEnd": 29
+            }
+          }
+        }
+      },
+      {
+        "order": 12,
+        "symbol": {
+          "symbolId": "c:core.c:function:schedule_debug",
+          "language": "c",
+          "kind": "function",
+          "name": "schedule_debug",
+          "qualifiedName": "schedule_debug",
+          "signature": "static inline void schedule_debug(struct task_struct *prev, bool preempt)",
+          "summary": "function schedule_debug",
+          "source": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 6070,
+              "columnStart": 1,
+              "lineEnd": 6099,
+              "columnEnd": 2
+            }
+          }
+        },
+        "reason": "__schedule directly calls schedule_debug.",
+        "incomingRelationship": {
+          "relationshipId": "c:core.c:function:__schedule:calls:c:core.c:function:schedule_debug:7083:2",
+          "direction": "incoming",
+          "kind": "calls",
+          "confidence": "confirmed",
+          "reason": "__schedule directly calls schedule_debug.",
+          "counterpart": {
+            "symbolId": "c:core.c:function:__schedule",
+            "language": "c",
+            "kind": "function",
+            "name": "__schedule",
+            "qualifiedName": "__schedule",
+            "signature": "notrace __schedule(int sched_mode)",
+            "summary": "function __schedule",
+            "source": {
+              "path": "core.c",
+              "range": {
+                "lineStart": 7061,
+                "columnStart": 21,
+                "lineEnd": 7242,
+                "columnEnd": 2
+              }
+            }
+          },
+          "evidence": {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7083,
+              "columnStart": 2,
+              "lineEnd": 7083,
+              "columnEnd": 31
+            }
+          }
+        }
+      }
+    ],
+    "fileRoute": [
+      {
+        "sourcePath": "autogroup.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "clock.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "core.c",
+        "targetPath": "psi.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "__schedule directly calls psi_account_irqtime.",
+        "evidenceCount": 1,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7227,
+              "columnStart": 3,
+              "lineEnd": 7227,
+              "columnEnd": 38
+            }
+          }
+        ],
+        "evidenceReturned": 1
+      },
+      {
+        "sourcePath": "core.c",
+        "targetPath": "sched.h",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "__balance_callbacks directly calls rq_unpin_lock.",
+        "evidenceCount": 10,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 5189,
+              "columnStart": 3,
+              "lineEnd": 5189,
+              "columnEnd": 24
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7148,
+              "columnStart": 2,
+              "lineEnd": 7148,
+              "columnEnd": 36
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "core.c",
+        "targetPath": "stats.h",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "__schedule directly calls psi_account_irqtime.",
+        "evidenceCount": 2,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7227,
+              "columnStart": 3,
+              "lineEnd": 7227,
+              "columnEnd": 38
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7228,
+              "columnStart": 3,
+              "lineEnd": 7229,
+              "columnEnd": 34
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "deadline.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "ext/ext.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "fair.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "idle.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "isolation.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "membarrier.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "psi.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "rt.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "stats.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "syscalls.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "topology.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      },
+      {
+        "sourcePath": "wait_bit.c",
+        "targetPath": "core.c",
+        "kinds": [
+          "calls"
+        ],
+        "confidence": "confirmed",
+        "reason": "void directly calls __schedule_loop.",
+        "evidenceCount": 5,
+        "evidence": [
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7326,
+              "columnStart": 2,
+              "lineEnd": 7326,
+              "columnEnd": 26
+            }
+          },
+          {
+            "path": "core.c",
+            "range": {
+              "lineStart": 7252,
+              "columnStart": 2,
+              "lineEnd": 7252,
+              "columnEnd": 21
+            }
+          }
+        ],
+        "evidenceReturned": 2
+      }
+    ],
+    "withinFiles": [
+      {
+        "path": "autogroup.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "core.c",
+        "stepSymbols": [
+          "__schedule",
+          "__balance_callbacks",
+          "context_switch",
+          "find_proxy_task",
+          "hrtick_schedule_enter",
+          "hrtick_schedule_exit",
+          "migrate_disable_switch",
+          "pick_next_task",
+          "update_rq_clock",
+          "schedule_debug"
+        ],
+        "relationshipCount": 40
+      },
+      {
+        "path": "clock.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "psi.c",
+        "stepSymbols": [],
+        "relationshipCount": 6
+      },
+      {
+        "path": "sched.h",
+        "stepSymbols": [
+          "rq_unpin_lock",
+          "task_on_rq_queued"
+        ],
+        "relationshipCount": 10
+      },
+      {
+        "path": "stats.h",
+        "stepSymbols": [],
+        "relationshipCount": 2
+      },
+      {
+        "path": "deadline.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "ext/ext.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "fair.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "idle.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "isolation.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "membarrier.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "rt.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "stats.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "syscalls.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "topology.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      },
+      {
+        "path": "wait_bit.c",
+        "stepSymbols": [],
+        "relationshipCount": 5
+      }
+    ],
+    "warnings": [
+      "Traversal reached the 40-node budget.",
+      "Trail stopped at the 12-step readability limit."
+    ],
+    "truncated": true
+  },
+  "limitations": [
+    "The analyzer reads source structure without preprocessing every kernel configuration.",
+    "Inferred function-pointer relationships are evidence-backed possibilities, not runtime traces.",
+    "The benchmark indexes the scheduler subsystem, not the whole Linux repository."
+  ]
+}
