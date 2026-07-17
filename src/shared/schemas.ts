@@ -36,15 +36,36 @@ export const codeEdgeSchema = z.object({
 
 export const warningSchema = z.object({ code: z.string(), message: z.string(), path: z.string() });
 
+export const unresolvedReferenceSchema = z.object({
+  sourceName: z.string(),
+  targetName: z.string(),
+  kind: codeEdgeKindSchema,
+  path: z.string(),
+  range: sourceRangeSchema,
+  guard: z.string(),
+  evidence: z.string(),
+});
+
+export const fileCacheEntrySchema = z.object({
+  path: z.string(),
+  size: z.number().int().nonnegative(),
+  mtimeMs: z.number(),
+  nodes: z.array(codeNodeSchema),
+  unresolvedReferences: z.array(unresolvedReferenceSchema),
+  warnings: z.array(warningSchema),
+});
+
 export const workspaceIndexSchema = z.object({
   version: z.literal(1),
   rootPath: z.string(),
-  createdAtIso: z.iso.datetime(),
+  createdAtIso: z.string(),
   nodes: z.array(codeNodeSchema),
   edges: z.array(codeEdgeSchema),
   warnings: z.array(warningSchema),
   filesIndexed: z.number().int().nonnegative(),
   isPartial: z.boolean(),
+  kernelEnrichment: z.boolean().optional(),
+  fileCache: z.array(fileCacheEntrySchema).optional(),
 });
 
 export const searchResultSchema = z.object({

@@ -68,7 +68,7 @@ describe('CodeTrail webview', () => {
     expect(messages).toStrictEqual([{ kind: 'select-candidate', nodeId: 'pick-next' }]);
   });
 
-  it('should show the file route before within-file symbol paths', () => {
+  it('should show within-file symbol paths before the file route', () => {
     render({
       kind: 'discovery',
       query: 'pick_next_task_fair',
@@ -84,6 +84,8 @@ describe('CodeTrail webview', () => {
             confidence: 'inferred',
             reason: 'pick_task registers pick_next_task_fair',
             evidenceCount: 1,
+            lineStart: 10,
+            lineEnd: 12,
           },
         ],
         fileSections: [
@@ -114,7 +116,7 @@ describe('CodeTrail webview', () => {
     const sectionTitles = [...document.querySelectorAll('section > h2')].map((node) => node.textContent);
     document.querySelector<HTMLButtonElement>('[data-action="open-source"]')?.click();
 
-    expect(sectionTitles).toStrictEqual(['File route', 'Within files']);
+    expect(sectionTitles).toStrictEqual(['Within files', 'File route']);
     expect(document.body.textContent).toContain('sched.h');
     expect(document.body.textContent).toContain('registers');
     expect(document.body.textContent).toContain('inferred');

@@ -34,14 +34,24 @@ export function toTrailView(discovery: CodeDiscovery, index: WorkspaceIndex): Tr
   const steps = discovery.trail.steps
     .map(stepView)
     .filter((step): step is TrailStepView => step !== undefined);
-  const fileLinks: FileLinkView[] = discovery.fileLinks.map((link) => ({
-    sourcePath: link.sourcePath,
-    targetPath: link.targetPath,
-    relationship: link.kinds.join(' + '),
-    confidence: link.confidence,
-    reason: link.reason,
-    evidenceCount: link.evidenceCount,
-  }));
+  const fileLinks: FileLinkView[] = discovery.fileLinks.map((link) => {
+    const evidenceEdge = index.edges.find(
+      (edge) =>
+        nodesById.get(edge.sourceId)?.path === link.sourcePath &&
+        nodesById.get(edge.targetId)?.path === link.targetPath &&
+        link.kinds.includes(edge.kind)
+    );
+    return {
+      sourcePath: link.sourcePath,
+      targetPath: link.targetPath,
+      relationship: link.kinds.join(' + '),
+      confidence: link.confidence,
+      reason: link.reason,
+      evidenceCount: link.evidenceCount,
+      lineStart: evidenceEdge?.range.lineStart ?? 1,
+      lineEnd: evidenceEdge?.range.lineEnd ?? 1,
+    };
+  });
   const fileSections: FileSectionView[] = discovery.fileSections.map((section) => ({
     path: section.path,
     steps: section.steps.map(stepView).filter((step): step is TrailStepView => step !== undefined),

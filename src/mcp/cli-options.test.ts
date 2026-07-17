@@ -3,7 +3,8 @@ import { parseCliOptions } from './cli-options.js';
 
 describe('MCP CLI options', () => {
   it.each([
-    [['--workspace', 'C:\\source tree'], { mode: 'serve', workspacePath: 'C:\\source tree' }],
+    [['--workspace', 'C:\\source tree'], { mode: 'serve', workspacePath: 'C:\\source tree', kernelEnrichment: false }],
+    [['--workspace', '/linux', '--kernel-enrichment'], { mode: 'serve', workspacePath: '/linux', kernelEnrichment: true }],
     [['--help'], { mode: 'help' }],
     [['--version'], { mode: 'version' }],
   ] as const)('should parse the supported invocation %#', (args, expected) => {

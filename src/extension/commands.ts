@@ -11,7 +11,7 @@ import { resolveWorkspaceSource } from './source-navigation.js';
 import { resolveIndexedSymbol } from './symbol-shortcuts.js';
 import { buildWebviewHtml, TrailPanelController, type WebviewPort } from './trail-panel.js';
 
-const graphBudget = { nodesMax: 40, edgesMax: 80, depthMax: 4, timeMsMax: 100 } as const;
+const graphBudget = { nodesMax: 200, edgesMax: 500, depthMax: 10, timeMsMax: 2000 } as const;
 
 function messageFrom(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
@@ -23,6 +23,7 @@ export class CodeTrailCommands implements vscode.Disposable {
   private clangStatus: 'available' | 'unavailable' = 'unavailable';
   private lastQuery = '';
   private readonly codeLensProvider: CodeTrailCodeLensProvider;
+  private indexTimeout: NodeJS.Timeout | undefined;
 
   constructor(
     private readonly context: vscode.ExtensionContext,
@@ -33,6 +34,8 @@ export class CodeTrailCommands implements vscode.Disposable {
 
   register(): void {
     this.context.subscriptions.push(
+      vscode.workspace.onDidOpenTextDocument((doc) => this.debounceBackgroundIndex(doc)),
+      vscode.workspace.onDidSaveTextDocument((doc) => this.debounceBackgroundIndex(doc)),
       vscode.commands.registerCommand('codetrail.indexWorkspace', () => this.indexWorkspace()),
       vscode.commands.registerCommand('codetrail.askQuestion', () => this.showQuestion()),
       vscode.commands.registerCommand('codetrail.explainSymbol', () => this.discoverSymbolLinks()),
@@ -159,11 +162,18 @@ export class CodeTrailCommands implements vscode.Disposable {
     try {
       const configuration = vscode.workspace.getConfiguration('codetrail');
       const filesMax = configuration.get<number>('filesMax', 2_000);
+      const kernelEnrichment = configuration.get<boolean>('kernelEnrichment', false);
+      let currentIndex: any;
+      try { currentIndex = this.coordinator.getCurrentIndex(); } catch {}
       const index = await this.coordinator.startIndex({
         rootPath: folder.uri.fsPath,
         parserWasmPath: vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'tree-sitter.wasm').fsPath,
         languageWasmPath: vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'tree-sitter-c.wasm').fsPath,
         limits: { filesMax, fileBytesMax: 2 * 1024 * 1024, totalBytesMax: 250 * 1024 * 1024 },
+        kernelEnrichment,
+        fileCache: currentIndex?.fileCache,
+      }, (progress) => {
+        void this.setState({ kind: 'indexing', message: progress.message, percent: progress.percent });
       });
       const clang = await probeClang('clang');
       this.clangStatus = clang.status;
@@ -177,6 +187,50 @@ export class CodeTrailCommands implements vscode.Disposable {
       });
     } catch (error) {
       await this.showError(messageFrom(error));
+    }
+  }
+
+  private debounceBackgroundIndex(document: vscode.TextDocument): void {
+    if (document.languageId !== 'c' && document.languageId !== 'cpp') {
+      return;
+    }
+    if (this.indexTimeout) {
+      clearTimeout(this.indexTimeout);
+    }
+    this.indexTimeout = setTimeout(() => {
+      void this.backgroundIndexWorkspace();
+    }, 2000);
+  }
+
+  private async backgroundIndexWorkspace(): Promise<void> {
+    const folder = vscode.workspace.workspaceFolders?.[0];
+    if (!folder) return;
+    try {
+      const configuration = vscode.workspace.getConfiguration('codetrail');
+      const filesMax = configuration.get<number>('filesMax', 2_000);
+      const kernelEnrichment = configuration.get<boolean>('kernelEnrichment', false);
+      let currentIndex: any;
+      try { currentIndex = this.coordinator.getCurrentIndex(); } catch {}
+      const index = await this.coordinator.startIndex({
+        rootPath: folder.uri.fsPath,
+        parserWasmPath: vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'tree-sitter.wasm').fsPath,
+        languageWasmPath: vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'tree-sitter-c.wasm').fsPath,
+        limits: { filesMax, fileBytesMax: 2 * 1024 * 1024, totalBytesMax: 250 * 1024 * 1024 },
+        kernelEnrichment,
+        fileCache: currentIndex?.fileCache,
+      });
+      await saveSnapshot(this.snapshotPath(), index);
+      this.codeLensProvider.refresh();
+      if (this.panel) {
+        await this.setState({
+          kind: 'ready',
+          filesIndexed: index.filesIndexed,
+          warningCount: index.warnings.length,
+          clangStatus: this.clangStatus,
+        });
+      }
+    } catch {
+      // Background index fail is silent
     }
   }
 

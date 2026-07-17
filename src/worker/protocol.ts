@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import type { CodeDiscovery, SearchResult, WorkspaceIndex } from '../core/contracts.js';
-import { codeDiscoverySchema, searchResultSchema, workspaceIndexSchema } from '../shared/schemas.js';
+import { codeDiscoverySchema, searchResultSchema, workspaceIndexSchema, fileCacheEntrySchema } from '../shared/schemas.js';
 
 const requestIdSchema = z.string().min(1).max(128);
 const graphBudgetSchema = z.object({
-  nodesMax: z.number().int().min(1).max(100),
-  edgesMax: z.number().int().min(1).max(200),
+  nodesMax: z.number().int().min(1).max(500),
+  edgesMax: z.number().int().min(1).max(1000),
   depthMax: z.number().int().min(1).max(8),
   timeMsMax: z.number().int().min(1).max(1_000),
 });
@@ -23,6 +23,8 @@ export const workerRequestSchema = z.discriminatedUnion('kind', [
       fileBytesMax: z.number().int().min(1).max(100 * 1024 * 1024),
       totalBytesMax: z.number().int().min(1).max(2_000_000_000),
     }),
+    kernelEnrichment: z.boolean().optional(),
+    fileCache: z.array(fileCacheEntrySchema).optional(),
   }),
   z.object({ kind: z.literal('search'), requestId: requestIdSchema, query: z.string().min(1).max(500), limit: z.number().int().min(1).max(20) }),
   z.object({ kind: z.literal('discover'), requestId: requestIdSchema, seedId: z.string().min(1), budget: graphBudgetSchema }),

@@ -14,7 +14,7 @@ let server: McpServer;
 let service: CodeTrailService;
 
 beforeAll(async () => {
-  service = await CodeTrailService.create({ rootPath: fixtureRootPath, ...resolveDependencyParserAssets() });
+  service = await CodeTrailService.create({ rootPath: fixtureRootPath, ...resolveDependencyParserAssets(), kernelEnrichment: true });
   server = createCodeTrailMcpServer(service, '0.1.0');
   client = new Client({ name: 'codetrail-evaluation-test', version: '1.0.0' });
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();

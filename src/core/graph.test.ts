@@ -69,11 +69,11 @@ describe('bounded graph traversal', () => {
   it('should reject budgets above hard safety maxima', () => {
     expect(() =>
       buildBoundedSubgraph(cyclicIndex, [nodes[0]!.id], {
-        nodesMax: 101,
-        edgesMax: 80,
-        depthMax: 4,
+        nodesMax: 600,
+        edgesMax: 1000,
+        depthMax: 8,
         timeMsMax: 100,
       }),
-    ).toThrowError('nodesMax must be between 1 and 100');
+    ).toThrowError('nodesMax must be between 1 and 500');
   });
 });

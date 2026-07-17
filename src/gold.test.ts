@@ -17,6 +17,7 @@ describe('Linux scheduler gold path', () => {
       parser,
       limits: { filesMax: 20, fileBytesMax: 2_097_152, totalBytesMax: 10_485_760 },
       signal: new AbortController().signal,
+      kernelEnrichment: true,
     });
 
     const result = searchIndex(index, 'schedule', 20);
@@ -79,6 +80,7 @@ describe('Linux scheduler gold path', () => {
       parser,
       limits: { filesMax: 20, fileBytesMax: 2_097_152, totalBytesMax: 10_485_760 },
       signal: new AbortController().signal,
+      kernelEnrichment: true,
     });
 
     const result = searchIndex(index, query, 8);

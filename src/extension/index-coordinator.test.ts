@@ -68,7 +68,7 @@ const discovery: CodeDiscovery = {
 describe('index coordinator', () => {
   it('should restore a validated cached index without starting a worker request', () => {
     const worker = new FakeWorker();
-    const coordinator = new IndexCoordinator(worker);
+    const coordinator = new IndexCoordinator(() => worker);
 
     coordinator.restoreIndex(index('/cached'));
 
@@ -78,7 +78,7 @@ describe('index coordinator', () => {
 
   it('should prevent an older generation from replacing the latest index', async () => {
     const worker = new FakeWorker();
-    const coordinator = new IndexCoordinator(worker);
+    const coordinator = new IndexCoordinator(() => worker);
     const first = coordinator.startIndex({ ...input, rootPath: '/first' });
     const second = coordinator.startIndex({ ...input, rootPath: '/second' });
     const firstRequest = worker.sent[0]!;
@@ -103,7 +103,7 @@ describe('index coordinator', () => {
 
   it('should correlate search and discovery responses to their requests', async () => {
     const worker = new FakeWorker();
-    const coordinator = new IndexCoordinator(worker);
+    const coordinator = new IndexCoordinator(() => worker);
     const indexing = coordinator.startIndex(input);
     const indexRequest = worker.sent[0]!;
     worker.emit({ kind: 'indexed', requestId: indexRequest.requestId, generation: 1, index: index('/workspace') });

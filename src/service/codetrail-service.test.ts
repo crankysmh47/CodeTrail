@@ -15,7 +15,7 @@ afterEach(async () => {
 });
 
 async function createService(rootPath = fixtureRootPath): Promise<CodeTrailService> {
-  return CodeTrailService.create({ rootPath, parserWasmPath, languageWasmPath });
+  return CodeTrailService.create({ rootPath, parserWasmPath, languageWasmPath, kernelEnrichment: true });
 }
 
 describe('CodeTrailService', () => {

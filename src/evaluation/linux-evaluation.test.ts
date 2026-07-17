@@ -26,7 +26,7 @@ const fixtureDefinition: SourceEvaluationDefinition = {
 };
 
 beforeAll(async () => {
-  service = await CodeTrailService.create({ rootPath: fixtureRootPath, ...resolveDependencyParserAssets() });
+  service = await CodeTrailService.create({ rootPath: fixtureRootPath, ...resolveDependencyParserAssets(), kernelEnrichment: true });
 });
 
 afterAll(() => {

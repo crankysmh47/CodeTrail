@@ -93,7 +93,7 @@ function createNode(
     path: normalizedPath,
     range: toRange(node),
     signature: signatureFor(node),
-    summary: `${kind} ${name}`,
+    summary: '',
     tokens: splitTokens(name),
   };
 }

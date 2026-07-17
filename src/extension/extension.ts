@@ -5,8 +5,7 @@ import { IndexCoordinator } from './index-coordinator.js';
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   const workerPath = vscode.Uri.joinPath(context.extensionUri, 'dist', 'analysis-worker.cjs').fsPath;
-  const worker = new Worker(workerPath);
-  const coordinator = new IndexCoordinator(worker);
+  const coordinator = new IndexCoordinator(() => new Worker(workerPath));
   const commands = new CodeTrailCommands(context, coordinator);
   commands.register();
   await commands.restore();

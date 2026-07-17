@@ -19,22 +19,17 @@ function element<K extends keyof HTMLElementTagNameMap>(
   return value;
 }
 
-function renderHeader(root: HTMLElement): void {
+let appShell: { search: HTMLInputElement; content: HTMLElement } | undefined;
+
+function initShell(root: HTMLElement, post: PostMessage): void {
+  if (appShell && root.contains(appShell.search)) return;
+  root.replaceChildren();
+
   const header = element('header', 'product-header');
   header.append(element('h1', '', 'CodeTrail'));
   header.append(element('p', 'product-context', 'Local C relationship explorer'));
   root.append(header);
-}
 
-function renderReindexButton(post: PostMessage, text = 'Reindex'): HTMLButtonElement {
-  const button = element('button', 'secondary-button', text);
-  button.type = 'button';
-  button.dataset.action = 'reindex';
-  button.addEventListener('click', () => post({ kind: 'reindex' }));
-  return button;
-}
-
-function renderQuestionForm(root: HTMLElement, post: PostMessage, initialQuery = ''): HTMLInputElement {
   const form = element('form', 'question-form');
   const label = element('label', 'visually-hidden', 'Search');
   label.htmlFor = 'search';
@@ -45,7 +40,6 @@ function renderQuestionForm(root: HTMLElement, post: PostMessage, initialQuery =
   input.maxLength = 500;
   input.placeholder = 'Search symbols, files, or relationships';
   input.autocomplete = 'off';
-  input.value = initialQuery;
   const submit = element('button', 'primary-button', 'Search');
   submit.type = 'submit';
   form.append(label, input, submit, renderReindexButton(post));
@@ -57,12 +51,22 @@ function renderQuestionForm(root: HTMLElement, post: PostMessage, initialQuery =
     }
   });
   root.append(form);
-  return input;
+
+  const content = element('div', 'app-content');
+  root.append(content);
+
+  appShell = { search: input, content };
 }
 
-function renderReady(root: HTMLElement, state: Extract<WebviewState, { kind: 'ready' }>, post: PostMessage): void {
-  renderHeader(root);
-  const input = renderQuestionForm(root, post);
+function renderReindexButton(post: PostMessage, text = 'Reindex'): HTMLButtonElement {
+  const button = element('button', 'secondary-button', text);
+  button.type = 'button';
+  button.dataset.action = 'reindex';
+  button.addEventListener('click', () => post({ kind: 'reindex' }));
+  return button;
+}
+
+function renderReady(root: HTMLElement, state: Extract<WebviewState, { kind: 'ready' }>): void {
   const warningSummary = state.warningCount === 1 ? '1 warning' : `${state.warningCount} warnings`;
   const status = element(
     'p',
@@ -71,7 +75,6 @@ function renderReady(root: HTMLElement, state: Extract<WebviewState, { kind: 're
   );
   status.role = 'status';
   root.append(status);
-  input.focus();
 }
 
 function renderCandidateResults(
@@ -79,8 +82,6 @@ function renderCandidateResults(
   state: Extract<WebviewState, { kind: 'candidates' }>,
   post: PostMessage,
 ): void {
-  renderHeader(root);
-  renderQuestionForm(root, post, state.query);
   const resultCount = state.candidates.length;
   root.append(element('p', 'result-summary', `${resultCount} ${resultCount === 1 ? 'result' : 'results'}`));
   const list = element('ol', 'candidate-list');
@@ -102,14 +103,25 @@ function renderCandidateResults(
   firstButton?.focus();
 }
 
-function renderFileLink(link: FileLinkView): HTMLLIElement {
+function renderFileLink(link: FileLinkView, post: PostMessage): HTMLLIElement {
   const item = element('li', 'file-link');
   const route = element('p', 'file-route');
   route.append(element('code', '', link.sourcePath));
   route.append(element('span', 'route-arrow', '→'));
   route.append(element('code', '', link.targetPath));
+  
+  const source = element('div', 'source-row');
+  source.append(element('span', 'source-location', `Evidence line ${link.lineStart}`));
+  const button = element('button', 'text-button', 'Open');
+  button.type = 'button';
+  button.dataset.action = 'open-source';
+  button.addEventListener('click', () => {
+    post({ kind: 'open-source', path: link.sourcePath, lineStart: link.lineStart, lineEnd: link.lineEnd });
+  });
+  source.append(button);
+
   const meta = element('p', 'link-meta', `${link.relationship} · ${link.confidence} · ${link.evidenceCount} evidence`);
-  item.append(route, meta, element('p', 'relationship-reason', link.reason));
+  item.append(route, meta, element('p', 'relationship-reason', link.reason), source);
   return item;
 }
 
@@ -140,8 +152,6 @@ function renderDiscovery(
   state: Extract<WebviewState, { kind: 'discovery' }>,
   post: PostMessage,
 ): void {
-  renderHeader(root);
-  renderQuestionForm(root, post, state.query);
   const summary = element('div', 'discovery-summary');
   summary.append(element('p', 'discovery-title', state.discovery.title));
   summary.append(element('p', 'disclaimer', state.discovery.disclaimer));
@@ -151,20 +161,6 @@ function renderDiscovery(
     notice.role = 'alert';
     root.append(notice);
   }
-
-  const routeSection = element('section', 'discovery-section');
-  routeSection.append(element('h2', '', 'File route'));
-  if (state.discovery.fileLinks.length === 0) {
-    const path = state.discovery.fileSections[0]?.path;
-    routeSection.append(element('p', 'empty-note', path ? `This route stays within ${path}.` : 'No cross-file link found.'));
-  } else {
-    const list = element('ol', 'file-link-list');
-    for (const link of state.discovery.fileLinks) {
-      list.append(renderFileLink(link));
-    }
-    routeSection.append(list);
-  }
-  root.append(routeSection);
 
   const filesSection = element('section', 'discovery-section');
   filesSection.append(element('h2', '', 'Within files'));
@@ -183,16 +179,28 @@ function renderDiscovery(
     filesSection.append(article);
   }
   root.append(filesSection);
+
+  const routeSection = element('section', 'discovery-section');
+  routeSection.append(element('h2', '', 'File route'));
+  if (state.discovery.fileLinks.length === 0) {
+    const path = state.discovery.fileSections[0]?.path;
+    routeSection.append(element('p', 'empty-note', path ? `This route stays within ${path}.` : 'No cross-file link found.'));
+  } else {
+    const list = element('ol', 'file-link-list');
+    for (const link of state.discovery.fileLinks) {
+      list.append(renderFileLink(link, post));
+    }
+    routeSection.append(list);
+  }
+  root.append(routeSection);
 }
 
 function renderWelcome(root: HTMLElement, post: PostMessage): void {
-  renderHeader(root);
   root.append(element('p', 'empty-note', 'Index the current C workspace to discover typed links between files and symbols.'));
   root.append(renderReindexButton(post, 'Index this workspace'));
 }
 
 function renderIndexing(root: HTMLElement, state: Extract<WebviewState, { kind: 'indexing' }>): void {
-  renderHeader(root);
   root.append(element('p', 'workspace-status', state.message));
   const progress = element('progress', 'index-progress');
   progress.max = 100;
@@ -201,9 +209,7 @@ function renderIndexing(root: HTMLElement, state: Extract<WebviewState, { kind: 
   root.append(progress);
 }
 
-function renderEmpty(root: HTMLElement, state: Extract<WebviewState, { kind: 'empty' }>, post: PostMessage): void {
-  renderHeader(root);
-  renderQuestionForm(root, post, state.query);
+function renderEmpty(root: HTMLElement, state: Extract<WebviewState, { kind: 'empty' }>): void {
   root.append(element('p', 'empty-title', state.message));
   root.append(element('p', 'empty-note', 'Try a symbol, file, or relationship keyword such as sched, calls, registers, or dispatch.'));
 }
@@ -213,23 +219,30 @@ function renderProblem(
   state: Extract<WebviewState, { kind: 'partial' | 'error' }>,
   post: PostMessage,
 ): void {
-  renderHeader(root);
   const message = element('p', state.kind === 'error' ? 'error' : 'warning', state.message);
   message.role = 'alert';
   root.append(message, renderReindexButton(post, state.kind === 'partial' ? 'Continue indexing' : 'Try indexing again'));
 }
 
 export function renderApp(root: HTMLElement, state: WebviewState, post: PostMessage): void {
-  root.replaceChildren();
+  initShell(root, post);
+  const { search, content } = appShell!;
+  
+  if ('query' in state && typeof state.query === 'string' && search.value !== state.query && document.activeElement !== search) {
+    search.value = state.query;
+  }
+  
+  content.replaceChildren();
+
   switch (state.kind) {
-    case 'welcome': renderWelcome(root, post); break;
-    case 'indexing': renderIndexing(root, state); break;
-    case 'ready': renderReady(root, state, post); break;
-    case 'candidates': renderCandidateResults(root, state, post); break;
-    case 'discovery': renderDiscovery(root, state, post); break;
-    case 'empty': renderEmpty(root, state, post); break;
+    case 'welcome': renderWelcome(content, post); break;
+    case 'indexing': renderIndexing(content, state); break;
+    case 'ready': renderReady(content, state); break;
+    case 'candidates': renderCandidateResults(content, state, post); break;
+    case 'discovery': renderDiscovery(content, state, post); break;
+    case 'empty': renderEmpty(content, state); break;
     case 'partial':
-    case 'error': renderProblem(root, state, post); break;
+    case 'error': renderProblem(content, state, post); break;
   }
 }
 

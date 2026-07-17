@@ -16,10 +16,10 @@ export type SubgraphResult = Readonly<{
 }>;
 
 const hardMaxima: GraphBudget = {
-  nodesMax: 100,
-  edgesMax: 200,
-  depthMax: 8,
-  timeMsMax: 1_000,
+  nodesMax: 500,
+  edgesMax: 1000,
+  depthMax: 16,
+  timeMsMax: 5000,
 };
 
 const edgePriority: Readonly<Record<CodeEdge['kind'], number>> = {
@@ -53,10 +53,13 @@ export function buildBoundedSubgraph(
   const nodesById = new Map(index.nodes.map((node) => [node.id, node]));
   const adjacency = new Map<string, CodeEdge[]>();
   for (const edge of index.edges) {
-    for (const nodeId of [edge.sourceId, edge.targetId]) {
-      const adjacent = adjacency.get(nodeId) ?? [];
-      adjacent.push(edge);
-      adjacency.set(nodeId, adjacent);
+    const adjacentSrc = adjacency.get(edge.sourceId) ?? [];
+    adjacentSrc.push(edge);
+    adjacency.set(edge.sourceId, adjacentSrc);
+    if (edge.sourceId !== edge.targetId) {
+      const adjacentTgt = adjacency.get(edge.targetId) ?? [];
+      adjacentTgt.push(edge);
+      adjacency.set(edge.targetId, adjacentTgt);
     }
   }
   for (const adjacent of adjacency.values()) {

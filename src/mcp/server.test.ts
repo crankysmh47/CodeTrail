@@ -21,6 +21,7 @@ beforeAll(async () => {
   service = await CodeTrailService.create({
     rootPath: fixtureRootPath,
     ...resolveDependencyParserAssets(),
+    kernelEnrichment: true,
   });
 });
 

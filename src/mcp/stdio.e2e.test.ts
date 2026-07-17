@@ -35,7 +35,7 @@ async function connectSpawnedServer(workspacePath: string): Promise<Readonly<{
 }>> {
   const transport = new StdioClientTransport({
     command: process.execPath,
-    args: [bundlePath, '--workspace', workspacePath],
+    args: [bundlePath, '--workspace', workspacePath, '--kernel-enrichment'],
     stderr: 'pipe',
   });
   const stderr: string[] = [];
