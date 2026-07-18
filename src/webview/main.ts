@@ -162,6 +162,20 @@ function renderDiscovery(
     root.append(notice);
   }
 
+  const routeSection = element('section', 'discovery-section');
+  routeSection.append(element('h2', '', 'File route'));
+  if (state.discovery.fileLinks.length === 0) {
+    const path = state.discovery.fileSections[0]?.path;
+    routeSection.append(element('p', 'empty-note', path ? `This route stays within ${path}.` : 'No cross-file link found.'));
+  } else {
+    const list = element('ol', 'file-link-list');
+    for (const link of state.discovery.fileLinks) {
+      list.append(renderFileLink(link, post));
+    }
+    routeSection.append(list);
+  }
+  root.append(routeSection);
+
   const filesSection = element('section', 'discovery-section');
   filesSection.append(element('h2', '', 'Within files'));
   for (const file of state.discovery.fileSections) {
@@ -179,20 +193,6 @@ function renderDiscovery(
     filesSection.append(article);
   }
   root.append(filesSection);
-
-  const routeSection = element('section', 'discovery-section');
-  routeSection.append(element('h2', '', 'File route'));
-  if (state.discovery.fileLinks.length === 0) {
-    const path = state.discovery.fileSections[0]?.path;
-    routeSection.append(element('p', 'empty-note', path ? `This route stays within ${path}.` : 'No cross-file link found.'));
-  } else {
-    const list = element('ol', 'file-link-list');
-    for (const link of state.discovery.fileLinks) {
-      list.append(renderFileLink(link, post));
-    }
-    routeSection.append(list);
-  }
-  root.append(routeSection);
 }
 
 function renderWelcome(root: HTMLElement, post: PostMessage): void {

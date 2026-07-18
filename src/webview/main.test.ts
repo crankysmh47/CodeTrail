@@ -68,7 +68,7 @@ describe('CodeTrail webview', () => {
     expect(messages).toStrictEqual([{ kind: 'select-candidate', nodeId: 'pick-next' }]);
   });
 
-  it('should show within-file symbol paths before the file route', () => {
+  it('should show the file route before within-file symbol paths', () => {
     render({
       kind: 'discovery',
       query: 'pick_next_task_fair',
@@ -114,16 +114,30 @@ describe('CodeTrail webview', () => {
     });
 
     const sectionTitles = [...document.querySelectorAll('section > h2')].map((node) => node.textContent);
-    document.querySelector<HTMLButtonElement>('[data-action="open-source"]')?.click();
+    document.querySelector<HTMLButtonElement>('.file-link [data-action="open-source"]')?.click();
 
-    expect(sectionTitles).toStrictEqual(['Within files', 'File route']);
+    expect(sectionTitles).toStrictEqual(['File route', 'Within files']);
     expect(document.body.textContent).toContain('sched.h');
     expect(document.body.textContent).toContain('registers');
     expect(document.body.textContent).toContain('inferred');
     expect(document.body.textContent).toContain('Static reading order; not a runtime trace.');
     expect(messages).toStrictEqual([
-      { kind: 'open-source', path: 'kernel/sched/fair.c', lineStart: 15, lineEnd: 18 },
+      { kind: 'open-source', path: 'kernel/sched/sched.h', lineStart: 10, lineEnd: 12 },
     ]);
+  });
+
+  it('should preserve the search input while result content changes', () => {
+    const root = render({ kind: 'ready', filesIndexed: 42, warningCount: 0, clangStatus: 'unavailable' });
+    const input = root.querySelector<HTMLInputElement>('[name="search"]');
+    if (!input) {
+      throw new Error('Expected the search input');
+    }
+    input.value = 'schedule';
+
+    renderApp(root, { kind: 'indexing', message: 'Parsing C structure', percent: 40 }, (message) => messages.push(message));
+
+    expect(root.querySelector('[name="search"]')).toBe(input);
+    expect(input.value).toBe('schedule');
   });
 
   it('should keep recovery actions visible for welcome, indexing, and empty results', () => {
