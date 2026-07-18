@@ -22,6 +22,17 @@ describe('analysis worker protocol', () => {
     expect(parsed.success).toBe(false);
   });
 
+  it('should reject discovery requests above the compact graph bounds', () => {
+    const parsed = workerRequestSchema.safeParse({
+      kind: 'discover',
+      requestId: 'discover-large',
+      seedId: 'node-1',
+      budget: { nodesMax: 101, edgesMax: 80, depthMax: 4, timeMsMax: 100 },
+    });
+
+    expect(parsed.success).toBe(false);
+  });
+
   it('should validate a structured discovery response', () => {
     const parsed = workerResponseSchema.parse({
       kind: 'discovery-result',

@@ -173,7 +173,11 @@ function scoreRelationships(node: CodeNode, edges: readonly CodeEdge[], queryTok
   return { nodeId: node.id, score, reasons };
 }
 
-function scoreNode(node: CodeNode, edges: readonly CodeEdge[], queryTokens: readonly string[]): SearchCandidate | undefined {
+function scoreNode(
+  node: CodeNode,
+  edges: readonly CodeEdge[],
+  queryTokens: readonly string[],
+): SearchCandidate | undefined {
   const querySet = new Set(queryTokens);
   const symbolMatches = intersection(node.tokens, querySet);
   const signatureMatches = intersection(tokenize(node.signature), querySet);

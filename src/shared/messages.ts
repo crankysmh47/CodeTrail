@@ -30,6 +30,8 @@ export type FileLinkView = Readonly<{
   confidence: 'confirmed' | 'inferred' | 'possible';
   reason: string;
   evidenceCount: number;
+  lineStart: number;
+  lineEnd: number;
 }>;
 
 export type FileSectionView = Readonly<{

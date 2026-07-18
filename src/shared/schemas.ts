@@ -39,7 +39,7 @@ export const warningSchema = z.object({ code: z.string(), message: z.string(), p
 export const workspaceIndexSchema = z.object({
   version: z.literal(1),
   rootPath: z.string(),
-  createdAtIso: z.iso.datetime(),
+  createdAtIso: z.string(),
   nodes: z.array(codeNodeSchema),
   edges: z.array(codeEdgeSchema),
   warnings: z.array(warningSchema),

@@ -33,7 +33,7 @@ async function handle(value: unknown): Promise<void> {
     }
     if (request.kind === 'index') {
       const operation = generationGuard.begin(request.generation);
-      post({ kind: 'progress', requestId: request.requestId, message: 'Indexing C sources', percent: 10 });
+      post({ kind: 'progress', requestId: request.requestId, message: 'Starting analysis worker...', percent: 0 });
       const parser = await createCParser({
         parserWasmPath: request.parserWasmPath,
         languageWasmPath: request.languageWasmPath,
@@ -43,6 +43,9 @@ async function handle(value: unknown): Promise<void> {
         parser,
         limits: request.limits,
         signal: operation.signal,
+        onProgress: (progress) => {
+          post({ kind: 'progress', requestId: request.requestId, message: progress.message, percent: progress.percent });
+        },
       });
       if (generationGuard.canPublish(operation)) {
         currentIndex = index;

@@ -46,6 +46,7 @@ describe('VSIX package contents', () => {
   it.each([
     [['extension/package.json'], expectedManifest, 700_000, /missing required/i],
     [[...requiredPaths, 'extension/src/secret.ts'], expectedManifest, 700_000, /forbidden/i],
+    [[...requiredPaths, 'extension/test/core.c'], expectedManifest, 700_000, /forbidden/i],
     [[...requiredPaths, 'extension/dist/extension.cjs.map'], expectedManifest, 700_000, /forbidden/i],
     [requiredPaths, { ...expectedManifest, publisher: 'wrong' }, 700_000, /manifest identity/i],
     [requiredPaths, expectedManifest, 6 * 1024 * 1024, /size ceiling/i],

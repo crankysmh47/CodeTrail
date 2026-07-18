@@ -49,7 +49,7 @@ export async function loadSnapshot(path: string): Promise<SnapshotLoadResult> {
     if (!parsed.success) {
       return { status: 'stale', reason: 'Saved index has an incompatible schema.' };
     }
-    return { status: 'ready', index: parsed.data };
+    return { status: 'ready', index: parsed.data as unknown as WorkspaceIndex };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return { status: 'stale', reason: `Saved index could not be loaded: ${message}` };

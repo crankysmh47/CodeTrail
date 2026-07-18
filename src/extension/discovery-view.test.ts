@@ -93,8 +93,10 @@ describe('discovery view mapping', () => {
         targetPath: 'fair.c',
         relationship: 'registers',
         confidence: 'inferred',
-        reason: registration.reason,
+        reason: 'pick_task registers pick_next_task_fair',
         evidenceCount: 1,
+        lineStart: 20,
+        lineEnd: 20,
       },
     ]);
     expect(view.fileSections.map((section) => [section.path, section.steps.map((step) => step.name)])).toStrictEqual([

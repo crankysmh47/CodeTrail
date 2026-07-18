@@ -164,6 +164,8 @@ export class CodeTrailCommands implements vscode.Disposable {
         parserWasmPath: vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'tree-sitter.wasm').fsPath,
         languageWasmPath: vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'tree-sitter-c.wasm').fsPath,
         limits: { filesMax, fileBytesMax: 2 * 1024 * 1024, totalBytesMax: 250 * 1024 * 1024 },
+      }, (progress) => {
+        void this.setState({ kind: 'indexing', message: progress.message, percent: progress.percent });
       });
       const clang = await probeClang('clang');
       this.clangStatus = clang.status;

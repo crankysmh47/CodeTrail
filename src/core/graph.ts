@@ -53,10 +53,13 @@ export function buildBoundedSubgraph(
   const nodesById = new Map(index.nodes.map((node) => [node.id, node]));
   const adjacency = new Map<string, CodeEdge[]>();
   for (const edge of index.edges) {
-    for (const nodeId of [edge.sourceId, edge.targetId]) {
-      const adjacent = adjacency.get(nodeId) ?? [];
-      adjacent.push(edge);
-      adjacency.set(nodeId, adjacent);
+    const adjacentSrc = adjacency.get(edge.sourceId) ?? [];
+    adjacentSrc.push(edge);
+    adjacency.set(edge.sourceId, adjacentSrc);
+    if (edge.sourceId !== edge.targetId) {
+      const adjacentTgt = adjacency.get(edge.targetId) ?? [];
+      adjacentTgt.push(edge);
+      adjacency.set(edge.targetId, adjacentTgt);
     }
   }
   for (const adjacent of adjacency.values()) {

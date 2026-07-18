@@ -96,4 +96,18 @@ describe('workspace indexer', () => {
 
     expect(new Set(index.nodes.map((node) => node.id)).size).toBe(index.nodes.length);
   });
+
+  it('should build source-backed C relationships by default', async () => {
+    const rootPath = await fixtureRoot();
+    await writeFile(join(rootPath, 'beta.c'), 'int beta(void) { return 1; }');
+
+    const index = await indexWorkspace({
+      rootPath,
+      parser,
+      limits: { filesMax: 20, fileBytesMax: 10_000, totalBytesMax: 20_000 },
+      signal: new AbortController().signal,
+    });
+
+    expect(index.edges).toContainEqual(expect.objectContaining({ kind: 'calls', confidence: 'confirmed' }));
+  });
 });

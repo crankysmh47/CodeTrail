@@ -16,6 +16,7 @@ export type IndexWorkspaceInput = Readonly<{
   parser: Parser;
   limits: IndexLimits;
   signal: AbortSignal;
+  onProgress?: (progress: { percent: number; message: string }) => void;
 }>;
 
 const excludedDirectories = new Set(['.git', '.worktrees', 'build', 'dist', 'node_modules', 'out']);
@@ -88,6 +89,12 @@ export async function indexWorkspace(input: IndexWorkspaceInput): Promise<Worksp
 
   for (const absolutePath of selected) {
     const path = workspaceRelativePath(rootPath, absolutePath);
+    if (input.onProgress) {
+      input.onProgress({
+        percent: Math.round((analyses.length / selected.length) * 100),
+        message: `Indexing ${path}...`,
+      });
+    }
     if (input.signal.aborted) {
       isPartial = true;
       warnings.push({ code: 'INDEX_CANCELLED', message: 'Indexing was cancelled; partial results were kept.', path });
@@ -111,8 +118,9 @@ export async function indexWorkspace(input: IndexWorkspaceInput): Promise<Worksp
       });
       break;
     }
-    const source = await readFile(absolutePath, 'utf8');
     totalBytes += metadata.size;
+
+    const source = await readFile(absolutePath, 'utf8');
     analyses.push(await analyzeCFile({ parser: input.parser, path, source, nodeCountMax: 100_000 }));
   }
 
