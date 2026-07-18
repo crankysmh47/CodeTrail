@@ -20,7 +20,7 @@ const requiredEntryPaths = [
 ] as const;
 
 const forbiddenEntryPatterns: readonly RegExp[] = [
-  /\/(?:src|test-fixtures|scripts|coverage|demo|\.cache|\.worktrees)\//,
+  /\/(?:src|test|test-fixtures|scripts|coverage|demo|\.cache|\.worktrees)\//,
   /\/docs\/superpowers\//,
   /(?:^|\/)package-lock\.json$/,
   /(?:^|\/)(?:tsconfig|vitest\.config|esbuild)\.(?:json|ts|mjs)$/,
