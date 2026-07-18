@@ -2,7 +2,7 @@
   "name": "codetrail-c-evidence-paths",
   "displayName": "CodeTrail: C Evidence Paths",
   "description": "Search unfamiliar C code as evidence-backed file and symbol paths.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "crankysmh47",
   "author": {
     "name": "CodeTrail contributors"
