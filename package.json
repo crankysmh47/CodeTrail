@@ -117,11 +117,6 @@
           "minimum": 1,
           "maximum": 10000,
           "description": "Maximum number of C source and header files indexed per workspace."
-        },
-        "codetrail.kernelEnrichment": {
-          "type": "boolean",
-          "default": false,
-          "description": "Enable domain-specific enrichment for the Linux kernel scheduler."
         }
       }
     }

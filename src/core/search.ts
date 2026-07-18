@@ -50,18 +50,12 @@ const relatedEdgeBoost: Readonly<Record<CodeEdgeKind, number>> = {
   'guarded-by': 10,
 };
 
-function tokenize(value: string, kernelEnrichment: boolean): readonly string[] {
+function tokenize(value: string): readonly string[] {
   const expanded = value.replaceAll(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase();
   const tokens = expanded.split(/[^a-z0-9]+/).filter((token) => token.length > 0);
   return tokens
     .filter((token) => !stopWords.has(token))
-    .map((token) => {
-      const syn = synonyms[token];
-      if (syn === 'sched' && !kernelEnrichment) {
-        return token;
-      }
-      return syn ?? token;
-    });
+    .map((token) => synonyms[token] ?? token);
 }
 
 function intersection(left: readonly string[], right: ReadonlySet<string>): readonly string[] {
@@ -183,13 +177,12 @@ function scoreNode(
   node: CodeNode,
   edges: readonly CodeEdge[],
   queryTokens: readonly string[],
-  kernelEnrichment: boolean,
 ): SearchCandidate | undefined {
   const querySet = new Set(queryTokens);
   const symbolMatches = intersection(node.tokens, querySet);
-  const signatureMatches = intersection(tokenize(node.signature, kernelEnrichment), querySet);
-  const pathMatches = intersection(tokenize(node.path, kernelEnrichment), querySet);
-  const summaryMatches = intersection(tokenize(node.summary, kernelEnrichment), querySet);
+  const signatureMatches = intersection(tokenize(node.signature), querySet);
+  const pathMatches = intersection(tokenize(node.path), querySet);
+  const summaryMatches = intersection(tokenize(node.summary), querySet);
   const reasons: string[] = [];
   let score = 0;
 
@@ -220,7 +213,7 @@ function scoreNode(
   score += relationship.score;
   reasons.push(...relationship.reasons);
 
-  const normalizedName = tokenize(node.name, kernelEnrichment).join(' ');
+  const normalizedName = tokenize(node.name).join(' ');
   const normalizedQuery = queryTokens.join(' ');
   if (normalizedName === normalizedQuery) {
     score += 200;
@@ -236,8 +229,7 @@ export function searchIndex(index: WorkspaceIndex, query: string, limit: number)
   if (!Number.isInteger(limit) || limit < 1 || limit > 20) {
     throw new Error(`Search limit must be an integer between 1 and 20; received ${limit}`);
   }
-  const kernelEnrichment = index.kernelEnrichment ?? false;
-  const queryTokens = tokenize(query, kernelEnrichment);
+  const queryTokens = tokenize(query);
   const normalizedQuery = queryTokens.join(' ');
   if (normalizedQuery.length === 0) {
     return { normalizedQuery: '', candidates: [] };
@@ -250,7 +242,7 @@ export function searchIndex(index: WorkspaceIndex, query: string, limit: number)
     }
   }
   const directCandidates = [...nodesById.values()]
-    .map((node) => scoreNode(node, index.edges, queryTokens, kernelEnrichment))
+    .map((node) => scoreNode(node, index.edges, queryTokens))
     .filter((candidate): candidate is SearchCandidate => candidate !== undefined);
   const directById = new Map(directCandidates.map((candidate) => [candidate.nodeId, candidate]));
   const relatedById = new Map<string, { score: number; reasons: string[] }>();

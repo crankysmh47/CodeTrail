@@ -73,15 +73,6 @@ export type FileAnalysis = Readonly<{
   warnings: readonly AnalysisWarning[];
 }>;
 
-export type FileCacheEntry = Readonly<{
-  path: string;
-  size: number;
-  mtimeMs: number;
-  nodes: readonly CodeNode[];
-  unresolvedReferences: readonly UnresolvedReference[];
-  warnings: readonly AnalysisWarning[];
-}>;
-
 export type WorkspaceIndex = Readonly<{
   version: 1;
   rootPath: string;
@@ -91,8 +82,6 @@ export type WorkspaceIndex = Readonly<{
   warnings: readonly AnalysisWarning[];
   filesIndexed: number;
   isPartial: boolean;
-  kernelEnrichment?: boolean;
-  fileCache?: readonly FileCacheEntry[];
 }>;
 
 export type SearchCandidate = Readonly<{

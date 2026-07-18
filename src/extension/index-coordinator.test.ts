@@ -1,10 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { CodeDiscovery, WorkspaceIndex } from '../core/contracts.js';
 import { IndexCoordinator, type WorkerLike } from './index-coordinator.js';
 import type { WorkerRequest, WorkerResponse } from '../worker/protocol.js';
 
 class FakeWorker implements WorkerLike {
   readonly sent: WorkerRequest[] = [];
+  terminationCount = 0;
   private messageListener: (value: unknown) => void = () => {};
   private errorListener: (error: Error) => void = () => {};
 
@@ -22,6 +23,7 @@ class FakeWorker implements WorkerLike {
   }
 
   async terminate(): Promise<number> {
+    this.terminationCount += 1;
     return 0;
   }
 
@@ -99,6 +101,58 @@ describe('index coordinator', () => {
     await Promise.all([first, second]);
 
     expect(coordinator.getCurrentIndex().rootPath).toBe('/second');
+  });
+
+  it('should forward indexing progress to the active request', async () => {
+    const worker = new FakeWorker();
+    const coordinator = new IndexCoordinator(() => worker);
+    const progress: Array<{ percent: number; message: string }> = [];
+    const indexing = coordinator.startIndex(input, (value) => progress.push(value));
+    const request = worker.sent[0]!;
+
+    worker.emit({
+      kind: 'progress',
+      requestId: request.requestId,
+      percent: 50,
+      message: 'Indexing fair.c...',
+    });
+    worker.emit({ kind: 'indexed', requestId: request.requestId, generation: 1, index: index('/workspace') });
+    await indexing;
+
+    expect(progress).toStrictEqual([{ percent: 50, message: 'Indexing fair.c...' }]);
+  });
+
+  it('should replace a timed-out worker so later requests can succeed', async () => {
+    vi.useFakeTimers();
+    try {
+      const firstWorker = new FakeWorker();
+      const replacementWorker = new FakeWorker();
+      const workers = [firstWorker, replacementWorker];
+      let workerIndex = 0;
+      const coordinator = new IndexCoordinator(() => workers[workerIndex++]!);
+      const searching = coordinator.search('schedule', 5);
+      const request = firstWorker.sent[0]!;
+
+      const rejection = expect(searching).rejects.toThrow(`Worker request ${request.requestId} timed out.`);
+      await vi.advanceTimersByTimeAsync(10_000);
+      await rejection;
+
+      expect(firstWorker.terminationCount).toBe(1);
+      const indexing = coordinator.startIndex(input);
+      const indexRequest = replacementWorker.sent[0]!;
+      expect(indexRequest.kind).toBe('index');
+      replacementWorker.emit({
+        kind: 'indexed',
+        requestId: indexRequest.requestId,
+        generation: 1,
+        index: index('/replacement'),
+      });
+
+      await expect(indexing).resolves.toEqual(expect.objectContaining({ rootPath: '/replacement' }));
+      await coordinator.dispose();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('should correlate search and discovery responses to their requests', async () => {

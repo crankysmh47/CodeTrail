@@ -101,7 +101,6 @@ describe('deterministic search', () => {
       nodes: [unrelated, registeredImplementation, schedulerField],
       edges: [registration],
       filesIndexed: 3,
-      kernelEnrichment: true,
     };
 
     const result = searchIndex(schedulerIndex, 'schedule', 20);
@@ -163,7 +162,6 @@ describe('deterministic search', () => {
       ],
       edges: [registration, ...noisyRegistrations],
       filesIndexed: 3,
-      kernelEnrichment: true,
     };
 
     const result = searchIndex(noisyIndex, 'schedule', 20);

@@ -1,7 +1,7 @@
 import { readdir, readFile, realpath, stat } from 'node:fs/promises';
 import { extname, relative, resolve } from 'node:path';
 import type Parser from 'web-tree-sitter';
-import { normalizeWorkspacePath, type AnalysisWarning, type WorkspaceIndex, type FileCacheEntry } from '../core/contracts.js';
+import { normalizeWorkspacePath, type AnalysisWarning, type WorkspaceIndex } from '../core/contracts.js';
 import { analyzeCFile } from './c-adapter.js';
 import { enrichKernelRelationships } from './kernel-enricher.js';
 
@@ -17,8 +17,6 @@ export type IndexWorkspaceInput = Readonly<{
   limits: IndexLimits;
   signal: AbortSignal;
   onProgress?: (progress: { percent: number; message: string }) => void;
-  kernelEnrichment?: boolean;
-  fileCache?: readonly FileCacheEntry[];
 }>;
 
 const excludedDirectories = new Set(['.git', '.worktrees', 'build', 'dist', 'node_modules', 'out']);
@@ -89,9 +87,6 @@ export async function indexWorkspace(input: IndexWorkspaceInput): Promise<Worksp
     });
   }
 
-  const newFileCache: FileCacheEntry[] = [];
-  const cacheByPath = new Map(input.fileCache?.map((entry) => [entry.path, entry]));
-
   for (const absolutePath of selected) {
     const path = workspaceRelativePath(rootPath, absolutePath);
     if (input.onProgress) {
@@ -125,29 +120,8 @@ export async function indexWorkspace(input: IndexWorkspaceInput): Promise<Worksp
     }
     totalBytes += metadata.size;
 
-    const cached = cacheByPath.get(path);
-    if (cached && cached.size === metadata.size && cached.mtimeMs === metadata.mtimeMs) {
-      analyses.push({
-        path: cached.path,
-        nodes: cached.nodes,
-        unresolvedReferences: cached.unresolvedReferences,
-        warnings: cached.warnings,
-      });
-      newFileCache.push(cached);
-      continue;
-    }
-
     const source = await readFile(absolutePath, 'utf8');
-    const analysis = await analyzeCFile({ parser: input.parser, path, source, nodeCountMax: 100_000 });
-    analyses.push(analysis);
-    newFileCache.push({
-      path,
-      size: metadata.size,
-      mtimeMs: metadata.mtimeMs,
-      nodes: analysis.nodes,
-      unresolvedReferences: analysis.unresolvedReferences,
-      warnings: analysis.warnings,
-    });
+    analyses.push(await analyzeCFile({ parser: input.parser, path, source, nodeCountMax: 100_000 }));
   }
 
   const nodesById = new Map<string, WorkspaceIndex['nodes'][number]>();
@@ -159,7 +133,7 @@ export async function indexWorkspace(input: IndexWorkspaceInput): Promise<Worksp
     }
   }
   const nodes = [...nodesById.values()];
-  const edges = input.kernelEnrichment ? enrichKernelRelationships(analyses) : [];
+  const edges = enrichKernelRelationships(analyses);
   return {
     version: 1,
     rootPath,
@@ -169,7 +143,5 @@ export async function indexWorkspace(input: IndexWorkspaceInput): Promise<Worksp
     warnings: [...warnings, ...analyses.flatMap((analysis) => analysis.warnings)],
     filesIndexed: analyses.length,
     isPartial,
-    ...(input.kernelEnrichment !== undefined ? { kernelEnrichment: input.kernelEnrichment } : {}),
-    ...(newFileCache.length > 0 ? { fileCache: newFileCache } : {}),
   };
 }

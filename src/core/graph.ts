@@ -16,10 +16,10 @@ export type SubgraphResult = Readonly<{
 }>;
 
 const hardMaxima: GraphBudget = {
-  nodesMax: 500,
-  edgesMax: 1000,
-  depthMax: 16,
-  timeMsMax: 5000,
+  nodesMax: 100,
+  edgesMax: 200,
+  depthMax: 8,
+  timeMsMax: 1_000,
 };
 
 const edgePriority: Readonly<Record<CodeEdge['kind'], number>> = {
