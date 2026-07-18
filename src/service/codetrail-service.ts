@@ -13,7 +13,6 @@ export type CodeTrailServiceOptions = Readonly<{
   languageWasmPath: string;
   limits?: Readonly<Partial<IndexLimits>>;
   signal?: AbortSignal;
-  kernelEnrichment?: boolean;
 }>;
 
 export const serviceIndexLimits: IndexLimits = {
@@ -75,7 +74,6 @@ export class CodeTrailService {
         parser,
         limits: completeIndexLimits(options.limits ?? {}),
         signal: options.signal ?? new AbortController().signal,
-        ...(options.kernelEnrichment !== undefined && { kernelEnrichment: options.kernelEnrichment }),
       });
       return new CodeTrailService(parser, index);
     } catch (error) {

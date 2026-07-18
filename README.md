@@ -24,7 +24,7 @@ CodeTrail is local and deterministic. It does not call an AI service at runtime,
 
 ## Install
 
-CodeTrail requires VS Code 1.125 or newer.
+CodeTrail requires VS Code 1.107 or newer.
 
 Build and install the VSIX:
 

@@ -11,13 +11,12 @@ function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'CodeTrail MCP could not start.';
 }
 
-async function serve(workspacePath: string, kernelEnrichment?: boolean): Promise<void> {
+async function serve(workspacePath: string): Promise<void> {
   const controller = new AbortController();
   const service = await CodeTrailService.create({
     rootPath: workspacePath,
     ...resolveBundledParserAssets(__dirname),
     signal: controller.signal,
-    ...(kernelEnrichment !== undefined && { kernelEnrichment }),
   });
   const server = createCodeTrailMcpServer(service, __CODETRAIL_VERSION__);
   let isClosing = false;
@@ -51,7 +50,7 @@ async function main(): Promise<void> {
     process.stdout.write(`${__CODETRAIL_VERSION__}\n`);
     return;
   }
-  await serve(options.workspacePath, options.kernelEnrichment);
+  await serve(options.workspacePath);
 }
 
 void main().catch((error: unknown) => {
