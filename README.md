@@ -8,6 +8,10 @@ Search is good at finding names. It is much less helpful when behavior crosses h
 
 CodeTrail is local and deterministic. It does not call an AI service at runtime, upload source, or claim that a static path is a runtime trace.
 
+![CodeTrail showing a bounded cross-file evidence trail for a C function](media/codetrail-evidence-trail.png)
+
+This is an actual extension result for `__cant_migrate`. The panel keeps the file route, source reasons, confidence, evidence counts, and the traversal budget visible instead of hiding uncertainty behind a generated explanation.
+
 ## Contents
 
 - [Install](#install)
@@ -20,6 +24,7 @@ CodeTrail is local and deterministic. It does not call an AI service at runtime,
 - [For coding agents](#for-coding-agents)
 - [Privacy and security](#privacy-and-security)
 - [Known limits](#known-limits)
+- [Built with Codex and GPT-5.6](#built-with-codex-and-gpt-56)
 - [Development](#development)
 
 ## Install
@@ -178,6 +183,23 @@ Read [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md) for the complete bo
 - Reindex after source changes; incremental indexing is not in this release.
 - CodeTrail recommends an outgoing static reading path. It is not a whole-program impact analyzer or runtime profiler.
 
+## Built with Codex and GPT-5.6
+
+GPT-5.6 was part of CodeTrail from the first product discussion through the final release. I used it to explore the idea, refine the product as it evolved, decide the architecture, and work through the tradeoffs behind the C-first scope and file-first interface.
+
+Codex with GPT-5.6 was the build tool for the project. Every implementation step ran through Codex: repository exploration, test-first changes, code editing, debugging, terminal verification, VSIX packaging, installed-extension checks, Linux scheduler evaluation, MCP testing, documentation, and GitHub release work. I set the direction, made the product decisions, reviewed the results, and handled the actions that required personal account access.
+
+The repository keeps that work inspectable:
+
+| Stage | Evidence |
+|---|---|
+| Product definition | The [product design](docs/superpowers/specs/2026-07-14-codetrail-product-design.md) records the problem, product boundary, and original architecture. |
+| Technical decisions | The [C-first analysis decision](docs/decisions/0001-c-first-hybrid-analysis.md) and [static-trail trust boundary](docs/decisions/0002-static-trail-trust-boundary.md) explain why the release uses structural evidence and never calls a trail a runtime trace. |
+| Implementation | The [Codex development record](docs/build-with-codex.md) maps tested work units to commits, including the parser, search, graph traversal, worker, VS Code experience, MCP adapter, and release engineering. |
+| Verification | The release gate runs 128 tests, coverage, a production dependency audit, package inspection, spawned MCP protocol tests, and pinned Linux scheduler evaluations on Windows and Ubuntu. |
+
+CodeTrail itself does not contain GPT-5.6, Codex, or an OpenAI API. That boundary matters: Codex with GPT-5.6 built the tool, while the shipped extension stays local, deterministic, and usable without an account or network connection.
+
 ## Development
 
 The project uses npm and Node.js 24.
@@ -199,7 +221,7 @@ npm run evaluate:linux -- --workspace .cache/linux-scheduler
 npm run evaluate:mcp -- --workspace .cache/linux-scheduler/kernel/sched --output demo/mcp-evaluation-results.json --profile linux-7059
 ```
 
-Codex was used across product planning, implementation, testing, debugging, visual verification, and release work. CodeTrail itself has no Codex/OpenAI runtime dependency. The [development record](docs/build-with-codex.md) separates human direction from Codex execution and points to the test and commit evidence.
+The [development record](docs/build-with-codex.md) separates human direction from Codex execution and links the major claims to tests and commits.
 
 ## License
 

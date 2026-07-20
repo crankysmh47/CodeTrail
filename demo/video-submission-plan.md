@@ -11,6 +11,7 @@ The VS Code extension is the product. The Linux scheduler is the credible proof.
 ## Final format
 
 - Target length: **2:55**, leaving five seconds of upload tolerance.
+- Delivery: upload the final cut as a **public YouTube video**. The Build Week form requires spoken audio that explains both Codex and GPT-5.6 usage.
 - Resolution: **1920 x 1080**, 30 fps, crisp editor text.
 - Style: direct screen recording with voice-over and restrained text callouts. No talking head is needed.
 - Pace: show one complete developer journey, then prove it scales beyond the fixture.
@@ -21,7 +22,7 @@ The VS Code extension is the product. The Linux scheduler is the credible proof.
 
 | Criterion | What the video proves |
 |---|---|
-| Technological implementation | A packaged extension parses C with Tree-sitter, recovers scheduler-specific relationships, ranks search results, and traverses a bounded typed graph. Codex was used throughout the tested development lifecycle, not embedded in the runtime. |
+| Technological implementation | A packaged extension parses C with Tree-sitter, recovers scheduler-specific relationships, ranks search results, and traverses a bounded typed graph. Codex with GPT-5.6 was the build tool throughout the tested development lifecycle, not embedded in the runtime. |
 | Design | Search, file-first hierarchy, evidence, source navigation, CodeLens, and the keyboard shortcut form one coherent editor workflow. |
 | Potential impact | The product answers a concrete problem for developers entering kernels, runtimes, databases, firmware, and other large C systems: what should I read next, and why? |
 | Quality of the idea | CodeTrail deliberately produces an evidence-backed reading order instead of another noisy graph canvas, chat box, or unverifiable runtime-trace claim. |
@@ -112,9 +113,9 @@ The VS Code extension is the product. The Linux scheduler is the credible proof.
 
 **Narration:**
 
-> Codex was our engineering partner across product decisions, test-first implementation, debugging, security review, packaging, and installed-extension verification. The product itself has no Codex or OpenAI runtime dependency. The release passes 128 tests, a production vulnerability audit, package inspection, and spawned MCP protocol tests.
+> GPT-5.6 drove the product ideation and progression. Codex with GPT-5.6 was the build tool for test-first implementation, debugging, packaging, and installed verification. I directed and reviewed the work. CodeTrail itself has no AI runtime. The release passes 128 tests, its production audit, package inspection, and spawned MCP protocol tests.
 
-**On-screen callout:** `Built with Codex - not powered by Codex at runtime`
+**On-screen callout:** `Built in Codex with GPT-5.6 - no AI runtime`
 
 ### 2:38-2:50 - MCP as the indirect win
 
@@ -165,6 +166,7 @@ The VS Code extension is the product. The Linux scheduler is the credible proof.
 - [ ] Persistent search remains visible
 - [ ] Static-analysis disclaimer or traversal bound visible
 - [ ] Pinned upstream Linux metrics and ranks
+- [ ] Voiceover explicitly explains both Codex and GPT-5.6 usage
 - [ ] Codex development-lifecycle evidence
 - [ ] Test, audit, MCP E2E, and VSIX verification result
 - [ ] MCP limited to one supporting result
