@@ -107,17 +107,17 @@ The VS Code extension is the product. The Linux scheduler is the credible proof.
 
 **On-screen callout:** `Pinned upstream Linux proof`
 
-### 2:20-2:38 - Codex and implementation depth
+### 2:20-2:41 - Codex and implementation depth
 
 **Picture:** Show the concise commit/evidence table in `docs/build-with-codex.md`, then a pre-recorded terminal result from `npm run verify:release`: `31 passed`, `128 passed`, `0 vulnerabilities`, and the verified 18-file VSIX. Keep this visual to one terminal screen.
 
 **Narration:**
 
-> GPT-5.6 drove the product ideation and progression. Codex with GPT-5.6 was the build tool for test-first implementation, debugging, packaging, and installed verification. I directed and reviewed the work. CodeTrail itself has no AI runtime. The release passes 128 tests, its production audit, package inspection, and spawned MCP protocol tests.
+> GPT-5.6 drove ideation and product progression. Codex with GPT-5.6 was the build tool for implementation, testing, debugging, packaging, and verification. With my authorization, it also created the publisher account and released CodeTrail to Visual Studio Marketplace and Open VSX. I directed and reviewed the work; the shipped extension has no AI runtime.
 
 **On-screen callout:** `Built in Codex with GPT-5.6 - no AI runtime`
 
-### 2:38-2:50 - MCP as the indirect win
+### 2:41-2:51 - MCP as the indirect win
 
 **Picture:** Show only the three-row results table in `demo/mcp-evaluation.md`. Visually connect it back to the same CodeTrail evidence model; do not open an MCP inspector or lead with tool names.
 
@@ -127,7 +127,7 @@ The VS Code extension is the product. The Linux scheduler is the credible proof.
 
 **On-screen callout:** `Same evidence, less agent context`
 
-### 2:50-2:55 - Close
+### 2:51-2:55 - Close
 
 **Picture:** Return to the completed VS Code trail with **File route** and **Within files** both visible. End on the product, not a logo card.
 
