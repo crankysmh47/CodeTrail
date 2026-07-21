@@ -5,4 +5,10 @@ dist/
 coverage/
 *.vsix
 *.log
-test/
+test/*
+!test/core.c
+!test/fair.c
+!test/sched.h
+!test/README.md
+!test/LICENSES/
+!test/LICENSES/GPL-2.0
