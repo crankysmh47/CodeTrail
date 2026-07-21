@@ -7,7 +7,7 @@ This is the final recording script. It is written so a recorder who has not foll
 - Maximum platform length: 3:00
 - Target cut: 2:58
 - Format: 1920 x 1080, 30 fps, spoken narration, readable editor text
-- Product shown: installed `codetrail.vsix`, not an Extension Development Host
+- Product shown: the public Marketplace extension, not an Extension Development Host
 - Workspace shown: `test/`, containing three real upstream Linux scheduler files
 
 Do not improvise technical claims. CodeTrail produces a bounded static reading order, not a runtime trace.
@@ -32,7 +32,7 @@ The current release renders **File route** before **Within files**. Its shortcut
 1. Open `C:\sem4\CodeTrail\test` as the only VS Code workspace folder.
 2. Trust the folder before the take so the trust prompt does not interrupt the recording.
 3. Uninstall any existing CodeTrail version and reload VS Code.
-4. Keep `C:\sem4\CodeTrail\codetrail.vsix` ready for the file picker.
+4. Confirm the Extensions view can find `@id:crankysmh47.codetrail-c-evidence-paths`. If the recorder must work offline, send them the release `codetrail.vsix` separately before recording.
 5. Open `core.c`, `fair.c`, and the repository `README.md` in editor tabs.
 6. Use a clean VS Code profile or hide unrelated extensions, accounts, notifications, terminals, and source-control badges.
 7. Use a dark theme and an editor font around 17 px. Keep the CodeTrail panel wide enough to show reasons and confidence labels.
@@ -53,21 +53,21 @@ The current release renders **File route** before **Within files**. Its shortcut
 
 > This is the real Linux scheduler core, not a hand-written demonstration fixture. `core.c` alone is over eleven thousand lines. Together with `fair.c` and `sched.h`, this workspace contains almost thirty-one thousand lines. Text search can find a function, but it cannot tell me what to read next, what crosses a file boundary, or why two pieces of code are connected.
 
-### 0:18-0:37 - Install the packaged extension
+### 0:18-0:37 - Install the published extension
 
 **Actions**
 
 1. Press `Ctrl+Shift+X`.
-2. Open the Extensions view `...` menu.
-3. Choose **Install from VSIX...**
-4. Select `C:\sem4\CodeTrail\codetrail.vsix`.
-5. Click **Reload Now**.
+2. Search for `@id:crankysmh47.codetrail-c-evidence-paths`.
+3. Open **CodeTrail: C Evidence Paths** by publisher `crankysmh47`.
+4. Click **Install**.
+5. Reload VS Code if prompted.
 
-Cut file-picker delay, but keep the actual VSIX selection and successful installation visible.
+Keep the public extension identity and successful installation visible. If Marketplace access fails during preflight, use **Install from VSIX...** with the separately supplied release VSIX and keep that real installation visible instead.
 
 **Say**
 
-> CodeTrail is a packaged VS Code extension that addresses that reading problem directly. I will install the same VSIX that another developer or judge can run.
+> CodeTrail is a published VS Code extension that addresses that reading problem directly. I will install the same public release that another developer or judge can run.
 
 ### 0:37-0:52 - Index the source
 
@@ -171,7 +171,7 @@ Return to the completed `pick_eevdf` trail. Do not end on a logo card.
 
 The final cut must visibly contain all of these:
 
-- installation from `codetrail.vsix`
+- installation of the public `crankysmh47.codetrail-c-evidence-paths` extension, or the identical release VSIX when recording offline
 - indexing of the three-file workspace
 - `schedule` returning `__schedule` first
 - `pick task fair` returning `pick_task_fair` first
@@ -189,7 +189,7 @@ Do not record around a product failure. Stop and correct the setup if any item b
 
 | Symptom | Recovery |
 |---|---|
-| CodeTrail commands are missing | Confirm the VSIX installed successfully, then reload VS Code. |
+| CodeTrail commands are missing | Confirm `crankysmh47.codetrail-c-evidence-paths` installed successfully, then reload VS Code. |
 | Workspace shows more than three indexed C files | Reopen `C:\sem4\CodeTrail\test` as the only workspace folder and reindex. |
 | `schedule` does not rank `__schedule` first | Confirm the three files match this repository and run **CodeTrail: Index Workspace** again. |
 | The keyboard shortcut does nothing | Put editor focus inside `pick_eevdf` in the C file and use `Alt+Shift+T`. |
@@ -200,7 +200,7 @@ Do not record around a product failure. Stop and correct the setup if any item b
 ## Editing rules
 
 - Record each timed section as a separate clip.
-- Cut dead cursor travel and file-picker delay, but do not fabricate results or replace real progress with animation.
+- Cut dead cursor travel and Marketplace loading delay, but do not fabricate results or replace real progress with animation.
 - Use burned-in captions and no background music unless speech remains completely clear.
 - Do not call the output an execution path, runtime trace, complete call graph, or whole-kernel analysis.
 - Do not claim general multi-language support. The current release is C-first.
