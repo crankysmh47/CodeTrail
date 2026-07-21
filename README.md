@@ -88,13 +88,21 @@ The index contains 3,743 nodes and 33,099 typed edges across 2,049,984 bytes of 
 
 The [machine-readable result](demo/linux-scheduler-evaluation.json) records every top-20 candidate, score reason, warning, bound, confidence label, and source range. See the [evaluation method and reproduction steps](demo/linux-scheduler-evaluation.md).
 
-For a fast UI demo, open the small checked-in fixture:
+For the submission demo, open the checked-in three-file Linux scheduler snapshot:
+
+```powershell
+code .\test
+```
+
+It contains the upstream `core.c`, `fair.c`, and `sched.h` files from the same pinned commit: 30,959 lines and 848,962 bytes in total. The [independent recorder handoff](demo/independent-recorder-script.md) gives the exact installation steps, searches, symbols, source lines, narration, and recovery checks for the final recording.
+
+For a shorter development fixture, open:
 
 ```powershell
 code .\test-fixtures\kernel-mini
 ```
 
-The fixture keeps the relationship chain short enough to show the full `sched.h` to `fair.c` route during a three-minute demo. The upstream report is the non-fixture proof.
+The fixture keeps the relationship chain short enough for automated tests. The files under [`test/`](test/README.md) are unmodified upstream Linux source and retain their GPL-2.0 licensing; they are not covered by CodeTrail's MIT license.
 
 ## How it works
 
@@ -228,4 +236,4 @@ The [development record](docs/build-with-codex.md) separates human direction fro
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+CodeTrail is MIT-licensed. See [LICENSE](LICENSE). The copied Linux scheduler sources under [`test/`](test/README.md) retain their upstream GPL-2.0 licensing and copyright notices.
